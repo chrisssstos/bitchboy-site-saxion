@@ -6,7 +6,7 @@ function App() {
 
   return (
     <>
-      <div>
+      <div class="text-3xl font-bold underline">
         BITCHBOY
       </div>
     </>
