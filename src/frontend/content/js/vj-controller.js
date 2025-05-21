@@ -2,16 +2,31 @@ document.addEventListener('DOMContentLoaded', () => {
 	// Get the video elements
 	const video1 = document.getElementById('video1');
 	const video2 = document.getElementById('video2');
+	const video3 = document.getElementById('video3');
+	const video4 = document.getElementById('video4');
+	const video5 = document.getElementById('video5');
 
 	// Initialize videos
 	video1.play();
 	video2.play();
+	video3.play();
+	video4.play();
+	video5.play();
 
-	// Currently active video (1 = video1, 2 = video2)
+	// Currently active video (1 = video1, 2 = video2, etc.)
 	let activeVideo = 1;
 
 	// Get current active video element
-	const getCurrentVideo = () => activeVideo === 1 ? video1 : video2;
+	const getCurrentVideo = () => {
+		switch (activeVideo) {
+			case 1: return video1;
+			case 2: return video2;
+			case 3: return video3;
+			case 4: return video4;
+			case 5: return video5;
+			default: return video1;
+		}
+	};
 
 	// Effect states
 	const effects = {
@@ -40,39 +55,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// Function to switch between videos
 	function switchVideo(videoNumber) {
-		if (videoNumber === 1 && activeVideo !== 1) {
-			// Switch to video 1
-			anime({
-				targets: video2,
-				opacity: 0,
-				duration: 0,
-				easing: 'easeOutQuad',
-				complete: function () {
-					video2.classList.add('hidden');
-					video1.classList.remove('hidden');
-					// Set video1 to be fully visible immediately
-					video1.style.opacity = 1;
-				}
-			});
-			activeVideo = 1;
-			applyAllEffects();
-		} else if (videoNumber === 2 && activeVideo !== 2) {
-			// Switch to video 2
-			anime({
-				targets: video1,
-				opacity: 0,
-				duration: 0,
-				easing: 'easeOutQuad',
-				complete: function () {
-					video1.classList.add('hidden');
-					video2.classList.remove('hidden');
-					// Set video2 to be fully visible immediately
-					video2.style.opacity = 1;
-				}
-			});
-			activeVideo = 2;
-			applyAllEffects();
+		if (videoNumber === activeVideo) return;
+
+		const currentVideo = getCurrentVideo();
+		let newVideo;
+
+		switch (videoNumber) {
+			case 1: newVideo = video1; break;
+			case 2: newVideo = video2; break;
+			case 3: newVideo = video3; break;
+			case 4: newVideo = video4; break;
+			case 5: newVideo = video5; break;
+			default: return;
 		}
+
+		// Hide current video
+		anime({
+			targets: currentVideo,
+			opacity: 0,
+			duration: 0,
+			easing: 'easeOutQuad',
+			complete: function () {
+				// Hide all videos
+				[video1, video2, video3, video4, video5].forEach(v => v.classList.add('hidden'));
+				// Show new video
+				newVideo.classList.remove('hidden');
+				// Set new video to be fully visible immediately
+				newVideo.style.opacity = 1;
+			}
+		});
+
+		activeVideo = videoNumber;
+		applyAllEffects();
 	}
 
 	// Apply all effects to current video
@@ -202,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	function updateControlInfo() {
 		const controlsDiv = document.querySelector('.controls');
 		controlsDiv.innerHTML = `
-			<p>Press <strong>1</strong> or <strong>2</strong> to switch animations</p>
+			<p>Press <strong>1-5</strong> to switch between animations</p>
 			<p>Press <strong>Q</strong> to toggle Invert RGB (${effects.invert ? 'ON' : 'OFF'})</p>
 			<p>Press <strong>W</strong> to increase / <strong>S</strong> to decrease Hue Rotation (${effects.hueRotate}°)</p>
 			<p>Press <strong>E</strong> to toggle Colorize (${effects.colorize ? 'ON' : 'OFF'})</p>
@@ -231,6 +245,12 @@ document.addEventListener('DOMContentLoaded', () => {
 			switchVideo(1);
 		} else if (key === '2') {
 			switchVideo(2);
+		} else if (key === '3') {
+			switchVideo(3);
+		} else if (key === '4') {
+			switchVideo(4);
+		} else if (key === '5') {
+			switchVideo(5);
 		}
 		// Invert RGB - Q
 		else if (key === 'q') {
