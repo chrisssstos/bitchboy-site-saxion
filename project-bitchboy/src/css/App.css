@@ -37,38 +37,52 @@ body {
 }
 
 .diagonal-stripe {
-  position: absolute;
+  position: absolute;   
   pointer-events: none;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 20vh;
+  z-index: 1;
 }
 
 #stripe1 {
-  z-index: 1;
-  top: 20vh;
+  top: 10vh;
   left: -30vw;
   width: 400vw;
   height: 60vh;
   transform: rotate(-20deg);
   background: var(--color-orange);
+  z-index: 1;
 }
 
 #stripe2 {
-  z-index: 0.9;
-  top: 200vh;
+  top: 60vh;
   left: -60vw;
   width: 200vw;
   height: 60vh;
   transform: rotate(40deg);
-  background: #121212;
+  background: #1c1c1c;
+  z-index: 0;
 }
 
 #stripe3 {
-  z-index: 1;
-  top: 330vh;
+  top: 260vh;
   left: -30vw;
   width: 200vw;
   height: 60vh;
-  transform: rotate(-13deg);
+  transform: rotate(-10deg);
   background: var(--color-orange);
+  z-index: 1;
+}
+
+.subscribe-button {
+  position: absolute;
+  left: 50%;
+  bottom: 40vh;
+  transform: translateX(-50%);
+  font-size: 1.5rem;
+  z-index: 2;
 }
 
 .read-the-docs {
