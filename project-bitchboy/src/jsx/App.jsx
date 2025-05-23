@@ -1,6 +1,5 @@
-import { Canvas } from "@react-three/fiber";
 import "../css/App.css";
-import Model from "./Model";
+import ModelAnimated from "./ModelAnimated";
 
 
 function App() {
@@ -19,6 +18,7 @@ function App() {
       <button className="subscribe-button">
         Sign Up for Updates
       </button>
+      <ModelAnimated />
     </div>
   );
 }
