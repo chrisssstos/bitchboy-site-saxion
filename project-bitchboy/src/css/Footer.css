@@ -1,0 +1,17 @@
+.footer {
+  width: 100%;
+  background: #101010;
+  padding: 8rem 0;
+  position: relative;
+  bottom: -200rem;
+  left: 0;
+  text-align: center;
+  z-index: 1;
+}
+
+.footer-text {
+  color: #888;
+  margin: 0;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+}

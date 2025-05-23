@@ -1,0 +1,76 @@
+body {
+  margin: 0;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.app-root {
+  min-height: 100vh;
+  background: #0c0c0c;
+  position: relative;
+}
+
+.centered-logo-container {
+  position: absolute;
+  top: -170px;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.centered-logo-img {
+  max-width: 60vw;
+  max-height: 60vh;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.diagonal-stripe {
+  position: absolute;
+  pointer-events: none;
+}
+
+#stripe1 {
+  z-index: 1;
+  top: 20vh;
+  left: -30vw;
+  width: 400vw;
+  height: 60vh;
+  transform: rotate(-20deg);
+  background: var(--color-orange);
+}
+
+#stripe2 {
+  z-index: 0.9;
+  top: 200vh;
+  left: -60vw;
+  width: 200vw;
+  height: 60vh;
+  transform: rotate(40deg);
+  background: #121212;
+}
+
+#stripe3 {
+  z-index: 1;
+  top: 330vh;
+  left: -30vw;
+  width: 200vw;
+  height: 60vh;
+  transform: rotate(-13deg);
+  background: var(--color-orange);
+}
+
+.read-the-docs {
+  color: #888;
+}
