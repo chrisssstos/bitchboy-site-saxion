@@ -13,7 +13,6 @@ function Header() {
           />
         </a>
         <a href="/about" className="header-link">About</a>
-        <a href="#contact" className="header-link">Contact</a>
         <a href="/interactive" className="header-link">Interactive</a>
       </nav>
     </header>
