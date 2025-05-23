@@ -5,7 +5,7 @@ function Header() {
   return (
     <header className="header">
       <nav className="header-nav">
-        <a href="/project-bitchboy/public" className="header-logo-link">
+        <a href="/" className="header-logo-link">
           <img
             src="/images/logowhite.svg"
             alt="Logo"
