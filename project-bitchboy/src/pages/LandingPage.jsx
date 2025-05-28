@@ -1,5 +1,5 @@
-import "../css/App.css";
-import ModelAnimated from "./ModelAnimated";
+import "../components/css/LandingPage.css";
+import ModelAnimated from "../components/jsx/ModelAnimated.jsx";
 
 function LandingPage() {
   return (

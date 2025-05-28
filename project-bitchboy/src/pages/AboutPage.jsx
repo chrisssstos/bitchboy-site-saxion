@@ -9,9 +9,6 @@ import MiniTextSectionList from "../components/jsx/MiniTextSectionList.jsx";
 export default function AboutPage() {
   return (
       <div className="background-container">
-          <div className="diagonal-stripe" id="stripe1"></div>
-          <div className="diagonal-stripe" id="stripe2"></div>
-          <div className="diagonal-stripe" id="stripe3"></div>
           <div className="container-wrap">
               <TextSection
                   title={"Our Mission"}
