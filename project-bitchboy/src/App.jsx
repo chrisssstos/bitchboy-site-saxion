@@ -8,11 +8,11 @@ import InteractivePage from './pages/InteractivePage.jsx';
 function App() {
   return (
       <BrowserRouter>
-          <div style={{ paddingTop: "9rem"}}>
+          <div className="content">
               <Routes>
-                  <Route path="/" element={<LandingPage />} />
-                  <Route path="/about" element={<AboutPage />} />
-                  <Route path="/interactive" element={<InteractivePage />} />
+                  <Route path="/" element={<LandingPage/>}/>
+                  <Route path="/about" element={<AboutPage/>}/>
+                  <Route path="/interactive" element={<InteractivePage/>}/>
               </Routes>
           </div>
       </BrowserRouter>

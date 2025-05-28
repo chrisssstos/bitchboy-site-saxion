@@ -20,14 +20,15 @@ function AnimatedModel() {
     gsap.registerPlugin(ScrollTrigger);
     if (!ref.current) return;
 
+    // Section 1 animation
     gsap.to(ref.current.position, {
       x: 0.4,
       y: -6,
       z: -2,
       scrollTrigger: {
-        trigger: "#section-1",      // Use the first section as the trigger
-        start: "top top",           // Animation starts when section-1 hits top of viewport
-        end: "bottom top",          // Animation ends when section-1 leaves the viewport
+        trigger: "#section-1",
+        start: "top top",
+        end: "bottom top",
         scrub: true,
       },
     });
@@ -48,6 +49,30 @@ function AnimatedModel() {
       z: 4,
       scrollTrigger: {
         trigger: "#section-1",
+        start: "top top",
+        end: "bottom top",
+        scrub: true,
+      },
+    });
+
+    // Section 2 animation
+    gsap.to(ref.current.position, {
+      x: -2,
+      y: -8,
+      z: 1,
+      scrollTrigger: {
+        trigger: "#section-2",
+        start: "top top",
+        end: "bottom top",
+        scrub: true,
+      },
+    });
+    gsap.to(ref.current.rotation, {
+      x: Math.PI / 2,
+      y: Math.PI / 2,
+      z: 0,
+      scrollTrigger: {
+        trigger: "#section-2",
         start: "top top",
         end: "bottom top",
         scrub: true,

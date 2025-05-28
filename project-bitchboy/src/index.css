@@ -16,6 +16,17 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1;
+  padding-top: 9rem;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -30,6 +41,7 @@ body {
   display: flex;
   place-items: center;
   min-width: 320px;
+  flex-direction: column;
   min-height: 100vh;
 }
 
@@ -58,15 +70,3 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
