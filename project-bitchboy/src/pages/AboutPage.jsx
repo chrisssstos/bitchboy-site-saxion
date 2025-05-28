@@ -1,10 +1,10 @@
 import React from "react";
 import TextSection from "../components/jsx/TextSection.jsx";
-import ImageCard from "../components/jsx/ImageCard.jsx";
-import CardGrid from "../components/jsx/CardGrid.jsx";
+import ImageCard from "../components/jsx/AboutPage/ImageCard.jsx";
+import CardGrid from "../components/jsx/AboutPage/CardGrid.jsx";
 import {Text} from "@react-three/drei";
-import MiniTextSection from "../components/jsx/MiniTextSection.jsx";
-import MiniTextSectionList from "../components/jsx/MiniTextSectionList.jsx";
+import MiniTextSection from "../components/jsx/AboutPage/MiniTextSection.jsx";
+import MiniTextSectionList from "../components/jsx/AboutPage/MiniTextSectionList.jsx";
 
 export default function AboutPage() {
   return (

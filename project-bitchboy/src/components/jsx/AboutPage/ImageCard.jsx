@@ -1,4 +1,4 @@
-import "../css/ImageCard.css";
+import "../../css/AboutPage/ImageCard.css";
 
 function ImageCard({imgSrc, caption}) {
     return (

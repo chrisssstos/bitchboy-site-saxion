@@ -1,4 +1,4 @@
-import "../css/MiniTextSectionList.css";
+import "../../css/AboutPage/MiniTextSectionList.css";
 import MiniTextSection from "./MiniTextSection.jsx";
 
 function MiniTextSectionList({items}){

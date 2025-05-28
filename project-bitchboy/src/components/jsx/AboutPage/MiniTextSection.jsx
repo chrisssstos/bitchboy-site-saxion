@@ -1,4 +1,4 @@
-import "../css/MiniTextSection.css";
+import "../../css/AboutPage/MiniTextSection.css";
 import React, { useState } from "react";
 
 function MiniTextSection({ title, text }) {

@@ -1,5 +1,5 @@
 import ImageCard from "./ImageCard";
-import "../css/CardGrid.css";
+import "../../css/AboutPage/CardGrid.css";
 
 
 
