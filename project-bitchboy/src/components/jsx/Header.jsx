@@ -1,5 +1,4 @@
 import "../css/Header.css";
-import { NavLink } from "react-router-dom";
 
 function Header() {
   return (
@@ -12,7 +11,7 @@ function Header() {
             className="header-logo"
           />
         </a>
-        <a href="/about" className="header-link">About</a>
+        <a href="/about" className="header-link">About us</a>
         <a href="/interactive" className="header-link">Interactive</a>
       </nav>
     </header>
