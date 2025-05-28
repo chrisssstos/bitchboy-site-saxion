@@ -39,6 +39,20 @@ body {
 .diagonal-stripe {
   position: absolute;
   pointer-events: none;
+  z-index: 0;
+}
+
+.background-container {
+  min-height: 100vh;
+  min-width: 100vw;
+  background-color: #101010;
+  position: relative;
+}
+
+.container-wrap{
+  position: relative;
+  z-index: 1;
+  padding: 2rem;
 }
 
 #stripe1 {
