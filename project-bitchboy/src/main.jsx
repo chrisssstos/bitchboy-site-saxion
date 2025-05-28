@@ -7,8 +7,10 @@ import Footer from "./components/jsx/Footer.jsx";
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-      <Header />
-      <App />
-      <Footer />
+      <div className="app">
+          <Header />
+          <App />
+          <Footer />
+      </div>
   </StrictMode>,
 )
