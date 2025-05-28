@@ -25,9 +25,9 @@ function AnimatedModel() {
       y: -6,
       z: -2,
       scrollTrigger: {
-        trigger: document.body,
-        start: "top top",
-        end: "bottom bottom",
+        trigger: "#section-1",      // Use the first section as the trigger
+        start: "top top",           // Animation starts when section-1 hits top of viewport
+        end: "bottom top",          // Animation ends when section-1 leaves the viewport
         scrub: true,
       },
     });
@@ -36,9 +36,9 @@ function AnimatedModel() {
       y: 0,
       z: 0,
       scrollTrigger: {
-        trigger: document.body,
+        trigger: "#section-1",
         start: "top top",
-        end: "bottom bottom",
+        end: "bottom top",
         scrub: true,
       },
     });
@@ -47,9 +47,9 @@ function AnimatedModel() {
       y: 4,
       z: 4,
       scrollTrigger: {
-        trigger: document.body,
+        trigger: "#section-1",
         start: "top top",
-        end: "bottom bottom",
+        end: "bottom top",
         scrub: true,
       },
     });
@@ -66,7 +66,7 @@ const ModelAnimated = () => (
       left: 0,
       width: "100vw",
       height: "100vh",
-      zIndex: 1,
+      zIndex: 2,
       pointerEvents: "none",
     }}
     camera={{ fov: 75, position: [0, 0, 5] }}
