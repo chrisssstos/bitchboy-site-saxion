@@ -165,12 +165,11 @@ const VJController = () => {
 		if (!currentVideo || !newVideo) return;
 
 		// Hide current video
-		animate({
-			targets: currentVideo,
+		animate(currentVideo, {
 			opacity: 0,
 			duration: 0,
-			easing: 'easeOutQuad',
-			complete: function () {
+			ease: 'outQuad',
+			onComplete: function () {
 				// Hide all videos
 				[video1Ref, video2Ref, video3Ref, video4Ref, video5Ref].forEach(ref => {
 					if (ref.current) {
