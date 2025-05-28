@@ -119,32 +119,6 @@ const VJController = () => {
 		video.style.transform = transformString;
 	}, [effects, getCurrentVideo]);
 
-	// Handle strobe effect separately
-	const toggleStrobe = useCallback(() => {
-		if (effects.strobe) {
-			// Start strobe effect
-			let isVisible = true;
-			const strobeInterval = setInterval(() => {
-				const video = getCurrentVideo();
-				if (video) {
-					isVisible = !isVisible;
-					video.style.opacity = isVisible ? 1 : 0;
-				}
-			}, 100);
-			setEffects(prev => ({ ...prev, strobeInterval }));
-		} else {
-			// Stop strobe effect
-			if (effects.strobeInterval) {
-				clearInterval(effects.strobeInterval);
-			}
-			const video = getCurrentVideo();
-			if (video) {
-				video.style.opacity = 1;
-			}
-			setEffects(prev => ({ ...prev, strobeInterval: null }));
-		}
-	}, [effects.strobe, effects.strobeInterval, getCurrentVideo]);
-
 	// Function to switch between videos
 	const switchVideo = useCallback((videoNumber) => {
 		if (videoNumber === activeVideo) return;
@@ -343,14 +317,29 @@ const VJController = () => {
 	// Apply effects when they change
 	useEffect(() => {
 		applyAllEffects();
-	}, [effects, applyAllEffects]);
 
-	// Handle strobe toggle
-	useEffect(() => {
-		if (effects.strobe !== undefined) {
-			toggleStrobe();
+		// Handle strobe effect directly here
+		if (effects.strobe && !effects.strobeInterval) {
+			// Start strobe effect
+			let isVisible = true;
+			const strobeInterval = setInterval(() => {
+				const video = getCurrentVideo();
+				if (video) {
+					isVisible = !isVisible;
+					video.style.opacity = isVisible ? 1 : 0;
+				}
+			}, 100);
+			setEffects(prev => ({ ...prev, strobeInterval }));
+		} else if (!effects.strobe && effects.strobeInterval) {
+			// Stop strobe effect
+			clearInterval(effects.strobeInterval);
+			const video = getCurrentVideo();
+			if (video) {
+				video.style.opacity = 1;
+			}
+			setEffects(prev => ({ ...prev, strobeInterval: null }));
 		}
-	}, [effects.strobe, toggleStrobe]);
+	}, [effects, applyAllEffects, getCurrentVideo]);
 
 	return (
 		<div className="vj-container">
