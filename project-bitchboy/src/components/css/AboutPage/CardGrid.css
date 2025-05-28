@@ -1,0 +1,7 @@
+.card-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;  /* центрируем карточки */
+    padding: 2rem;
+}

@@ -1,21 +1,21 @@
-import { Canvas } from "@react-three/fiber";
-import { useGLTF, Stage, PresentationControls } from "@react-three/drei";
+import React from "react";
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import LandingPage from './pages/LandingPage.jsx';
+import AboutPage from './pages/AboutPage.jsx';
+import InteractivePage from './pages/InteractivePage.jsx';
 
-function Model(props) {
-  const { scene } = useGLTF("/bitchboy3dnew1.glb");
-  return <primitive object={scene} {...props} />
-}
 
 function App() {
   return (
-    <Canvas dpr={[1,2]} shadows camera={{ fov: 45 }} style={{"position": "absolute"}}>
-      <color attach="background" args={["#101010"]} />
-      <PresentationControls speed={1.5} global zoom={.5} polar={[-0.1, Math.PI / 4]}>
-        <Stage environment={"sunset"}>
-          <Model scale={0.01} />
-        </Stage>
-      </PresentationControls>
-    </Canvas>
+      <BrowserRouter>
+          <div style={{ paddingTop: "9rem"}}>
+              <Routes>
+                  <Route path="/" element={<LandingPage />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/interactive" element={<InteractivePage />} />
+              </Routes>
+          </div>
+      </BrowserRouter>
   );
 }
 
