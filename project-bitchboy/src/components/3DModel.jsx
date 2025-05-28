@@ -3,89 +3,12 @@ import { useGLTF, Stage, PresentationControls } from "@react-three/drei";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three"
 
-// function Model(props) {
-//   const { scene } = useGLTF("/bitchboy3d(v5 - test).glb");
-//   const originalMaterials = useRef(new Map());
-//   const [activeSlider, setActiveSlider] = useState(null);
-//   const pointer = useRef(new THREE.Vector2());
-//   const raycaster = useRef(new THREE.Raycaster());
-
-
-//   useEffect(() => {
-//     scene.traverse((child) => {
-//       if (child.isMesh) {
-//         // Clone and store original material
-//         originalMaterials.current.set(child.uuid, child.material.clone());
-//         child.userData.isToggled = false;
-//         child.userData.clickable = true;
-//       }
-//     });
-//   }, [scene]);
-
-//   function handleClick(e) {
-//     e.stopPropagation();
-
-//     const mesh = e.object;
-//     console.log("Clicked on:", mesh.name, mesh);
-
-//     // Very early slider movement
-//     if(mesh.name.includes("Slider")){
-//         setActiveSlider((prev) => (prev == mesh ? null : mesh));
-//         return;
-//     }
-
-//     if(!mesh.name.includes("Button")) return;
-
-//     if (!mesh.userData.clickable) return;
-
-//     if (mesh.userData.isToggled) {
-//       // Revert to original material
-//       mesh.material = originalMaterials.current.get(mesh.uuid);
-//       mesh.userData.isToggled = false;
-//       mesh.position.z += 0.1;
-//     } else {
-//       // Assign a new material
-//       mesh.material = new THREE.MeshStandardMaterial({ color: "#ada0a3" });
-//       mesh.position.z -= 0.1;
-//       mesh.userData.isToggled = true;
-//     }
-//   }
-
-//   function handlePointerMove(e) {
-//     if (!activeSlider) return;
-
-//     pointer.current.x = (e.clientX / window.innerWidth) * 2 - 1;
-//     pointer.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
-
-//     raycaster.current.setFromCamera(pointer.current, e.camera);
-
-//     const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -activeSlider.position.y);
-
-//     const intersection = new THREE.Vector3();
-//     raycaster.current.ray.intersectPlane(plane, intersection);
-
-//     // activeSlider.position.z = intersection.z;
-//     if (intersection) {
-//       // Clamp Z range, optional — adjust based on your slider's path
-//       const clampedZ = Math.max(-1, Math.min(1, intersection.z));
-//       activeSlider.position.z = clampedZ;
-//     }
-//   }
-
-//   return (
-//     <primitive
-//       object={scene}
-//       {...props}
-//       onClick={handleClick}
-//       onPointerMove={handlePointerMove}
-//     />
-//   );
-// }
-
 function Model(props) {
-  const { scene } = useGLTF("/bitchboy3d(v7).glb");
+  const { scene } = useGLTF("/bitchboy3d(v8).glb");
   const originalMaterials = useRef(new Map());
-  const [activeSlider, setActiveSlider] = useState(null);
+  const [activeObject, setActiveObject] = useState(null);
+  const [dragMode, setDragMode] = useState(null);
+  const dragStartX = useRef(0);
   const [isDragging, setIsDragging] = useState(false);
   const pointer = useRef(new THREE.Vector2());
   const raycaster = useRef(new THREE.Raycaster());
@@ -121,80 +44,101 @@ function Model(props) {
 }, [scene]);
 
   function handlePointerDown(e) {
-    if (e.object.name.includes("Slider_knob")) {
-      setActiveSlider(e.object);
-      setIsDragging(true);
+  const obj = e.object;
 
-      // Save offset between slider and mouse world X
-      pointer.current.x = (e.clientX / window.innerWidth) * 2 - 1;
-      pointer.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
-      raycaster.current.setFromCamera(pointer.current, e.camera);
+  if (obj.name.includes("Slider_knob")) {
+    setActiveObject(obj);
+    setDragMode("slider");
+    setIsDragging(true);
 
-      const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -e.object.position.y);
-      const intersection = new THREE.Vector3();
-      raycaster.current.ray.intersectPlane(plane, intersection);
+    pointer.current.x = (e.clientX / window.innerWidth) * 2 - 1;
+    pointer.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
+    raycaster.current.setFromCamera(pointer.current, e.camera);
 
-      if (intersection) {
-        dragOffset.current = intersection.z - e.object.position.z;
-      }
+    const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -obj.position.y);
+    const intersection = new THREE.Vector3();
+    raycaster.current.ray.intersectPlane(plane, intersection);
+
+    if (intersection) {
+      dragOffset.current = intersection.z - obj.position.z;
     }
+
+  } else if (obj.name.includes("knob")) {
+    setActiveObject(obj);
+    setDragMode("knob");
+    setIsDragging(true);
+    dragStartX.current = e.clientX;
   }
+}
+
 
   function handlePointerUp() {
-    setIsDragging(false);
-    setActiveSlider(null);
-  }
+  setIsDragging(false);
+  setActiveObject(null);
+  setDragMode(null);
+}
+
 
   function handleClick(e) {
     e.stopPropagation();
     const mesh = e.object;
     console.log("Clicked on:", mesh.name, mesh);
-    if (!mesh.name.includes("Button")) return;
+    // if (!mesh.name.includes("Button")) return;
     if (!mesh.userData.clickable) return;
 
-    if (mesh.userData.isToggled) {
-      mesh.material = originalMaterials.current.get(mesh.uuid);
-      mesh.userData.isToggled = false;
-      mesh.position.z += 0.1;
-    } else {
-      mesh.material = new THREE.MeshStandardMaterial({ color: "#ada0a3" });
-      mesh.position.z -= 0.1;
-      mesh.userData.isToggled = true;
+    // temporary knob rotation
+    // if (mesh.name.includes("knob")) {
+    //   mesh.rotation.y += 0.5;
+    // }
+
+    if (mesh.name.includes("Button")) {
+      if (mesh.userData.isToggled) {
+        mesh.material = originalMaterials.current.get(mesh.uuid);
+        mesh.userData.isToggled = false;
+        mesh.position.z += 0.1;
+      } else {
+        mesh.material = new THREE.MeshStandardMaterial({ color: "#ada0a3" });
+        mesh.position.z -= 0.1;
+        mesh.userData.isToggled = true;
+      }
     }
   }
 
  function handlePointerMove(e) {
-  if (!isDragging || !activeSlider) return;
+  if (!isDragging || !activeObject) return;
 
-  pointer.current.x = (e.clientX / window.innerWidth) * 2 - 1;
-  pointer.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
+  if (dragMode === "slider") {
+    pointer.current.x = (e.clientX / window.innerWidth) * 2 - 1;
+    pointer.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
 
-  raycaster.current.setFromCamera(pointer.current, e.camera);
+    raycaster.current.setFromCamera(pointer.current, e.camera);
 
-  // Assume movement along X axis (adjust if your sliders move along Z)
-  const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -activeSlider.position.y);
-  const intersection = new THREE.Vector3();
-  raycaster.current.ray.intersectPlane(plane, intersection);
+    const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -activeObject.position.y);
+    const intersection = new THREE.Vector3();
+    raycaster.current.ray.intersectPlane(plane, intersection);
 
-  if (intersection) {
-    const track = sliderTrackMap.current.get(activeSlider.name);
-    if (!track) {
-      console.log("Could not get track");
-      return;
+    if (intersection) {
+      const track = sliderTrackMap.current.get(activeObject.name);
+      if (!track) return;
+
+      const box = new THREE.Box3().setFromObject(track);
+      let newZ = intersection.z;
+      newZ = Math.max(box.min.z, Math.min(box.max.z, newZ));
+
+      activeObject.position.z = newZ;
     }
-    // Get bounding box of the track
-    const box = new THREE.Box3().setFromObject(track);
-    const min = box.min.z;
-    const max = box.max.z;
-    console.log("Slider bounds:", box.min.z, box.max.z);
+  }
 
-    // Clamp the new position of the slider
-    let newZ = intersection.z;
-    newZ = Math.max(min, Math.min(max, newZ));
+  else if (dragMode === "knob") {
+    const deltaX = e.clientX - dragStartX.current;
+    dragStartX.current = e.clientX;
 
-    activeSlider.position.z = newZ;
+    // Adjust this factor to control sensitivity
+    const rotationFactor = 0.01;
+    activeObject.rotation.y += deltaX * rotationFactor;
   }
 }
+
 
 
   return (
