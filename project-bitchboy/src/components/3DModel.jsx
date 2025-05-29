@@ -64,7 +64,7 @@ function Model(props) {
     }
 
   } else if (obj.name.includes("knob")) {
-    setActiveObject(obj);
+    setActiveObject(obj.parent);
     setDragMode("knob");
     setIsDragging(true);
     dragStartX.current = e.clientX;
@@ -133,9 +133,41 @@ function Model(props) {
     const deltaX = e.clientX - dragStartX.current;
     dragStartX.current = e.clientX;
 
-    // Adjust this factor to control sensitivity
-    const rotationFactor = 0.01;
-    activeObject.rotation.y += deltaX * rotationFactor;
+    // adjust for sensitivity
+    const rotationFactor = 0.02;
+    let newRotation = activeObject.rotation.y + deltaX * rotationFactor;
+
+    // goat math
+    newRotation = newRotation % (Math.PI * 2);
+    if (newRotation < 0) newRotation += Math.PI * 2;
+
+    // the blender knobs are upside down lmao
+    // prob ask anh for a v9 then i can just remove this line of code
+    const rotated = (newRotation + Math.PI) % (Math.PI * 2);
+
+    const MIN = THREE.MathUtils.degToRad(25);
+    const MAX = THREE.MathUtils.degToRad(335);
+
+    // dead zone limiter
+    if (rotated >= MIN && rotated <= MAX) {
+      activeObject.rotation.y = newRotation;
+    }
+
+    // value tracking
+    const deg = THREE.MathUtils.radToDeg(activeObject.rotation.y) % 360;
+      const normalizedDeg = deg < 0 ? deg + 360 : deg;
+
+    const minDeg = 25;
+    const maxDeg = 335;
+
+    let value = 0;
+    if (normalizedDeg >= minDeg && normalizedDeg <= maxDeg) {
+      value = ((normalizedDeg - minDeg) / (maxDeg - minDeg)) * 100;
+      value = Math.round(value);
+      console.log("Knob value:", value);
+    } else {
+      console.log("Knob in dead zone");
+    }
   }
 }
 
