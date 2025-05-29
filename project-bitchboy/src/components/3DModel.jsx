@@ -101,7 +101,9 @@ function Model(props) {
     if (!track) return;
 
     const isBottom = activeSlider.name.includes("bottom");
-    const planeNormal = isBottom ? new THREE.Vector3(1, 0, 0) : new THREE.Vector3(0, 1, 0);
+    // For bottom sliders moving in X: use Z-normal plane (allows X-Y movement)
+    // For top sliders moving in Z: use Y-normal plane (allows X-Z movement) 
+    const planeNormal = isBottom ? new THREE.Vector3(0, 0, 1) : new THREE.Vector3(0, 1, 0);
 
     // Get pointer ray
     const pointer = new THREE.Vector2(
@@ -126,33 +128,41 @@ function Model(props) {
     if (!geometry.boundingBox) geometry.computeBoundingBox();
     const box = geometry.boundingBox;
 
+    // Fix: Use the correct axis for clamping based on slider type
+    // For bottom sliders: extract X coordinate (moving along X-axis)
+    // For top sliders: extract Z coordinate (moving along Z-axis)  
     const clampedCoord = isBottom
-      ? Math.max(box.min.y, Math.min(box.max.y, localIntersection.y))
-      : Math.max(box.min.x, Math.min(box.max.x, localIntersection.x));
+      ? Math.max(box.min.x, Math.min(box.max.x, localIntersection.x)) 
+      : Math.max(box.min.x, Math.min(box.max.x, localIntersection.x)); // Both use track's X bounds for clamping
 
-    const trackStartLocal = new THREE.Vector3(box.min.x, 0, 0);
-    const trackEndLocal = new THREE.Vector3(box.max.x, 0, 0);
+    // Both use X-axis bounds since that's the track direction
+    const trackAxisMin = box.min.x;
+    const trackAxisMax = box.max.x;
+
+    // Calculate track bounds in slider's parent coordinate system
+    const trackStartLocal = new THREE.Vector3(trackAxisMin, 0, 0); // X-axis for both
+    const trackEndLocal = new THREE.Vector3(trackAxisMax, 0, 0);   // X-axis for both
+
     const trackStartWorld = track.localToWorld(trackStartLocal.clone());
     const trackEndWorld = track.localToWorld(trackEndLocal.clone());
     const trackStartInParent = activeSlider.parent.worldToLocal(trackStartWorld.clone());
     const trackEndInParent = activeSlider.parent.worldToLocal(trackEndWorld.clone());
 
     const sliderMin = isBottom
-      ? Math.min(trackStartInParent.x, trackEndInParent.x)
-      : Math.min(trackStartInParent.z, trackEndInParent.z);
+      ? Math.min(trackStartInParent.x, trackEndInParent.x) // Map to X for bottom sliders
+      : Math.min(trackStartInParent.z, trackEndInParent.z); // Map to Z for top sliders
     const sliderMax = isBottom
-      ? Math.max(trackStartInParent.x, trackEndInParent.x)
-      : Math.max(trackStartInParent.z, trackEndInParent.z);
+      ? Math.max(trackStartInParent.x, trackEndInParent.x) // Map to X for bottom sliders
+      : Math.max(trackStartInParent.z, trackEndInParent.z); // Map to Z for top sliders
 
-    const normalized = (clampedCoord - box.min.x) / (box.max.x - box.min.x);
+    // Fix: Use correct axis bounds for normalization
+    const normalized = (clampedCoord - trackAxisMin) / (trackAxisMax - trackAxisMin);
     const mappedCoord = sliderMin + normalized * (sliderMax - sliderMin);
 
     if (isBottom) {
       activeSlider.position.set(mappedCoord, activeSlider.position.y, activeSlider.position.z); 
-      // ✨ Map to X-axis for bottom sliders
     } else {
       activeSlider.position.set(activeSlider.position.x, activeSlider.position.y, mappedCoord); 
-      // Keep mapping to Z-axis for top sliders
     }
   }
 
