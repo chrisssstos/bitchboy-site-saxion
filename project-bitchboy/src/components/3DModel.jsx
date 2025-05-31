@@ -3,14 +3,22 @@ import { Canvas } from "@react-three/fiber";
 import { useGLTF, Stage } from "@react-three/drei";
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
-
-// import { useSliderInteraction } from "../components/useSliderInteraction";
+import { useSliderInteraction } from "../components/userSliderInteraction"; // ✅ UNCOMMENTED
 import { useKnobInteraction } from "../components/userKnobInteraction";
 import { useButtonInteraction } from "../components/userButtonInteraction";
 
 function Model(props) {
   const { scene } = useGLTF("/bitchboy3d(v8).glb");
   const originalMaterials = useRef(new Map());
+  
+  // ✅ ADD SLIDER HOOK BACK
+  const {
+    handleSliderPointerDown,
+    handleSliderPointerMove,
+    handleSliderPointerUp,
+    isDragging: isDraggingSlider,
+    activeSlider: _activeSlider,
+  } = useSliderInteraction(scene);
 
   const {
     handleKnobPointerDown,
@@ -37,15 +45,22 @@ function Model(props) {
   // Combined pointer handlers that delegate to appropriate handlers
   function handlePointerDown(e) {
     console.log("Clicked:", e.object.name);
+    
+    // ✅ TRY SLIDER FIRST
+    if (handleSliderPointerDown(e)) return;
     if (handleKnobPointerDown(e)) return;
     if (handleButtonPointerDown(e)) return;
   }
 
+  // ✅ SINGLE POINTER MOVE FUNCTION
   function handlePointerMove(e) {
+    if (handleSliderPointerMove(e)) return;
     if (handleKnobPointerMove(e)) return;
   }
 
+  // ✅ SINGLE POINTER UP FUNCTION
   function handlePointerUp(e) {
+    if (handleSliderPointerUp(e)) return;
     if (handleKnobPointerUp(e)) return;
     if (handleButtonPointerUp(e)) return;
   }
@@ -56,43 +71,18 @@ function Model(props) {
     if (isDraggingKnob) {
       handleKnobPointerUp(e);
     }
-    
-    // Add other interaction handlers here (knobs, pads, etc.)
-    // Your colleagues can add their handlers here without conflicts
-    
-    // Example placeholder for other interactions:
-    // if (handleKnobPointerDown(e)) return;
-    // if (handlePadPointerDown(e)) return;
-  }
-
-  function handlePointerMove(e) {
-    // Try slider handler first
-    if (handleSliderPointerMove(e)) {
-      return; // Slider handled it, we're done
+    if (isDraggingSlider) {
+      handleSliderPointerUp(e);
     }
-    
-    // Add other interaction handlers here
-    // if (handleKnobPointerMove(e)) return;
-    // if (handlePadPointerMove(e)) return;
   }
 
-  function handlePointerUp(e) {
-    // Try slider handler first
-    if (handleSliderPointerUp(e)) {
-      return; // Slider handled it, we're done
-    }
-    
-    // Add other interaction handlers here
-    // if (handleKnobPointerUp(e)) return;
-    // if (handlePadPointerUp(e)) return;
-  }
-
+  // ✅ FIXED CLICK HANDLER
   function handleClick(e) {
     e.stopPropagation();
     const mesh = e.object;
     
-    // Skip if we're dragging (to avoid click after drag)
-    if (isDragging) return;
+    // ✅ USE CORRECT DRAGGING VARIABLES
+    if (isDraggingSlider || isDraggingKnob) return;
     
     // Button logic (this can also be separated if needed)
     if (!mesh.name.includes("Button")) return;
@@ -113,6 +103,7 @@ function Model(props) {
     <primitive
       object={scene}
       {...props}
+      onClick={handleClick} // ✅ RESTORED CLICK HANDLER
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
@@ -133,3 +124,4 @@ function App() {
 }
 
 export default App;
+
