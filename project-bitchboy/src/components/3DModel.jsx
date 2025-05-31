@@ -3,20 +3,26 @@ import { Canvas } from "@react-three/fiber";
 import { useGLTF, Stage } from "@react-three/drei";
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
-import { useSliderInteraction } from "../components/userSliderInteraction"; // Import the hook
+
+// import { useSliderInteraction } from "../components/useSliderInteraction";
+import { useKnobInteraction } from "../components/userKnobInteraction";
+import { useButtonInteraction } from "../components/userButtonInteraction";
 
 function Model(props) {
   const { scene } = useGLTF("/bitchboy3d(v8).glb");
   const originalMaterials = useRef(new Map());
-  
-  // Use the slider interaction hook
+
   const {
-    handleSliderPointerDown,
-    handleSliderPointerMove,
-    handleSliderPointerUp,
-    isDragging,
-    activeSlider: _activeSlider
-  } = useSliderInteraction(scene);
+    handleKnobPointerDown,
+    handleKnobPointerMove,
+    handleKnobPointerUp,
+    isDragging: isDraggingKnob
+  } = useKnobInteraction(scene);
+
+  const {
+    handleButtonPointerDown,
+    handleButtonPointerUp
+  } = useButtonInteraction(scene, originalMaterials);
 
   useEffect(() => {
     scene.traverse((child) => {
@@ -30,9 +36,25 @@ function Model(props) {
 
   // Combined pointer handlers that delegate to appropriate handlers
   function handlePointerDown(e) {
-    // Try slider handler first
-    if (handleSliderPointerDown(e)) {
-      return; // Slider handled it, we're done
+    console.log("Clicked:", e.object.name);
+    if (handleKnobPointerDown(e)) return;
+    if (handleButtonPointerDown(e)) return;
+  }
+
+  function handlePointerMove(e) {
+    if (handleKnobPointerMove(e)) return;
+  }
+
+  function handlePointerUp(e) {
+    if (handleKnobPointerUp(e)) return;
+    if (handleButtonPointerUp(e)) return;
+  }
+
+  // Add pointer capture for better drag handling
+  function handlePointerMissed(e) {
+    // This fires when clicking on empty space
+    if (isDraggingKnob) {
+      handleKnobPointerUp(e);
     }
     
     // Add other interaction handlers here (knobs, pads, etc.)
@@ -91,17 +113,17 @@ function Model(props) {
     <primitive
       object={scene}
       {...props}
-      onClick={handleClick}
       onPointerDown={handlePointerDown}
-      onPointerUp={handlePointerUp}
       onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerMissed={handlePointerMissed}
     />
   );
 }
 
 function App() {
   return (
-    <Canvas dpr={[1,2]} shadows camera={{ fov: 45 }} style={{"position": "absolute"}}>
+    <Canvas dpr={[1, 2]} shadows camera={{ fov: 45 }} style={{ position: "absolute" }}>
       <color attach="background" args={["#050505"]} />
       <Stage environment="sunset" intensity={0.0005}>
         <Model scale={0.01} />
