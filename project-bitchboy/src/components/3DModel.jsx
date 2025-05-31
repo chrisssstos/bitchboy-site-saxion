@@ -1,3 +1,4 @@
+// Updated Model component
 import { Canvas } from "@react-three/fiber";
 import { useGLTF, Stage } from "@react-three/drei";
 import { useEffect, useRef } from "react";
@@ -33,6 +34,7 @@ function Model(props) {
     });
   }, [scene]);
 
+  // Combined pointer handlers that delegate to appropriate handlers
   function handlePointerDown(e) {
     console.log("Clicked:", e.object.name);
     if (handleKnobPointerDown(e)) return;
@@ -53,6 +55,57 @@ function Model(props) {
     // This fires when clicking on empty space
     if (isDraggingKnob) {
       handleKnobPointerUp(e);
+    }
+    
+    // Add other interaction handlers here (knobs, pads, etc.)
+    // Your colleagues can add their handlers here without conflicts
+    
+    // Example placeholder for other interactions:
+    // if (handleKnobPointerDown(e)) return;
+    // if (handlePadPointerDown(e)) return;
+  }
+
+  function handlePointerMove(e) {
+    // Try slider handler first
+    if (handleSliderPointerMove(e)) {
+      return; // Slider handled it, we're done
+    }
+    
+    // Add other interaction handlers here
+    // if (handleKnobPointerMove(e)) return;
+    // if (handlePadPointerMove(e)) return;
+  }
+
+  function handlePointerUp(e) {
+    // Try slider handler first
+    if (handleSliderPointerUp(e)) {
+      return; // Slider handled it, we're done
+    }
+    
+    // Add other interaction handlers here
+    // if (handleKnobPointerUp(e)) return;
+    // if (handlePadPointerUp(e)) return;
+  }
+
+  function handleClick(e) {
+    e.stopPropagation();
+    const mesh = e.object;
+    
+    // Skip if we're dragging (to avoid click after drag)
+    if (isDragging) return;
+    
+    // Button logic (this can also be separated if needed)
+    if (!mesh.name.includes("Button")) return;
+    if (!mesh.userData.clickable) return;
+
+    if (mesh.userData.isToggled) {
+      mesh.material = originalMaterials.current.get(mesh.uuid);
+      mesh.userData.isToggled = false;
+      mesh.position.z += 0.1;
+    } else {
+      mesh.material = new THREE.MeshStandardMaterial({ color: "#ada0a3" });
+      mesh.position.z -= 0.1;
+      mesh.userData.isToggled = true;
     }
   }
 
