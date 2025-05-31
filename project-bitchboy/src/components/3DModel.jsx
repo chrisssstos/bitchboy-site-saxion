@@ -46,6 +46,20 @@ function Model(props) {
   function handlePointerDown(e) {
   const obj = e.object;
 
+  if (obj.name.includes("Button")) {
+  obj.position.z -= 0.1; // Button goes down
+  obj.userData.wasPressed = true; // Remember it was pressed
+
+  // Store original material if not already stored
+  if (!originalMaterials.current.has(obj.uuid)) {
+    originalMaterials.current.set(obj.uuid, obj.material.clone());
+  }
+
+  // Apply highlight color
+  obj.material = new THREE.MeshStandardMaterial({ color: "#ada0a3" });
+}
+
+
   if (obj.name.includes("Slider_knob")) {
     setActiveObject(obj);
     setDragMode("slider");
@@ -73,9 +87,21 @@ function Model(props) {
 
 
   function handlePointerUp() {
-  setIsDragging(false);
-  setActiveObject(null);
-  setDragMode(null);
+    scene.traverse((child) => {
+      if (child.name.includes("Button") && child.userData.wasPressed) {
+        child.position.z += 0.1; // Button goes back up
+        child.userData.wasPressed = false;
+
+        const originalMat = originalMaterials.current.get(child.uuid);
+        if (originalMat) {
+          child.material = originalMat;
+        }
+      }
+    });
+
+    setIsDragging(false);
+    setActiveObject(null);
+    setDragMode(null);
 }
 
 
@@ -91,17 +117,17 @@ function Model(props) {
     //   mesh.rotation.y += 0.5;
     // }
 
-    if (mesh.name.includes("Button")) {
-      if (mesh.userData.isToggled) {
-        mesh.material = originalMaterials.current.get(mesh.uuid);
-        mesh.userData.isToggled = false;
-        mesh.position.z += 0.1;
-      } else {
-        mesh.material = new THREE.MeshStandardMaterial({ color: "#ada0a3" });
-        mesh.position.z -= 0.1;
-        mesh.userData.isToggled = true;
-      }
-    }
+    // if (mesh.name.includes("Button")) {
+    //   if (mesh.userData.isToggled) {
+    //     mesh.material = originalMaterials.current.get(mesh.uuid);
+    //     mesh.userData.isToggled = false;
+    //     mesh.position.z += 0.1;
+    //   } else {
+    //     mesh.material = new THREE.MeshStandardMaterial({ color: "#ada0a3" });
+    //     mesh.position.z -= 0.1;
+    //     mesh.userData.isToggled = true;
+    //   }
+    // }
   }
 
  function handlePointerMove(e) {
@@ -166,6 +192,7 @@ function Model(props) {
       value = Math.round(value);
       console.log("Knob value:", value);
     } else {
+      // shouldnt be possible
       console.log("Knob in dead zone");
     }
   }
