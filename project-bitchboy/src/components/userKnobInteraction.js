@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import * as THREE from "three";
 
-export function useKnobInteraction(scene) {
+export function useKnobInteraction() {
   const activeKnob = useRef(null);
   const isDragging = useRef(false);
   const dragStartX = useRef(0);
@@ -70,7 +70,7 @@ export function useKnobInteraction(scene) {
     return true;
   }
 
-  function handleKnobPointerUp(e) {
+  function handleKnobPointerUp() {
     if (!isDragging.current) return false;
 
     console.log("Knob drag ended");

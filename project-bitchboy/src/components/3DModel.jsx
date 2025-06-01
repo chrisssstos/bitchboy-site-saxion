@@ -87,16 +87,6 @@ function Model(props) {
     // Button logic (this can also be separated if needed)
     if (!mesh.name.includes("Button")) return;
     if (!mesh.userData.clickable) return;
-
-    if (mesh.userData.isToggled) {
-      mesh.material = originalMaterials.current.get(mesh.uuid);
-      mesh.userData.isToggled = false;
-      mesh.position.z += 0.1;
-    } else {
-      mesh.material = new THREE.MeshStandardMaterial({ color: "#ada0a3" });
-      mesh.position.z -= 0.1;
-      mesh.userData.isToggled = true;
-    }
   }
 
   return (
