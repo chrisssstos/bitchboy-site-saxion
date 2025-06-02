@@ -1,0 +1,126 @@
+#root {
+    max-height: 100vh;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.svg-bottom-wrapper {
+    overflow: hidden;
+    position: absolute;
+    bottom: 2.8rem;
+    z-index: -1;
+}
+
+.svg-right-wrapper {
+    overflow: hidden;
+    position: absolute;
+    right: 0;
+    top: 6rem;
+    z-index: -1;
+}
+
+.svg-circles-wrapper {
+    overflow: hidden;
+    position: absolute;
+    right: 5rem;
+    top: 28rem;
+    z-index: -1;
+}
+
+.blocksystem-image-wrapper {
+    overflow: hidden;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+}
+
+.person-right-image-wrapper {
+    overflow: hidden;
+    position: absolute;
+    right: 3rem;
+    bottom: 10rem;
+    z-index: 0;
+}
+
+.person-right-text-section {
+    overflow: hidden;
+    position: absolute;
+    max-width: 18rem;
+    right: 3rem;
+    bottom: 10rem;
+    z-index: 0;
+}
+
+.person-left-image-wrapper {
+    overflow: hidden;
+    position: absolute;
+    left: 21rem;
+    bottom: 10rem;
+    z-index: 0;
+}
+
+.person-left-text-section {
+    overflow: hidden;
+    position: absolute;
+    max-width: 18rem;
+    left: 3rem;
+    bottom: 10rem;
+    z-index: 0;
+}
+
+.main-text-section {
+    overflow: hidden;
+    position: absolute;
+    left: 35.5rem;
+    bottom: 5.8rem;
+    z-index: 0;
+}
+
+.concert-experience-section {
+    overflow: hidden;
+    position: absolute;
+    right: 12rem;
+    top: 6rem;
+    z-index: 0;
+}
+
+.amount-of-djs-section {
+    overflow: hidden;
+    position: absolute;
+    right: 3rem;
+    top: 15.5rem;
+    z-index: 0;
+}
+
+.svg-bottom {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.svg-right {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.svg-circles {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.blocksystem-image {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.person-image {
+    display: block;
+    border-radius: 1.5rem;
+    width: 40%;
+    height: auto;
+}
