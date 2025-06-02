@@ -45,11 +45,6 @@ export default function AboutPage() {
                     text={"Interaction Tech @ UTwente & Creator @ BLOCK SYSTEM \n Lorem Ipsum"}
                 ></TextSection>
             </div>
-            <div className="main-text-section">
-                <TextSection
-                    title={"BLOCKSYSTEM © ALL RIGHTS RESERVED"}
-                ></TextSection>
-            </div>
             <div className="concert-experience-section">
                 <TextSection
                     title={"230+"}

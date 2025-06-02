@@ -86,7 +86,7 @@ body {
 }
 
 .custom-text1 {
-  color: white;
+  color: black;
   position: absolute;
   top: 200vh;
   left: 5vw;
@@ -97,7 +97,7 @@ body {
 }
 
 .custom-text2 {
-  color: white;
+  color: black;
   position: absolute;
   top: 260vh;
   left: 60vw;

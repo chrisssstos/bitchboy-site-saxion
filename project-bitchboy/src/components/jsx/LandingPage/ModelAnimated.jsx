@@ -79,9 +79,9 @@ function AnimatedModel() {
       },
     });
     gsap.to(ref.current.scale, {
-      x: 3.5,
-      y: 3.5,
-      z: 3.5, 
+      x: 4,
+      y: 4,
+      z: 4, 
       scrollTrigger: {
         trigger: "#section-2",
         start: "top top",
@@ -103,9 +103,9 @@ function AnimatedModel() {
       },
     });
     gsap.to(ref.current.scale, {
-      x: 0,
-      y: 0,
-      z: 0,
+      x: 1,
+      y: 1,
+      z: 1,
       scrollTrigger: {
         trigger: "#section-3",
         start: "top top",
@@ -116,7 +116,7 @@ function AnimatedModel() {
     gsap.to(ref.current.rotation, {
       x: 0,
       y: Math.PI * 2, // full spin on Y axis
-      z: 0.3,
+      z: 0,
       scrollTrigger: {
         trigger: "#section-3",
         start: "top top",
@@ -144,7 +144,7 @@ const ModelAnimated = () => (
     camera={{ fov: 75, position: [0, 0, 5] }}
     gl={{ alpha: true }}
   >
-    <ambientLight intensity={1} />
+    <ambientLight intensity={1.8} />
     <directionalLight position={[1, 1, 1]} intensity={0.6} />
     <AnimatedModel />
   </Canvas>
