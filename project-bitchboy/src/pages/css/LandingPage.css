@@ -67,7 +67,7 @@ body {
 }
 
 #stripe3 {
-  top: 260vh;
+  top: 310vh;
   left: -30vw;
   width: 200vw;
   height: 60vh;
@@ -84,6 +84,29 @@ body {
   font-size: 1.5rem;
   z-index: 3;
 }
+
+.custom-text1 {
+  color: white;
+  position: absolute;
+  top: 200vh;
+  left: 5vw;
+  width: 35vw;
+  font-size: 2rem;
+  z-index: 1;
+  line-height: 1.4;
+}
+
+.custom-text2 {
+  color: white;
+  position: absolute;
+  top: 260vh;
+  left: 60vw;
+  width: 35vw;
+  font-size: 2rem;
+  z-index: 1;
+  line-height: 1.4;
+}
+
 
 .scroll-section {
   height: 100vh;

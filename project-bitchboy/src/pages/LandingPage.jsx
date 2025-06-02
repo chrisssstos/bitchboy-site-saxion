@@ -16,6 +16,10 @@ function LandingPage() {
       {/* Subscribe button */}
       <button className="subscribe-button">Sign Up for Updates</button>
 
+      <p className="custom-text1">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum.</p>
+      <p className="custom-text2">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum.</p>
+
+
       {/* Diagonal stripes */}
       <div className="diagonal-stripe" id="stripe1"></div>
       <div className="diagonal-stripe" id="stripe2"></div>

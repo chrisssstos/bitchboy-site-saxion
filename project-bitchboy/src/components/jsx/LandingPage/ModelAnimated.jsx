@@ -20,7 +20,7 @@ function AnimatedModel() {
     gsap.registerPlugin(ScrollTrigger);
     if (!ref.current) return;
 
-    // Section 1: perfectly centered, default size/rotation
+    // Section 1: centered, default
     gsap.to(ref.current.position, {
       x: 0.4,
       y: -6,
@@ -56,10 +56,10 @@ function AnimatedModel() {
     });
 
     // Section 2: spin in place, stay centered and visible
-    gsap.to(ref.current.rotation, {
-      x: Math.PI * 2,
-      y: 0,
-      z: Math.PI * 2,
+    gsap.to(ref.current.position, {
+      x: 0.4,
+      y: -5,
+      z: -10,
       scrollTrigger: {
         trigger: "#section-2",
         start: "top top",
@@ -67,10 +67,10 @@ function AnimatedModel() {
         scrub: true,
       },
     });
-    gsap.to(ref.current.position, {
-      x: 0.4,
-      y: -10,
-      z: -2,
+    gsap.to(ref.current.rotation, {
+      x: 0,
+      y: Math.PI * 2, // full spin on Y axis
+      z: 0,
       scrollTrigger: {
         trigger: "#section-2",
         start: "top top",
@@ -79,9 +79,9 @@ function AnimatedModel() {
       },
     });
     gsap.to(ref.current.scale, {
-      x: 4,
-      y: 4,
-      z: 4,
+      x: 3.5,
+      y: 3.5,
+      z: 3.5, 
       scrollTrigger: {
         trigger: "#section-2",
         start: "top top",
@@ -92,9 +92,9 @@ function AnimatedModel() {
 
     // Section 3: shrink and move to left
     gsap.to(ref.current.position, {
-      x: -2,
-      y: -6,
-      z: -2,
+      x: 0.4,
+      y: -40,
+      z: -10,
       scrollTrigger: {
         trigger: "#section-3",
         start: "top top",
@@ -103,9 +103,9 @@ function AnimatedModel() {
       },
     });
     gsap.to(ref.current.scale, {
-      x: 2,
-      y: 2,
-      z: 2,
+      x: 0,
+      y: 0,
+      z: 0,
       scrollTrigger: {
         trigger: "#section-3",
         start: "top top",
@@ -115,8 +115,8 @@ function AnimatedModel() {
     });
     gsap.to(ref.current.rotation, {
       x: 0,
-      y: Math.PI,
-      z: Math.PI / 4,
+      y: Math.PI * 2, // full spin on Y axis
+      z: 0.3,
       scrollTrigger: {
         trigger: "#section-3",
         start: "top top",
