@@ -1,17 +1,18 @@
 .footer {
   width: 100vw;
-  background: #0c0c0c;
-  border-top: #191919 0.125rem solid;
+  background: #ffffff;
+  border-top: #888 0.125rem solid;
   padding: 2rem 0;
   display: flex;
   align-items: center;
 }
 
 .footer-text {
-  color: #888;
+  color: #000000;
   margin: 0;
   padding-left: 2rem;
   font-size: 1rem;
+  font-weight: 600;
   letter-spacing: 0.05em;
   text-align: left;
 }

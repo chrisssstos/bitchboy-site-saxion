@@ -62,7 +62,7 @@ body {
   width: 200vw;
   height: 60vh;
   transform: rotate(40deg);
-  background: #1c1c1c;
+  background: #ffa863;
   z-index: 0;
 }
 
@@ -79,7 +79,7 @@ body {
 .subscribe-button {
   position: absolute;
   left: 50%;
-  bottom: 355vh;
+  bottom: 350vh;
   transform: translateX(-50%);
   font-size: 1.5rem;
   z-index: 3;
