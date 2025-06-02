@@ -1,7 +1,8 @@
 import React from "react";
 import TextSection from "../components/jsx/TextSection.jsx";
+import "./css/DemoPage.css";
 
-export default function InteractivePage() {
+export default function DemoPage() {
   return (
       <div className="background-container">
           <div className="container-wrap">
