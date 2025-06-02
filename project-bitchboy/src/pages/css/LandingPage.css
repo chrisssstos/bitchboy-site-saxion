@@ -17,7 +17,7 @@ body {
 
 .centered-logo-container {
   position: absolute;
-  top: -250px;
+  top: -350px;
   left: 0;
   width: 100%;
   height: 100vh;
@@ -79,7 +79,7 @@ body {
 .subscribe-button {
   position: absolute;
   left: 50%;
-  bottom: 350vh;
+  bottom: 360vh;
   transform: translateX(-50%);
   font-size: 1.5rem;
   z-index: 3;

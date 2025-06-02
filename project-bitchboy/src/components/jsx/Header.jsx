@@ -4,15 +4,36 @@ function Header() {
   return (
       <header className="header">
         <nav className="header-nav">
-          <a href="/" className="header-logo-link">
-            <img
-                src="/images/header/logoblack.svg"
-                alt="Logo"
-                className="header-logo"
-            />
-          </a>
-          <a href="/about" className="header-link">About us</a>
-          <a href="/interactive" className="header-link">Interactive</a>
+            <a href="/">
+                <div className="title">
+                    BLOCKSYSTEM
+                </div>
+                <div className="subtitle">
+                    STUDIO
+                </div>
+            </a>
+
+            <div className="header-logo">
+                <img
+                    src="/images/header/logo.svg"
+                    alt="Logo Text"
+                />
+            </div>
+
+            <div className="header-pages">
+                <a href="/demo" className="page">
+                    Demo
+                </a>
+                <a href="/pricing" className="page">
+                    Pricing
+                </a>
+                <a href="/about" className="page">
+                    About
+                </a>
+                <a href="/blog" className="page">
+                    Blog
+                </a>
+            </div>
         </nav>
       </header>
   );
