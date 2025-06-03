@@ -1,10 +1,5 @@
-import { Canvas } from "@react-three/fiber";
-import { useGLTF, Stage, PresentationControls } from "@react-three/drei";
-
-function Model(props) {
-  const { scene } = useGLTF("/bitchboy3dnew1.glb");
-  return <primitive object={scene} {...props} />
-}
+import VJController from './components/VJController';
+import './App.css';
 
 function App() {
   return (

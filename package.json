@@ -1,0 +1,13 @@
+{
+	"name": "bitchboy-vj-controller",
+	"version": "1.0.0",
+	"description": "VJ Controller interface for Bitch Boy controller",
+	"main": "index.js",
+	"scripts": {
+		"start": "http-server src/frontend -o -c-1"
+	},
+	"dependencies": {
+		"animejs": "^3.2.1",
+		"http-server": "^14.1.1"
+	}
+}
