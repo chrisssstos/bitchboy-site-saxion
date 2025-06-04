@@ -102,16 +102,18 @@ function Model(props) {
   );
 }
 
-function App() {
-  return (
-    <Canvas dpr={[1, 2]} shadows camera={{ fov: 45 }} style={{ position: "absolute" }}>
-      <color attach="background" args={["#050505"]} />
-      <Stage environment="sunset" intensity={0.0005}>
-        <Model scale={0.01} />
-      </Stage>
-    </Canvas>
-  );
-}
+// function App() {
+//   return (
+//     <Canvas dpr={[1, 2]} shadows camera={{ fov: 45 }} style={{ position: "absolute" }}>
+//       <color attach="background" args={["#050505"]} />
+//       <Stage environment="sunset" intensity={0.0005}>
+//         <Model scale={0.01} />
+//       </Stage>
+//     </Canvas>
+//   );
+// }
 
-export default App;
+// export default App;
+
+export default Model;
 
