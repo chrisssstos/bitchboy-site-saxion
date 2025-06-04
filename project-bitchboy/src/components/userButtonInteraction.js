@@ -16,6 +16,17 @@ export function useButtonInteraction(scene, originalMaterialsRef) {
 
     obj.material = new THREE.MeshStandardMaterial({ color: "#ada0a3" });
 
+    // Connect to VJ system
+    if (window.vjController && window.vjController.handleButtonPress) {
+      // Extract button index from name (assuming format like "Button_01", "Button_02", etc.)
+      const match = obj.name.match(/Button.*?(\d+)/);
+      if (match) {
+        const buttonIndex = parseInt(match[1]) - 1; // Convert to 0-based index
+        console.log(`🎮 VJ Button ${buttonIndex} pressed:`, obj.name);
+        window.vjController.handleButtonPress(buttonIndex, true);
+      }
+    }
+
     return true;
   }
 
@@ -28,6 +39,16 @@ export function useButtonInteraction(scene, originalMaterialsRef) {
         const originalMat = originalMaterialsRef.current.get(child.uuid);
         if (originalMat) {
           child.material = originalMat;
+        }
+
+        // Connect to VJ system for button release
+        if (window.vjController && window.vjController.handleButtonPress) {
+          const match = child.name.match(/Button.*?(\d+)/);
+          if (match) {
+            const buttonIndex = parseInt(match[1]) - 1;
+            console.log(`🎮 VJ Button ${buttonIndex} released:`, child.name);
+            window.vjController.handleButtonPress(buttonIndex, false);
+          }
         }
       }
     });

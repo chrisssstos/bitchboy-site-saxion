@@ -12,7 +12,7 @@
 
 //   useEffect(() => {
 //     if (!scene) return;
-    
+
 //     const trackMap = new Map();
 
 //     scene.traverse((child) => {
@@ -161,11 +161,11 @@
 //     if (activeSlider) {
 //       console.log('🛑 Released:', activeSlider.name);
 //     }
-    
+
 //     setIsDragging(false);
 //     setActiveSlider(null);
 //     camera.current = null;
-    
+
 //     return true; // Indicate that this event was handled
 //   }
 
@@ -195,7 +195,7 @@ export function useSliderInteraction(scene) {
 
   useEffect(() => {
     if (!scene) return;
-    
+
     const trackMap = new Map();
 
     scene.traverse((child) => {
@@ -235,11 +235,11 @@ export function useSliderInteraction(scene) {
     track.getWorldPosition(trackWorldPos);
     const trackWorldQuat = new THREE.Quaternion();
     track.getWorldQuaternion(trackWorldQuat);
-    
+
     // Apply track's rotation to the plane normal
     const localNormal = planeNormal.clone().applyQuaternion(trackWorldQuat);
     const plane = new THREE.Plane(localNormal, -trackWorldPos.dot(localNormal));
-    
+
     const intersection = new THREE.Vector3();
     if (raycaster.current.ray.intersectPlane(plane, intersection)) {
       return intersection;
@@ -268,15 +268,15 @@ export function useSliderInteraction(scene) {
       if (intersection) {
         // Convert intersection to track's local space to get the X coordinate
         const localIntersection = track.worldToLocal(intersection.clone());
-        
+
         // Get current slider position in track's local space
         const sliderWorldPos = new THREE.Vector3();
         e.object.getWorldPosition(sliderWorldPos);
         const sliderLocalInTrack = track.worldToLocal(sliderWorldPos.clone());
-        
+
         // Calculate offset along the track's X-axis (which is the movement axis)
         initialOffset.current = localIntersection.x - sliderLocalInTrack.x;
-        
+
         console.log(`Initial offset for ${e.object.name}:`, initialOffset.current);
       } else {
         initialOffset.current = 0;
@@ -301,7 +301,7 @@ export function useSliderInteraction(scene) {
 
     // Convert intersection to track's local space
     const localIntersection = track.worldToLocal(intersection.clone());
-    
+
     // Get track geometry bounds
     const geometry = track.geometry || (track.children[0] && track.children[0].geometry);
     if (!geometry) return false;
@@ -340,6 +340,20 @@ export function useSliderInteraction(scene) {
       activeSlider.position.set(activeSlider.position.x, activeSlider.position.y, mappedCoord);
     }
 
+    // Connect to VJ system
+    if (window.vjController && window.vjController.handleSliderChange) {
+      // Extract slider index from name (assuming format like "Slider_knob_top_1", "Slider_knob_bottom_1", etc.)
+      const match = activeSlider.name.match(/Slider_knob_(top|bottom)_(\d+)/);
+      if (match) {
+        const group = match[1]; // 'top' or 'bottom'
+        const index = parseInt(match[2]) - 1; // Convert to 0-based index
+        const value = normalized * 100; // Convert to 0-100 range
+
+        console.log(`🎚️ VJ Slider ${group}_${index} moved to:`, value.toFixed(1));
+        window.vjController.handleSliderChange(group, index, value);
+      }
+    }
+
     return true; // Indicate that this event was handled
   }
 
@@ -349,12 +363,12 @@ export function useSliderInteraction(scene) {
     if (activeSlider) {
       console.log('🛑 Released:', activeSlider.name);
     }
-    
+
     setIsDragging(false);
     setActiveSlider(null);
     camera.current = null;
     initialOffset.current = 0; // Reset offset
-    
+
     return true; // Indicate that this event was handled
   }
 
