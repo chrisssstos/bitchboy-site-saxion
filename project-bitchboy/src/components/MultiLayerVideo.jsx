@@ -103,13 +103,6 @@ const MultiLayerVideo = () => {
 					}
 				});
 			}, 1000 / (effects.strobe.speed || 10));
-		} else {
-			// Restore normal opacity
-			Object.entries(videoRefs).forEach(([layerNum, ref]) => {
-				if (ref.current) {
-					ref.current.style.opacity = layers[layerNum].opacity;
-				}
-			});
 		}
 
 		return () => {
@@ -117,7 +110,7 @@ const MultiLayerVideo = () => {
 				clearInterval(strobeInterval);
 			}
 		};
-	}, [effects.strobe, layers]);
+	}, [effects.strobe.active, effects.strobe.speed]);
 
 	// Apply effects when they change
 	useEffect(() => {
@@ -149,14 +142,22 @@ const MultiLayerVideo = () => {
 				videoElement.style.display = 'none';
 				videoElement.pause();
 			}
-
-			// Handle opacity changes
-			if (!effects.strobe.active) {
-				videoElement.style.opacity = layer.opacity;
-				videoElement.dataset.layerOpacity = layer.opacity;
-			}
 		});
-	}, [layers, effects.strobe.active]);
+	}, [layers[1].video, layers[1].isPlaying, layers[2].video, layers[2].isPlaying, layers[3].video, layers[3].isPlaying, layers[4].video, layers[4].isPlaying]); // Only depend on video/playing state
+
+	// Handle opacity changes separately
+	useEffect(() => {
+		Object.entries(layers).forEach(([layerNum, layer]) => {
+			const videoRef = videoRefs[layerNum];
+			if (!videoRef.current) return;
+
+			const videoElement = videoRef.current;
+
+			// Handle opacity changes - always update, strobe will override if active
+			videoElement.style.opacity = layer.opacity;
+			videoElement.dataset.layerOpacity = layer.opacity;
+		});
+	}, [layers[1].opacity, layers[2].opacity, layers[3].opacity, layers[4].opacity]); // Only depend on opacity changes
 
 	return (
 		<div className="multi-layer-video">

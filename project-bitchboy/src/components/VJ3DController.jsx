@@ -114,13 +114,16 @@ const VJ3DController = ({
 		} else if (mapping.type === 'effectIntensity') {
 			const mappedValue = mapSliderValue(value, mapping.range);
 
-			// Activate effect if value > 0, deactivate if 0
-			if (value > 0) {
+			// Only activate effect if it's not already active and value > 0
+			if (value > 0 && !state.effects[mapping.effect].active) {
 				actions.toggleEffect(mapping.effect);
-				actions.setEffectParam(mapping.effect, mapping.param, mappedValue);
-			} else {
-				// You might want to implement a way to deactivate effects
-				actions.setEffectParam(mapping.effect, mapping.param, mapping.range[0]);
+			}
+			// Always update the parameter value
+			actions.setEffectParam(mapping.effect, mapping.param, mappedValue);
+
+			// Deactivate effect if value goes to 0
+			if (value === 0 && state.effects[mapping.effect].active) {
+				actions.toggleEffect(mapping.effect);
 			}
 		}
 
@@ -128,7 +131,7 @@ const VJ3DController = ({
 		if (onSliderChange) {
 			onSliderChange(group, index, value);
 		}
-	}, [actions, mapSliderValue, onSliderChange]);
+	}, [actions, mapSliderValue, onSliderChange, state.effects]);
 
 	// Handle knob changes from 3D model
 	const handleKnobChange = useCallback((index, value) => {
