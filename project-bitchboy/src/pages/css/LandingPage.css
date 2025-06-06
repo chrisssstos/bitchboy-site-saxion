@@ -125,15 +125,14 @@ body {
   -ms-transform: translateX(-50%) scale(1.07);
   -o-transform: translateX(-50%) scale(1.07);
 }
-
 .orange-bg {
   position: absolute;
   left: 0;
-  bottom: 0;
+  top: 40vh;
   width: 120vw;
   height: 60vh;
   background: var(--color-orange);
-  z-index: 0;
+  z-index: 1;
   pointer-events: none;
   transform: rotate(-3deg);
   margin-left: -10vw;
@@ -180,3 +179,23 @@ body {
 .read-the-docs {
   color: #888;
 }
+
+.custom-images {
+  position: relative; /* or absolute/fixed if you want */
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+}
+
+.custom-img {
+  position: absolute;
+  width: 200px;
+  height: auto;
+  /* Add more shared styles here */
+}
+
+/* Position each image individually */
+.img1 { bottom: 2150px; right: 100px; width: 30rem}
+.img2 { bottom: 1200px; right: 1200px; width: 50rem}
+.img3 { bottom: 1000px; right: 50px; width: 50rem}
+.img4 { bottom: -200px; right: 0; width: 100vw}
