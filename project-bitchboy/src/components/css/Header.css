@@ -1,6 +1,8 @@
 .header {
     width: 100vw;
     background: #ffffff;
+    padding-bottom: 1rem;
+    padding-top: 1rem;
     border-bottom: #888 0.125rem solid;
     display: flex;
     align-items: center;
@@ -25,17 +27,6 @@
     width: 50%;
 }
 
-.header-link {
-  color: var(--color-black);
-  text-decoration: none;
-  font-size: 1.5rem;
-  transition: color 0.2s;
-}
-
-.header-link:hover {
-  color: var(--color-orange);
-}
-
 
 
 .header-pages{
@@ -44,12 +35,20 @@
 }
 
 .page{
-    color: #000;
-    padding-right: 1.5rem;
-    font-size: 1.5rem;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    transition: opacity 0.3s;
+  color: #000;
+  padding-right: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  transition: 
+    opacity 0.3s,
+    color 0.3s,
+    font-size 0.3s;
+}
+
+.page:hover {
+  color:var(--color-orange);
+  font-size: 1.7rem;
 }
 
 .title{

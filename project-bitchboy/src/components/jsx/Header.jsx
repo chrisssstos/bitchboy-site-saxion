@@ -21,8 +21,8 @@ function Header() {
             </div>
 
             <div className="header-pages">
-                <a href="/demo" className="page">
-                    Demo
+                <a href="/interactive-demo" className="page">
+                    Interactive
                 </a>
                 <a href="/pricing" className="page">
                     Pricing
