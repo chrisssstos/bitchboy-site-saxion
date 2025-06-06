@@ -139,6 +139,7 @@ export default function ModelSpin() {
         onPointerUp={handleEnd}
         onPointerOut={handleEnd}
       >
+        
         <ambientLight intensity={0.5} />
         <directionalLight
           castShadow

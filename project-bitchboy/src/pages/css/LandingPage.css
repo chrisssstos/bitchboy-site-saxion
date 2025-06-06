@@ -85,45 +85,28 @@ body {
   color: black;
   padding: 0.6em 2em;
   cursor: pointer;
-  transition:     transform 0.2s cubic-bezier(0.77,0,0.175,1),    background 0.2s cubic-bezier(0.77,0,0.175,1);
+  transition: 
+    transform 0.2s cubic-bezier(0.77,0,0.175,1),
+    background 0.2s cubic-bezier(0.77,0,0.175,1),
+    border-color 0.2s cubic-bezier(0.77,0,0.175,1);
   animation: subscribe-button-in 1s cubic-bezier(0.77,0,0.175,1) 0.3s forwards;
-  -webkit-transform: translateX(-100%);
-  -moz-transform: translateX(-100%);
-  -ms-transform: translateX(-100%);
-  -o-transform: translateX(-100%);
-  -webkit-transition:     transform 0.2s cubic-bezier(0.77,0,0.175,1),    background 0.2s cubic-bezier(0.77,0,0.175,1);
-  -moz-transition:     transform 0.2s cubic-bezier(0.77,0,0.175,1),    background 0.2s cubic-bezier(0.77,0,0.175,1);
-  -ms-transition:     transform 0.2s cubic-bezier(0.77,0,0.175,1),    background 0.2s cubic-bezier(0.77,0,0.175,1);
-  -o-transition:     transform 0.2s cubic-bezier(0.77,0,0.175,1),    background 0.2s cubic-bezier(0.77,0,0.175,1);
-  -webkit-animation: subscribe-button-in 1s cubic-bezier(0.77,0,0.175,1) 0.3s forwards;
 }
 
 @keyframes subscribe-button-in {
   0% {
     transform: translateX(-100%);
     opacity: 0;
-    -webkit-transform: translateX(-100%);
-    -moz-transform: translateX(-100%);
-    -ms-transform: translateX(-100%);
-    -o-transform: translateX(-100%);
   }
   100% {
     transform: translateX(-50%);
     opacity: 1;
-    -webkit-transform: translateX(-50%);
-    -moz-transform: translateX(-50%);
-    -ms-transform: translateX(-50%);
-    -o-transform: translateX(-50%);
   }
 }
 
 .subscribe-button:hover {
   border-color: var(--color-orange);
+  background: rgba(255, 140, 0, 0.08);
   transform: translateX(-50%) scale(1.07);
-  -webkit-transform: translateX(-50%) scale(1.07);
-  -moz-transform: translateX(-50%) scale(1.07);
-  -ms-transform: translateX(-50%) scale(1.07);
-  -o-transform: translateX(-50%) scale(1.07);
 }
 .orange-bg {
   position: absolute;
