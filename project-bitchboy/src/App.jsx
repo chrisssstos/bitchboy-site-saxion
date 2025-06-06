@@ -6,6 +6,7 @@ import Model from './components/3DModel';
 import './App.css';
 import { Canvas } from '@react-three/fiber';
 import { Stage, PresentationControls } from '@react-three/drei';
+import VJKeyboardControls from './components/VJKeyboardControls';
 
 function App() {
   return (
@@ -38,6 +39,8 @@ function App() {
             </PresentationControls>
           </Canvas>
         </div>
+
+        <VJKeyboardControls />
       </div>
     </VJProvider>
   );
