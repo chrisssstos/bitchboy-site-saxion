@@ -3,10 +3,12 @@ import { VJProvider } from './contexts/VJContext';
 import MultiLayerVideo from './components/MultiLayerVideo';
 import VJ3DController from './components/VJ3DController';
 import Model from './components/3DModel';
+import VJKeyboardControls from './components/VJKeyboardControls';
+import VJGame from './components/VJGame';
+import GameModeToggle from './components/GameModeToggle';
 import './App.css';
 import { Canvas } from '@react-three/fiber';
 import { Stage, PresentationControls } from '@react-three/drei';
-import VJKeyboardControls from './components/VJKeyboardControls';
 
 function App() {
   return (
@@ -40,7 +42,14 @@ function App() {
           </Canvas>
         </div>
 
+        {/* Game Mode Toggle Button */}
+        <GameModeToggle />
+
+        {/* Keyboard Controls Panel */}
         <VJKeyboardControls />
+
+        {/* VJ Game Tutorial System */}
+        <VJGame />
       </div>
     </VJProvider>
   );

@@ -1,0 +1,176 @@
+.game-mode-toggle {
+	position: fixed;
+	top: 20px;
+	left: 20px;
+	z-index: 1500;
+	background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+	border: 2px solid #555;
+	border-radius: 12px;
+	padding: 15px 20px;
+	color: #fff;
+	font-family: 'Courier New', monospace;
+	font-weight: bold;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+	min-width: 120px;
+	text-align: center;
+}
+
+.game-mode-toggle:hover {
+	background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
+	border-color: #ff0080;
+	transform: translateY(-2px);
+	box-shadow: 0 6px 20px rgba(255, 0, 128, 0.3);
+}
+
+.game-mode-toggle.active {
+	background: linear-gradient(145deg, #ff0080, #8000ff);
+	border-color: #fff;
+	box-shadow: 0 0 25px rgba(255, 0, 128, 0.6);
+	animation: gameModePulse 2s ease-in-out infinite;
+}
+
+.game-mode-toggle.active:hover {
+	background: linear-gradient(145deg, #ff4499, #9933ff);
+	transform: translateY(-1px);
+}
+
+@keyframes gameModePulse {
+
+	0%,
+	100% {
+		box-shadow: 0 0 25px rgba(255, 0, 128, 0.6);
+	}
+
+	50% {
+		box-shadow: 0 0 35px rgba(255, 0, 128, 0.9);
+	}
+}
+
+/* Toggle Icon */
+.toggle-icon {
+	position: relative;
+	width: 24px;
+	height: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* Game Controller Icon */
+.controller-body {
+	width: 18px;
+	height: 12px;
+	background: #fff;
+	border-radius: 6px;
+	position: relative;
+}
+
+.controller-button {
+	position: absolute;
+	width: 3px;
+	height: 3px;
+	background: #333;
+	border-radius: 50%;
+}
+
+.controller-button.btn1 {
+	top: 2px;
+	right: 3px;
+}
+
+.controller-button.btn2 {
+	top: 6px;
+	right: 3px;
+}
+
+.controller-dpad {
+	position: absolute;
+	left: 3px;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 6px;
+	height: 2px;
+	background: #333;
+}
+
+.controller-dpad::before {
+	content: '';
+	position: absolute;
+	left: 2px;
+	top: -2px;
+	width: 2px;
+	height: 6px;
+	background: #333;
+}
+
+/* Exit Icon (X) */
+.icon-line {
+	position: absolute;
+	width: 16px;
+	height: 2px;
+	background: #fff;
+	border-radius: 1px;
+}
+
+.icon-line.line1 {
+	transform: rotate(45deg);
+}
+
+.icon-line.line2 {
+	transform: rotate(-45deg);
+}
+
+/* Text Styling */
+.toggle-text {
+	font-size: 12px;
+	font-weight: bold;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	line-height: 1;
+}
+
+.toggle-subtitle {
+	font-size: 8px;
+	color: #aaa;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	margin-top: -3px;
+}
+
+.game-mode-toggle.active .toggle-subtitle {
+	display: none;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+	.game-mode-toggle {
+		top: 10px;
+		left: 10px;
+		padding: 12px 16px;
+		min-width: 100px;
+	}
+
+	.toggle-text {
+		font-size: 10px;
+	}
+
+	.toggle-subtitle {
+		font-size: 7px;
+	}
+
+	.toggle-icon {
+		width: 20px;
+		height: 16px;
+	}
+
+	.controller-body {
+		width: 14px;
+		height: 10px;
+	}
+}

@@ -4,7 +4,16 @@ import './VJKeyboardControls.css';
 
 const VJKeyboardControls = () => {
 	const { state, actions } = useVJ();
-	const { effects } = state;
+	const { effects, gameMode } = state;
+
+	// Dispatch game actions when in game mode
+	const dispatchGameAction = useCallback((actionType, actionData = {}) => {
+		if (gameMode.isActive) {
+			window.dispatchEvent(new CustomEvent('vj-game-action', {
+				detail: { type: actionType, ...actionData }
+			}));
+		}
+	}, [gameMode.isActive]);
 
 	const handleKeyDown = useCallback((event) => {
 		const key = event.key.toLowerCase();
@@ -22,6 +31,9 @@ const VJKeyboardControls = () => {
 			const videos = state.videoLibrary;
 			if (videos.length > 0) {
 				actions.launchVideo(layerNum, videos[layerNum - 1] || videos[0]);
+
+				// Dispatch game action
+				dispatchGameAction('launch', { layer: layerNum, video: videos[layerNum - 1] || videos[0] });
 			}
 			return;
 		}
@@ -30,6 +42,9 @@ const VJKeyboardControls = () => {
 		if (event.shiftKey && key >= '1' && key <= '4') {
 			const layerNum = parseInt(key);
 			actions.stopLayer(layerNum);
+
+			// Dispatch game action
+			dispatchGameAction('stop', { layer: layerNum });
 			return;
 		}
 
@@ -37,19 +52,23 @@ const VJKeyboardControls = () => {
 		switch (key) {
 			case 'q': // Invert
 				actions.toggleEffect('invert');
+				dispatchGameAction('effect', { effect: 'invert' });
 				break;
 			case 'w': // Hue rotate +
 				actions.setEffectParam('hueRotate', 'degrees',
 					(effects.hueRotate.degrees + 30) % 360);
 				if (!effects.hueRotate.active) actions.toggleEffect('hueRotate');
+				dispatchGameAction('effect', { effect: 'hue' });
 				break;
 			case 'e': // Hue rotate -
 				actions.setEffectParam('hueRotate', 'degrees',
 					(effects.hueRotate.degrees - 30 + 360) % 360);
 				if (!effects.hueRotate.active) actions.toggleEffect('hueRotate');
+				dispatchGameAction('effect', { effect: 'hue' });
 				break;
 			case 'r': // Colorize
 				actions.toggleEffect('colorize');
+				dispatchGameAction('effect', { effect: 'colorize' });
 				break;
 			case 't': // Reset color effects
 				actions.setEffectParam('hueRotate', 'degrees', 0);
@@ -64,17 +83,21 @@ const VJKeyboardControls = () => {
 				actions.setEffectParam('loRez', 'blur', newBlur);
 				if (newBlur > 0 && !effects.loRez.active) actions.toggleEffect('loRez');
 				if (newBlur === 0 && effects.loRez.active) actions.toggleEffect('loRez');
+				dispatchGameAction('opacity', { value: newBlur });
 				break;
 			case 's': // Blur -
 				const reducedBlur = Math.max(effects.loRez.blur - 1, 0);
 				actions.setEffectParam('loRez', 'blur', reducedBlur);
 				if (reducedBlur === 0 && effects.loRez.active) actions.toggleEffect('loRez');
+				dispatchGameAction('opacity', { value: reducedBlur });
 				break;
 			case 'd': // Dot screen
 				actions.toggleEffect('dotScreen');
+				dispatchGameAction('effect', { effect: 'dotscreen' });
 				break;
 			case 'f': // Strobe
 				actions.toggleEffect('strobe');
+				dispatchGameAction('effect', { effect: 'strobe' });
 				break;
 			case 'g': // Reset filter effects
 				actions.toggleEffect('loRez', false);
@@ -89,28 +112,34 @@ const VJKeyboardControls = () => {
 				actions.setEffectParam('infiniteZoom', 'scale', newScale);
 				if (newScale > 1 && !effects.infiniteZoom.active) actions.toggleEffect('infiniteZoom');
 				if (newScale === 1 && effects.infiniteZoom.active) actions.toggleEffect('infiniteZoom');
+				dispatchGameAction('effect', { effect: 'zoom' });
 				break;
 			case 'x': // Zoom -
 				const reducedScale = Math.max(effects.infiniteZoom.scale - 0.1, 1);
 				actions.setEffectParam('infiniteZoom', 'scale', reducedScale);
 				if (reducedScale === 1 && effects.infiniteZoom.active) actions.toggleEffect('infiniteZoom');
+				dispatchGameAction('effect', { effect: 'zoom' });
 				break;
 			case 'c': // Mirror
 				actions.toggleEffect('mirror');
+				dispatchGameAction('effect', { effect: 'mirror' });
 				break;
 			case 'v': // Warp +
 				const newWarp = Math.min(effects.warpSpeed.perspective + 25, 200);
 				actions.setEffectParam('warpSpeed', 'perspective', newWarp);
 				if (newWarp > 0 && !effects.warpSpeed.active) actions.toggleEffect('warpSpeed');
 				if (newWarp === 0 && effects.warpSpeed.active) actions.toggleEffect('warpSpeed');
+				dispatchGameAction('effect', { effect: 'warp' });
 				break;
 			case 'b': // Warp -
 				const reducedWarp = Math.max(effects.warpSpeed.perspective - 25, 0);
 				actions.setEffectParam('warpSpeed', 'perspective', reducedWarp);
 				if (reducedWarp === 0 && effects.warpSpeed.active) actions.toggleEffect('warpSpeed');
+				dispatchGameAction('effect', { effect: 'warp' });
 				break;
 			case 'n': // Sphere rotation
 				actions.toggleEffect('stingySphere');
+				dispatchGameAction('effect', { effect: 'sphere' });
 				break;
 			case 'm': // Reset transform effects
 				actions.setEffectParam('infiniteZoom', 'scale', 1);
@@ -130,12 +159,17 @@ const VJKeyboardControls = () => {
 				actions.resetEffects();
 				break;
 		}
-	}, [state, actions, effects]);
+	}, [state, actions, effects, dispatchGameAction]);
 
 	useEffect(() => {
 		document.addEventListener('keydown', handleKeyDown);
 		return () => document.removeEventListener('keydown', handleKeyDown);
 	}, [handleKeyDown]);
+
+	// Don't show keyboard controls when in game mode (game has its own UI)
+	if (gameMode.isActive) {
+		return null;
+	}
 
 	return (
 		<div className="vj-keyboard-controls">
