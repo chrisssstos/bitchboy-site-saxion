@@ -105,7 +105,8 @@ function Band({ offset = 0, cardGLB, maxSpeed = 50, minSpeed = 0 }) {
     j1 = useRef(),
     j2 = useRef(),
     j3 = useRef(),
-    card = useRef();
+    card = useRef(),
+    cardGroup = useRef();
   const vec = new THREE.Vector3(),
     ang = new THREE.Vector3(),
     rot = new THREE.Vector3(),
@@ -160,6 +161,9 @@ function Band({ offset = 0, cardGLB, maxSpeed = 50, minSpeed = 0 }) {
   }, []);
 
   useFrame((state, delta) => {
+    if (cardGroup.current) {
+      cardGroup.current.renderOrder = dragged ? 999 : 0;
+    }
     if (dragged) {
       vec.set(state.pointer.x, state.pointer.y, 0.5).unproject(state.camera);
       dir.copy(vec).sub(state.camera.position).normalize();
@@ -200,6 +204,8 @@ function Band({ offset = 0, cardGLB, maxSpeed = 50, minSpeed = 0 }) {
       curve.points[2].copy(j1.current.lerped);
       curve.points[3].copy(fixed.current.translation());
       band.current.geometry.setPoints(curve.getPoints(32));
+      // band.current.renderOrder = -1;
+      // card.current.renderOrder = 1;
       ang.copy(card.current.angvel());
       rot.copy(card.current.rotation());
       card.current.setAngvel({ x: ang.x, y: ang.y - rot.y * 0.25, z: ang.z });
@@ -229,22 +235,27 @@ function Band({ offset = 0, cardGLB, maxSpeed = 50, minSpeed = 0 }) {
           type="dynamic"
         >
           <CuboidCollider args={[0.8, 1.125, 0.01]} />
+          
           <group
+            ref={cardGroup}
             scale={2.25}
             position={[0, -1.2, -0.05]}
             onPointerOver={() => hover(true)}
             onPointerOut={() => hover(false)}
-            onPointerUp={(e) => (
-              e.target.releasePointerCapture(e.pointerId), drag(false)
-            )}
-            onPointerDown={(e) => (
-              e.target.setPointerCapture(e.pointerId),
+            onPointerUp={(e) => {
+              e.target.releasePointerCapture(e.pointerId);
+              drag(false);
+              if (cardGroup.current) cardGroup.current.renderOrder = 0; // Reset
+            }}
+            onPointerDown={(e) => {
+              e.target.setPointerCapture(e.pointerId);
               drag(
                 new THREE.Vector3()
                   .copy(e.point)
                   .sub(vec.copy(card.current.translation()))
-              )
-            )}
+              );
+              if (cardGroup.current) cardGroup.current.renderOrder = 999; // Bring to front
+            }}
           >
             <mesh geometry={nodes.card.geometry}>
               <meshPhysicalMaterial
@@ -265,11 +276,13 @@ function Band({ offset = 0, cardGLB, maxSpeed = 50, minSpeed = 0 }) {
           </group>
         </RigidBody>
       </group>
-      <mesh ref={band}>
+      <mesh ref={band} renderOrder={-1}>
         <meshLineGeometry />
         <meshLineMaterial
           color="white"
-          depthTest={false}
+          depthTest={true} // ✅ Enable depth testing so band respects what's in front
+          depthWrite={true} // ✅ Ensure it writes to depth buffer
+          transparent={true} // ✅ Allow blending (important if there's transparency in texture)
           resolution={isSmall ? [1000, 2000] : [1000, 1000]}
           useMap
           map={texture}
