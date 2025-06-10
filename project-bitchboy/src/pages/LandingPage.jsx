@@ -1,6 +1,7 @@
 import "./css/LandingPage.css";
 import ModelSpin from "./../components/jsx/LandingPage/ModelSpin.jsx";
 import ModelScrollAnimated from "./../components/jsx/LandingPage/ModelScrollAnimated.jsx"; // Add this import
+import Balatro from "./Balatro/Balatro.jsx";
 
 function LandingPage() {
   return (
