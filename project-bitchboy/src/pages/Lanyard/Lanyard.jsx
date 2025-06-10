@@ -17,7 +17,7 @@ import {
   useSphericalJoint,
 } from "@react-three/rapier";
 import { MeshLineGeometry, MeshLineMaterial } from "meshline";
-import Balatro from "../Balatro/Balatro.jsx"; 
+import Balatro from "../Balatro/Balatro.jsx";
 import cardGLB from "./card.glb";
 import card2GLB from "./card2.glb";
 import lanyard from "./lanyard.png";
@@ -36,19 +36,19 @@ export default function Lanyard({
   return (
     <div className="lanyard-wrapper">
       <div className="absolute inset-0 z-0 w-full h-full">
-              <Balatro
-                pixelFilter={10000}
-                color1="#FFFFFF"
-                color2="#FF6B00"
-                color3="#FFFFFF"
-                lighting={1}
-                contrast={1}
-                spinAmount={0.1}
-                spinSpeed={10}
-                mouseInteraction={false}
-              //   spinEase={10}
-              />
-            </div>
+        <Balatro
+          pixelFilter={10000}
+          color1="#FFFFFF"
+          color2="#FF6B00"
+          color3="#FFFFFF"
+          lighting={1}
+          contrast={1}
+          spinAmount={0.1}
+          spinSpeed={10}
+          mouseInteraction={false}
+          //   spinEase={10}
+        />
+      </div>
       <Canvas
         camera={{ position: position, fov: fov }}
         gl={{ alpha: transparent }}
@@ -59,15 +59,39 @@ export default function Lanyard({
         <ambientLight intensity={Math.PI} />
         <Physics gravity={gravity} timeStep={1 / 60}>
           <group position={[0, 0, 0]}>
-            <Band offset={-2} cardGLB={cardGLB}/> {/* Left */}
-            <Band offset={2} cardGLB={card2GLB}/>  {/* Right */}
+            <Band offset={-2} cardGLB={cardGLB} /> {/* Left */}
+            <Band offset={2} cardGLB={card2GLB} /> {/* Right */}
           </group>
         </Physics>
         <Environment blur={10}>
-          <Lightformer intensity={2} color="white" position={[0, -1, 5]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
-          <Lightformer intensity={3} color="white" position={[-1, -1, 1]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
-          <Lightformer intensity={3} color="white" position={[1, 1, 1]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
-          <Lightformer intensity={10} color="white" position={[-10, 0, 14]} rotation={[0, Math.PI / 2, Math.PI / 3]} scale={[100, 10, 1]} />
+          <Lightformer
+            intensity={2}
+            color="white"
+            position={[0, -1, 5]}
+            rotation={[0, 0, Math.PI / 3]}
+            scale={[100, 0.1, 1]}
+          />
+          <Lightformer
+            intensity={3}
+            color="white"
+            position={[-1, -1, 1]}
+            rotation={[0, 0, Math.PI / 3]}
+            scale={[100, 0.1, 1]}
+          />
+          <Lightformer
+            intensity={3}
+            color="white"
+            position={[1, 1, 1]}
+            rotation={[0, 0, Math.PI / 3]}
+            scale={[100, 0.1, 1]}
+          />
+          <Lightformer
+            intensity={10}
+            color="white"
+            position={[-10, 0, 14]}
+            rotation={[0, Math.PI / 2, Math.PI / 3]}
+            scale={[100, 10, 1]}
+          />
           {/* Other lights omitted for brevity */}
         </Environment>
       </Canvas>
@@ -102,12 +126,12 @@ function Band({ offset = 0, cardGLB, maxSpeed = 50, minSpeed = 0 }) {
         new THREE.Vector3(),
         new THREE.Vector3(),
         new THREE.Vector3(),
-      ]),
+      ])
   );
   const [dragged, drag] = useState(false);
   const [hovered, hover] = useState(false);
   const [isSmall, setIsSmall] = useState(
-    () => typeof window !== "undefined" && window.innerWidth < 1024,
+    () => typeof window !== "undefined" && window.innerWidth < 1024
   );
 
   useRopeJoint(fixed, j1, [[0, 0, 0], [0, 0, 0], 1]);
@@ -141,25 +165,34 @@ function Band({ offset = 0, cardGLB, maxSpeed = 50, minSpeed = 0 }) {
       dir.copy(vec).sub(state.camera.position).normalize();
       vec.add(dir.multiplyScalar(state.camera.position.length()));
       [card, j1, j2, j3, fixed].forEach((ref) => ref.current?.wakeUp());
-      card.current?.setNextKinematicTranslation({
-        x: vec.x - dragged.x,
-        y: vec.y - dragged.y,
-        z: vec.z - dragged.z,
-      });
+      const target = new THREE.Vector3(
+        vec.x - dragged.x,
+        vec.y - dragged.y,
+        vec.z - dragged.z
+      );
+
+      const current = card.current.translation();
+      const velocity = {
+        x: (target.x - current.x) * 20,
+        y: (target.y - current.y) * 20,
+        z: (target.z - current.z) * 20,
+      };
+
+      card.current.setLinvel(velocity, true);
     }
     if (fixed.current) {
       [j1, j2].forEach((ref) => {
         if (!ref.current.lerped)
           ref.current.lerped = new THREE.Vector3().copy(
-            ref.current.translation(),
+            ref.current.translation()
           );
         const clampedDistance = Math.max(
           0.1,
-          Math.min(1, ref.current.lerped.distanceTo(ref.current.translation())),
+          Math.min(1, ref.current.lerped.distanceTo(ref.current.translation()))
         );
         ref.current.lerped.lerp(
           ref.current.translation(),
-          delta * (minSpeed + clampedDistance * (maxSpeed - minSpeed)),
+          delta * (minSpeed + clampedDistance * (maxSpeed - minSpeed))
         );
       });
       curve.points[0].copy(j3.current.translation());
@@ -193,7 +226,7 @@ function Band({ offset = 0, cardGLB, maxSpeed = 50, minSpeed = 0 }) {
           position={[2, 0, 0]}
           ref={card}
           {...segmentProps}
-          type={dragged ? "kinematicPosition" : "dynamic"}
+          type="dynamic"
         >
           <CuboidCollider args={[0.8, 1.125, 0.01]} />
           <group
@@ -209,7 +242,7 @@ function Band({ offset = 0, cardGLB, maxSpeed = 50, minSpeed = 0 }) {
               drag(
                 new THREE.Vector3()
                   .copy(e.point)
-                  .sub(vec.copy(card.current.translation())),
+                  .sub(vec.copy(card.current.translation()))
               )
             )}
           >
