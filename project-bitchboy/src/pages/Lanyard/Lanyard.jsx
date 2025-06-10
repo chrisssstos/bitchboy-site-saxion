@@ -19,6 +19,7 @@ import {
 import { MeshLineGeometry, MeshLineMaterial } from "meshline";
 import Balatro from "../Balatro/Balatro.jsx"; 
 import cardGLB from "./card.glb";
+import card2GLB from "./card2.glb";
 import lanyard from "./lanyard.png";
 
 import * as THREE from "three";
@@ -58,8 +59,8 @@ export default function Lanyard({
         <ambientLight intensity={Math.PI} />
         <Physics gravity={gravity} timeStep={1 / 60}>
           <group position={[0, 0, 0]}>
-            <Band offset={-2} /> {/* Left */}
-            <Band offset={2} />  {/* Right */}
+            <Band offset={-2} cardGLB={cardGLB}/> {/* Left */}
+            <Band offset={2} cardGLB={card2GLB}/>  {/* Right */}
           </group>
         </Physics>
         <Environment blur={10}>
@@ -74,7 +75,7 @@ export default function Lanyard({
   );
 }
 
-function Band({ offset = 0, maxSpeed = 50, minSpeed = 0 }) {
+function Band({ offset = 0, cardGLB, maxSpeed = 50, minSpeed = 0 }) {
   const band = useRef(),
     fixed = useRef(),
     j1 = useRef(),
