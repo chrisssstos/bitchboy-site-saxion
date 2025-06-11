@@ -39,9 +39,9 @@
   align-items: center;
   border-radius: 20px;
   transition: 700ms;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);         
-  -webkit-backdrop-filter: blur(10px); 
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 2px solid rgba(255, 255, 255, 0.1);
   overflow: hidden;
   box-shadow:
@@ -59,13 +59,13 @@
   opacity: 1;
   transition: 300ms ease-in-out;
   position: absolute;
-  font-size: 28px;
+  font-size: 40px;
   font-weight: 800;
   letter-spacing: 4px;
   text-align: center;
   width: 100%;
   padding-top: 20px;
-  background: linear-gradient(45deg, #00ffaa, #00a2ff);
+  background: linear-gradient(45deg, #00ffaa, #0037ff); 
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   filter: drop-shadow(0 0 15px rgba(0, 255, 170, 0.3));
@@ -88,7 +88,7 @@
 .highlight {
   color: #00ffaa;
   margin-left: 5px;
-  background: linear-gradient(90deg, #5c67ff, #ad51ff);
+  background: linear-gradient(90deg, #0312e9, #ad51ff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: bold;
