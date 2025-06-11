@@ -1,5 +1,6 @@
 import React, { useEffect, useCallback, useState } from 'react';
 import { useVJ } from '../contexts/VJContext';
+import { musicManager } from '../utils/musicManager';
 import './VJGame.css';
 
 // Game levels configuration
@@ -149,14 +150,33 @@ const VJGame = () => {
 
 		setGameTimer(timer);
 
-		// Start beat detection for rhythm-based levels
-		if (challenge.type === 'beat' || challenge.type === 'freestyle') {
-			startBeatDetection();
+		// Start music and beat detection for the level
+		const level = gameMode.currentLevel;
+		console.log(`🎵 Starting music for level ${level}`);
+
+		// Check if we need beat detection for this level
+		const needsBeatDetection = challenge.type === 'beat' || challenge.type === 'beat_extended' || challenge.type === 'freestyle';
+
+		if (needsBeatDetection) {
+			// Start music with beat detection callback
+			musicManager.playLevel(level, () => {
+				// This callback is called on each beat
+				const currentTime = Date.now();
+				console.log('🎵 BEAT! Time for button press!');
+
+				actions.updateGameAudio({
+					beatPosition: 1, // Peak of beat
+					lastBeatTime: currentTime
+				});
+			});
+		} else {
+			// Start music without beat detection
+			musicManager.playLevel(level);
 		}
 
 		actions.setGameFeedback("LEVEL STARTED!");
 		setTimeout(() => actions.setGameFeedback(null), 2000);
-	}, [currentLevelData, actions, gameTimer, gameMode.challenge]);
+	}, [currentLevelData, actions, gameTimer, gameMode.challenge, gameMode.currentLevel]);
 
 	// Beat detection simulation (simplified)
 	const startBeatDetection = useCallback(() => {
@@ -175,6 +195,27 @@ const VJGame = () => {
 			// Check if we should trigger a new beat
 			if (timeSinceLastBeat >= beatInterval) {
 				lastActualBeatTime = currentTime;
+				console.log('🎵 BEAT! Time for button press!');
+
+				// Play a simple beep sound for the beat
+				try {
+					const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+					const oscillator = audioContext.createOscillator();
+					const gainNode = audioContext.createGain();
+
+					oscillator.connect(gainNode);
+					gainNode.connect(audioContext.destination);
+
+					oscillator.frequency.setValueAtTime(800, audioContext.currentTime); // High pitched beep
+					gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+					gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+
+					oscillator.start(audioContext.currentTime);
+					oscillator.stop(audioContext.currentTime + 0.1);
+				} catch (e) {
+					console.log('Audio not supported');
+				}
+
 				actions.updateGameAudio({
 					beatPosition: 1, // Peak of beat
 					lastBeatTime: currentTime
@@ -236,6 +277,9 @@ const VJGame = () => {
 			setBeatTimer(null);
 		}
 
+		// Stop current music
+		musicManager.stop();
+
 		// Award completion bonus
 		const timeBonus = Math.round(timeRemaining / 1000);
 		const levelBonus = currentLevelData.points;
@@ -251,6 +295,7 @@ const VJGame = () => {
 				actions.setGameFeedback(null);
 			} else {
 				// Game complete!
+				musicManager.stop(); // Make sure music stops at end
 				actions.setGameFeedback("YOU ARE A TRUE VJ!");
 			}
 		}, 3000);
@@ -394,6 +439,10 @@ const VJGame = () => {
 			setBeatTimer(null);
 		}
 
+		// Stop music and play fail sound
+		musicManager.stop();
+		musicManager.playFailSound();
+
 		// Reset visuals on failure too
 		actions.resetEffects();
 		[1, 2, 3, 4].forEach(layer => actions.stopLayer(layer));
@@ -421,13 +470,21 @@ const VJGame = () => {
 		};
 	}, [handleGameAction]);
 
-	// Cleanup timers on unmount
+	// Cleanup timers and music on unmount or game deactivation
 	useEffect(() => {
 		return () => {
 			if (gameTimer) clearInterval(gameTimer);
 			if (beatTimer) clearInterval(beatTimer);
+			musicManager.stop();
 		};
 	}, [gameTimer, beatTimer]);
+
+	// Stop music when game is deactivated
+	useEffect(() => {
+		if (!gameMode.isActive) {
+			musicManager.stop();
+		}
+	}, [gameMode.isActive]);
 
 	// Auto-start first level when game mode activates
 	useEffect(() => {
@@ -488,12 +545,17 @@ const VJGame = () => {
 			{(currentLevelData?.challenge.type === 'beat' || currentLevelData?.challenge.type === 'beat_extended' || currentLevelData?.challenge.type === 'freestyle') && (
 				<div className="beat-indicator">
 					<div
-						className={`beat-pulse ${Math.abs(gameMode.audio.beatPosition - 0.5) < 0.1 ? 'on-beat' : ''}`}
+						className={`beat-pulse ${gameMode.audio.beatPosition > 0.9 ? 'on-beat' : ''}`}
 						style={{
-							transform: `scale(${1 + gameMode.audio.beatPosition * 0.3})`
+							transform: `scale(${1 + gameMode.audio.beatPosition * 0.5})`,
+							backgroundColor: gameMode.audio.beatPosition > 0.9 ? '#00ff00' : '#ff4444',
+							boxShadow: gameMode.audio.beatPosition > 0.9 ? '0 0 20px #00ff00' : '0 0 10px #ff4444'
 						}}
 					/>
-					<div className="beat-text">BEAT</div>
+					<div className="beat-text">{gameMode.audio.beatPosition > 0.9 ? 'PRESS NOW!' : 'BEAT'}</div>
+					<div className="beat-counter">
+						BPM: 120 | Press 1-4 when GREEN!
+					</div>
 				</div>
 			)}
 
