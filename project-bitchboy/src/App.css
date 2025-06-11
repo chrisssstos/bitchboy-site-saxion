@@ -1,9 +1,11 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  /* keep this removed thanks */
+  /* padding: 2rem; */
   text-align: center;
-  background-color: #de7118;
+  /* please set this back to the proper color */
+  background-color: #b73494;
 }
 
 .logo {

@@ -12,7 +12,7 @@ export function useKnobInteraction() {
     activeKnob.current = e.object.parent;
     isDragging.current = true;
 
-    // Try different ways to get clientX
+    // try different ways to get clientX
     const clientX = e.clientX || e.nativeEvent?.clientX || 0;
     dragStartX.current = clientX;
 
@@ -24,7 +24,7 @@ export function useKnobInteraction() {
   function handleKnobPointerMove(e) {
     if (!isDragging.current || !activeKnob.current) return false;
 
-    // Try different ways to get clientX
+    // try again
     const clientX = e.clientX || e.nativeEvent?.clientX || 0;
     const deltaX = clientX - dragStartX.current;
     dragStartX.current = clientX;
@@ -65,7 +65,7 @@ export function useKnobInteraction() {
 
       // Connect to VJ system
       if (window.vjController && window.vjController.handleKnobChange) {
-        // Extract knob index from name (assuming format like "knob_01", "knob_02", etc.)
+        // Extract knob index from name
         const match = activeKnob.current.name.match(/knob.*?(\d+)/);
         if (match) {
           const knobIndex = parseInt(match[1]) - 1; // Convert to 0-based index
