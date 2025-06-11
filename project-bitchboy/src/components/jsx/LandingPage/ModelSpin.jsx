@@ -119,7 +119,6 @@ export default function ModelSpin() {
     <div
       style={{
         position: "absolute",
-        top: -150,
         left: 125,
         width: "100vw",
         height: "100vh",
