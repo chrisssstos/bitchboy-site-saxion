@@ -34,68 +34,52 @@ export default function Lanyard({
   transparent = true,
 }) {
   return (
-    <div className="lanyard-wrapper">
-      <div className="absolute inset-0 z-0 w-full h-full">
-        <Balatro
-          pixelFilter={10000}
-          color1="#FFFFFF"
-          color2="#FF6B00"
-          color3="#FFFFFF"
-          lighting={1}
-          contrast={1}
-          spinAmount={0.1}
-          spinSpeed={10}
-          mouseInteraction={false}
-          //   spinEase={10}
+    <Canvas
+      camera={{ position: position, fov: fov }}
+      gl={{ alpha: transparent }}
+      onCreated={({ gl }) =>
+        gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 1)
+      }
+    >
+      <ambientLight intensity={Math.PI} />
+      <Physics gravity={gravity} timeStep={1 / 60}>
+        <group position={[0, 0, 0]}>
+          <Band offset={-2} cardGLB={cardGLB} /> {/* Left */}
+          <Band offset={2} cardGLB={card2GLB} /> {/* Right */}
+        </group>
+      </Physics>
+      <Environment blur={10}>
+        <Lightformer
+          intensity={2}
+          color="white"
+          position={[0, -1, 5]}
+          rotation={[0, 0, Math.PI / 3]}
+          scale={[100, 0.1, 1]}
         />
-      </div>
-      <Canvas
-        camera={{ position: position, fov: fov }}
-        gl={{ alpha: transparent }}
-        onCreated={({ gl }) =>
-          gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 1)
-        }
-      >
-        <ambientLight intensity={Math.PI} />
-        <Physics gravity={gravity} timeStep={1 / 60}>
-          <group position={[0, 0, 0]}>
-            <Band offset={-2} cardGLB={cardGLB} /> {/* Left */}
-            <Band offset={2} cardGLB={card2GLB} /> {/* Right */}
-          </group>
-        </Physics>
-        <Environment blur={10}>
-          <Lightformer
-            intensity={2}
-            color="white"
-            position={[0, -1, 5]}
-            rotation={[0, 0, Math.PI / 3]}
-            scale={[100, 0.1, 1]}
-          />
-          <Lightformer
-            intensity={3}
-            color="white"
-            position={[-1, -1, 1]}
-            rotation={[0, 0, Math.PI / 3]}
-            scale={[100, 0.1, 1]}
-          />
-          <Lightformer
-            intensity={3}
-            color="white"
-            position={[1, 1, 1]}
-            rotation={[0, 0, Math.PI / 3]}
-            scale={[100, 0.1, 1]}
-          />
-          <Lightformer
-            intensity={10}
-            color="white"
-            position={[-10, 0, 14]}
-            rotation={[0, Math.PI / 2, Math.PI / 3]}
-            scale={[100, 10, 1]}
-          />
-          {/* Other lights omitted for brevity */}
-        </Environment>
-      </Canvas>
-    </div>
+        <Lightformer
+          intensity={3}
+          color="white"
+          position={[-1, -1, 1]}
+          rotation={[0, 0, Math.PI / 3]}
+          scale={[100, 0.1, 1]}
+        />
+        <Lightformer
+          intensity={3}
+          color="white"
+          position={[1, 1, 1]}
+          rotation={[0, 0, Math.PI / 3]}
+          scale={[100, 0.1, 1]}
+        />
+        <Lightformer
+          intensity={10}
+          color="white"
+          position={[-10, 0, 14]}
+          rotation={[0, Math.PI / 2, Math.PI / 3]}
+          scale={[100, 10, 1]}
+        />
+        {/* Other lights omitted for brevity */}
+      </Environment>
+    </Canvas>
   );
 }
 
@@ -235,7 +219,7 @@ function Band({ offset = 0, cardGLB, maxSpeed = 50, minSpeed = 0 }) {
           type="dynamic"
         >
           <CuboidCollider args={[0.8, 1.125, 0.01]} />
-          
+
           <group
             ref={cardGroup}
             scale={2.25}
