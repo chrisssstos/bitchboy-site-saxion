@@ -50,6 +50,51 @@ body {
   -o-transform: translateX(-100%);
 }
 
+.arrow-text {
+  position: absolute;
+  top: 8rem;
+  right: 3vw;
+  font-size: 1.2rem;
+  color: #222;
+  padding: 0.1em 1em;
+  border-radius: 1em;
+  z-index: 20;
+  font-weight: bold;
+  pointer-events: none;
+}
+
+.arrow-img {
+  position: absolute;
+  top: -1rem;
+  right:13vw; /* Move arrow a bit to the left by decreasing right */
+  width: 12vw;
+  max-width: 320px;
+  min-width: 120px;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  transform: translateX(100vw) scaleX(-1); /* Start off-screen to the right and flipped */
+  opacity: 0;
+  animation: arrow-reveal 1.2s cubic-bezier(0.77,0,0.175,1) forwards;
+  -webkit-animation: arrow-reveal 1.2s cubic-bezier(0.77,0,0.175,1) forwards;
+}
+
+@keyframes arrow-reveal {
+  0% {
+    opacity: 0;
+    transform: translateX(100vw) scaleX(-1);
+    -webkit-transform: translateX(100vw) scaleX(-1);
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scaleX(-1);
+    -webkit-transform: translateX(0) scaleX(-1);
+  }
+}
+
 @keyframes logo-reveal {
   0% {
     transform: translateX(-100%);

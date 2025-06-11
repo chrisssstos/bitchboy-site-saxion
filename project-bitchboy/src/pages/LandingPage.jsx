@@ -19,18 +19,17 @@ function LandingPage() {
         </div>
       </div>
 
-      <button className="subscribe-button">Connect with us!</button>
+      <img
+        src="/images/background/arrow.png"
+        alt="arrow"
+        className="arrow-img"
+      />
 
-      {/* Add some content sections to enable scrolling */}
-      <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center"}}>
-        <h2 style={{ color: "black", fontSize: "3rem" }}>Scroll Down</h2>
+      <div className="arrow-text">
+        Try it out here!
       </div>
-      <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "500px" }}>
-        <h2 style={{ color: "black", fontSize: "3rem" }}>Keep scrolling...</h2>
-      </div>
-      <div style={{ height: "80vh", display: "flex", alignItems: "center", justifyContent: "right", marginRight: "200px"}}>
-        <h2 style={{ color: "black", fontSize: "3rem" }}>Almost there :D</h2>
-      </div>
+
+      <button className="subscribe-button">Connect with us!</button>
 
     </div>
   );
