@@ -8,7 +8,7 @@ import { useKnobInteraction } from "../components/userKnobInteraction";
 import { useButtonInteraction } from "../components/userButtonInteraction";
 
 function Model(props) {
-  const { scene } = useGLTF("/bitchboy3d(v8).glb");
+  const { scene } = useGLTF("/bitchboy3d(v10).glb");
   const originalMaterials = useRef(new Map());
   
   // ✅ ADD SLIDER HOOK BACK

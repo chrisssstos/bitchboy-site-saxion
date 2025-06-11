@@ -33,7 +33,7 @@ function App() {
               enabled={false}
               global={false}
             >
-              <Stage environment="sunset" intensity={0.0005}>
+              <Stage environment="sunset" intensity={0.0005} shadows={{type: "contact", opacity: 1, blur: 2}}>
                 <Model scale={0.01} />
               </Stage>
             </PresentationControls>
