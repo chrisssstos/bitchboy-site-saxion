@@ -7,7 +7,7 @@ const ANIMATION_CONFIG = {
   section1: {
     start: 0,
     end: 0.25,
-    position: { x: 2, y: 0, z: 0 },
+    position: { x: 2, y: -2, z: 0 },
     rotation: { x: 0, y: 0, z: 0 },
     scale: { x: 0, y: 0, z: 0 },
     opacity: 1
