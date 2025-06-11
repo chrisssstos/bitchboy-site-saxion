@@ -51,7 +51,7 @@ const ANIMATION_CONFIG = {
 };
 
 function ScrollAnimatedModel() {
-  const { scene } = useGLTF("/bitchboy3dnew1.glb");
+  const { scene } = useGLTF("/bitchboy3d(v10).glb");
   const meshRef = useRef();
   const groupRef = useRef();
 

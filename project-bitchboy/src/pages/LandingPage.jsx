@@ -18,7 +18,7 @@ function LandingPage() {
         </div>
       </div>
 
-      <button className="subscribe-button">Sign Up for Updates</button>
+      <button className="subscribe-button">Connect with us!</button>
 
       {/* Add some content sections to enable scrolling */}
       <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center"}}>
@@ -31,12 +31,6 @@ function LandingPage() {
         <h2 style={{ color: "black", fontSize: "3rem" }}>Almost there :D</h2>
       </div>
 
-      <div className="custom-images">
-        <img src="public\images\background\bbprime.png" alt="Pic 1" className="custom-img img1" />
-        <img src="public\images\background\bb1.png" alt="Pic 2" className="custom-img img2" />
-        <img src="public\images\background\bb2.png" alt="Pic 3" className="custom-img img3" />
-        <img src="public\images\background\vjsetup.png" alt="Pic 4" className="custom-img img4" />
-      </div>
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
 function BitchboyModel({ isInteracting, onReturningToPosition }) {
-  const { scene } = useGLTF("/bitchboy3dnew1.glb");
+  const { scene } = useGLTF("/bitchboy3d(v10).glb");
   const meshRef = useRef();
   const { camera } = useThree();
   const controlsRef = useRef();
@@ -86,8 +86,8 @@ function BitchboyModel({ isInteracting, onReturningToPosition }) {
         ref={meshRef}
         object={clonedScene}
         scale={2.2}
-        position={[0, -0.5, 0]}
-        rotation={[-Math.PI / 6, -Math.PI / 10, 0]}
+        position={[0, -0.1, 0]}
+        rotation={[-Math.PI / 40, -Math.PI / 12, 0]}
       />
       <OrbitControls
         ref={setControlsRef}
@@ -144,7 +144,7 @@ export default function ModelSpin() {
         <directionalLight
           castShadow
           position={[0, 10, 5]}
-          intensity={1}
+          intensity={1.5}
           shadow-mapSize-width={1024}
           shadow-mapSize-height={1024}
         />
