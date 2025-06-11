@@ -42,8 +42,8 @@
   align-items: center;
   border-radius: 20px;
   transition: 700ms;
-  background: linear-gradient(45deg, #1a1a1a, #262626);
-  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(20px);
   border: 2px solid rgba(255, 255, 255, 0.1);
   overflow: hidden;
@@ -82,8 +82,8 @@
   bottom: 40px;
   width: 100%;
   text-align: center;
-  font-size: 40px;
-  letter-spacing: 5px;
+  font-size: 100px;
+  letter-spacing: 2px;
   transform: translateY(30px);
   color: rgba(255, 255, 255, 0.6);
 }
@@ -670,7 +670,7 @@
 /* Link to Kickstarter card */
 
 .container2 {
-  background-color: #e0f7fa; /* Light teal background */
+  background-color: #faebcd;
   display: flex;
   width: 300px;
   height: 75px;
@@ -693,7 +693,7 @@
 }
 
 .left-side {
-  background: linear-gradient(45deg, #00ffaa, #0037ff); /* Teal gradient */
+  background: linear-gradient(45deg, #ffb347, #ff6801); /* Teal gradient */
   width: 85px;
   height: 75px;
   border-radius: 4px 0 0 4px;
@@ -720,7 +720,7 @@
 }
 
 .right-side:hover {
-  background-color: #b2ebf2; /* Lighter teal hover */
+  background-color: #faebcd; /* Lighter teal hover */
 }
 
 .right-side::before {
@@ -748,6 +748,7 @@
 .arrow {
   width: 14px;
   height: 14px;
+  color: black;
   margin-right: 12px;
   transition: transform 0.3s ease-in-out;
 }
@@ -761,12 +762,12 @@
   font-family: "Inter", sans-serif;
   margin-left: auto;
   margin-right: auto;
-  color: #1a3c34;
+  color: black;
   transition: color 0.3s ease-in-out;
 }
 
 .right-side:hover .new {
-  color: #00695c; /* Darker teal on hover */
+  color: black; /* Darker teal on hover */
 }
 
 .card {
@@ -869,6 +870,7 @@
   height: 5px;
   background-color: #777;
   top: -5px;
+  left: 0px;
 }
 
 .screen {

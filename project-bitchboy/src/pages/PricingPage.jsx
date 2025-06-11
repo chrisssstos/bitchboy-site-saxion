@@ -4,20 +4,20 @@ import Balatro from "./Balatro/Balatro.jsx";
 export default function PricingPage() {
   return (
     <div className="pricing-page">
-      {/* <div className="absolute inset-0 z-0 w-full h-full">
+      <div className="absolute inset-0 z-0 w-full h-full">
                 <Balatro
-                  pixelFilter={10000}
+                  pixelFilter={1000}
                   color1="#FFFFFF"
                   color2="#FF6B00"
                   color3="#FFFFFF"
-                  lighting={1}
-                  contrast={1}
-                  spinAmount={0.1}
+                  lighting={10}
+                  contrast={0.4}
+                  spinAmount={0.5}
                   spinSpeed={10}
                   mouseInteraction={false}
-                  // spinEase={10}
+                  spinEase={1}
                 />
-              </div> */}
+              </div>
       {/* Product card */}
       <div className="container noselect">
         
@@ -54,8 +54,7 @@ export default function PricingPage() {
               />
 
               <div className="subtitle1">
-                <span>PRE-ORDER NOW FOR</span>
-                <span className="highlight"> 500€</span>
+                <span className="highlight">500€</span>
               </div>
               <div className="card-particles">
                 <span></span>
@@ -103,7 +102,7 @@ export default function PricingPage() {
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              fill="#cfcfcf"
+              fill="#000000"
               data-old_color="#000000"
               class="active-path"
               data-original="#000000"
