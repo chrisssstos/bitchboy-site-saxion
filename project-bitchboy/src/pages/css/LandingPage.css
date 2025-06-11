@@ -48,6 +48,7 @@ body {
   -moz-transform: translateX(-100%);
   -ms-transform: translateX(-100%);
   -o-transform: translateX(-100%);
+  will-change: transform, opacity;
 }
 
 .arrow-text {
@@ -61,22 +62,41 @@ body {
   z-index: 20;
   font-weight: bold;
   pointer-events: none;
+  opacity: 0;
+  transform: translateX(100vw);
+  animation: arrow-text-in 1.2s cubic-bezier(0.77,0,0.175,1) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes arrow-text-in {
+  0% {
+    opacity: 0;
+    transform: translateX(100vw);
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .arrow-img {
   position: absolute;
   top: -1rem;
-  right:13vw; /* Move arrow a bit to the left by decreasing right */
+  right:13vw;
   width: 12vw;
   max-width: 320px;
   min-width: 120px;
   height: auto;
   display: block;
   object-fit: contain;
-  transform: translateX(100vw) scaleX(-1); /* Start off-screen to the right and flipped */
+  transform: translateX(100vw) scaleX(-1);
   opacity: 0;
   animation: arrow-reveal 1.2s cubic-bezier(0.77,0,0.175,1) forwards;
   -webkit-animation: arrow-reveal 1.2s cubic-bezier(0.77,0,0.175,1) forwards;
+  will-change: transform, opacity;
 }
 
 @keyframes arrow-reveal {
@@ -136,6 +156,7 @@ body {
     background 0.2s cubic-bezier(0.77,0,0.175,1),
     border-color 0.2s cubic-bezier(0.77,0,0.175,1);
   animation: subscribe-button-in 1s cubic-bezier(0.77,0,0.175,1) 0.3s forwards;
+  will-change: transform, opacity;
 }
 
 @keyframes subscribe-button-in {
