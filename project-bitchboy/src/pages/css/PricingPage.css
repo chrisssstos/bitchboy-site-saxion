@@ -21,11 +21,11 @@
 
 .card-image {
   position: absolute;
-  top: 60%;
+  top: 50%;
   left: 40%;
   transform: translate(-50%, -50%);
-  max-width: 80%; /* Adjust size as needed */
-  max-height: 60%; /* Adjust size as needed */
+  max-width: 90%; 
+  max-height: 70%; 
   user-select: none;
   z-index: 0; /* Make sure it’s above background but below any overlays if needed */
 }
