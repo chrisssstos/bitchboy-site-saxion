@@ -29,45 +29,46 @@ const GAME_LEVELS = {
 	3: {
 		title: "BEAT SYNCHRONIZATION",
 		description: "Time your triggers to the beat of the music",
-		instructions: "Listen to the beat and trigger clips on the downbeat (1-2-3-4)",
+		instructions: "Press buttons 1-4 ON THE BEAT - listen for the rhythm!",
 		challenge: {
 			type: 'beat',
-			requiredActions: ['beat_trigger', 'beat_trigger', 'beat_trigger', 'beat_trigger'],
+			requiredActions: ['beat_trigger', 'beat_trigger', 'beat_trigger'],
 			timeLimit: 60000,
-			beatTolerance: 200 // ms tolerance for beat matching
+			beatTolerance: 150 // ms tolerance for beat matching
 		},
 		points: 200
 	},
 	4: {
-		title: "OPACITY CONTROL",
-		description: "Learn to fade layers in and out smoothly",
-		instructions: "Use A/S keys to adjust blur, create smooth transitions",
+		title: "SLIDER MASTERY",
+		description: "Learn to control video opacity with smooth movements",
+		instructions: "Use A/S keys to adjust blur - move slider fully UP and DOWN 6 times",
 		challenge: {
-			type: 'opacity',
-			requiredActions: ['opacity_change', 'opacity_change', 'opacity_change'],
-			timeLimit: 45000
+			type: 'slider',
+			requiredActions: ['slider_cycle', 'slider_cycle', 'slider_cycle', 'slider_cycle', 'slider_cycle', 'slider_cycle'],
+			timeLimit: 60000
 		},
 		points: 180
 	},
 	5: {
-		title: "EFFECT MASTERY",
-		description: "Apply visual effects rhythmically",
-		instructions: "Use Q (invert), W/E (hue), R (colorize), F (strobe) in rhythm",
+		title: "NEW BUTTONS UNLOCKED",
+		description: "Master the second row of buttons",
+		instructions: "Press buttons 5-8 (Q/W/E/R keys) ON THE BEAT - 8 times total",
 		challenge: {
-			type: 'effects',
-			requiredActions: ['effect_invert', 'effect_hue', 'effect_colorize', 'effect_strobe'],
-			timeLimit: 60000
+			type: 'beat_extended',
+			requiredActions: ['beat_trigger_row2', 'beat_trigger_row2', 'beat_trigger_row2', 'beat_trigger_row2', 'beat_trigger_row2', 'beat_trigger_row2', 'beat_trigger_row2', 'beat_trigger_row2'],
+			timeLimit: 90000,
+			beatTolerance: 150
 		},
 		points: 250
 	},
 	6: {
-		title: "COMPLEX COMBINATIONS",
-		description: "Combine multiple layers and effects",
-		instructions: "Layer 2+ videos, apply 3+ effects, maintain rhythm",
+		title: "HORIZONTAL SLIDER FX",
+		description: "Master the horizontal slider effects",
+		instructions: "Use Z/X keys to cycle zoom slider fully 3 times",
 		challenge: {
-			type: 'combination',
-			requiredActions: ['multi_layer', 'multi_effect', 'rhythm_maintain'],
-			timeLimit: 90000
+			type: 'horizontal_sliders',
+			requiredActions: ['horizontal_cycle', 'horizontal_cycle', 'horizontal_cycle'],
+			timeLimit: 75000
 		},
 		points: 300
 	},
@@ -105,10 +106,27 @@ const VJGame = () => {
 
 	// Start level timer
 	const startLevel = useCallback(() => {
-		if (!currentLevelData) return;
+		console.log('Starting level. currentLevelData:', currentLevelData); // Debug log
+		if (!currentLevelData) {
+			console.error('No currentLevelData available!');
+			return;
+		}
+
+		// RESET ALL VISUALS at start of each level
+		actions.resetEffects();
+		[1, 2, 3, 4].forEach(layer => actions.stopLayer(layer));
 
 		const challenge = currentLevelData.challenge;
+		console.log('Setting challenge:', challenge); // Debug log
+
+		// Set challenge with immediate verification
 		actions.setGameChallenge(challenge);
+
+		// Add a small delay to ensure state has updated
+		setTimeout(() => {
+			console.log('Challenge after setting:', gameMode.challenge);
+		}, 100);
+
 		setTimeRemaining(challenge.timeLimit);
 
 		// Clear any existing timer
@@ -138,77 +156,41 @@ const VJGame = () => {
 
 		actions.setGameFeedback("LEVEL STARTED!");
 		setTimeout(() => actions.setGameFeedback(null), 2000);
-	}, [currentLevelData, actions, gameTimer]);
+	}, [currentLevelData, actions, gameTimer, gameMode.challenge]);
 
 	// Beat detection simulation (simplified)
 	const startBeatDetection = useCallback(() => {
 		if (beatTimer) clearInterval(beatTimer);
 
-		// Simulate 120 BPM beat detection
+		// Simulate 120 BPM beat detection (matching Java implementation)
 		const bpm = 120;
-		const beatInterval = (60 / bpm) * 1000; // ms per beat
+		const beatInterval = (60 / bpm) * 1000; // ms per beat (500ms at 120 BPM)
+
+		let lastActualBeatTime = Date.now();
 
 		const timer = setInterval(() => {
-			actions.updateGameAudio({
-				beatPosition: (Date.now() % beatInterval) / beatInterval,
-				lastBeatTime: Date.now()
-			});
-		}, beatInterval / 4); // Update 4 times per beat for smooth animation
+			const currentTime = Date.now();
+			const timeSinceLastBeat = currentTime - lastActualBeatTime;
+
+			// Check if we should trigger a new beat
+			if (timeSinceLastBeat >= beatInterval) {
+				lastActualBeatTime = currentTime;
+				actions.updateGameAudio({
+					beatPosition: 1, // Peak of beat
+					lastBeatTime: currentTime
+				});
+			} else {
+				// Smooth interpolation for beat position
+				const beatPosition = timeSinceLastBeat / beatInterval;
+				actions.updateGameAudio({
+					beatPosition: beatPosition,
+					lastBeatTime: lastActualBeatTime
+				});
+			}
+		}, 50); // Update every 50ms for smooth animation
 
 		setBeatTimer(timer);
 	}, [actions, beatTimer]);
-
-	// Handle different types of game actions
-	const handleGameAction = useCallback((actionType, actionData = {}) => {
-		if (!gameMode.isActive || !currentLevelData) return;
-
-		const challenge = gameMode.challenge;
-		const requiredActions = challenge.requiredActions;
-		const completedActions = gameMode.challenge.completedActions;
-
-		// Check if this action is required
-		const isRequiredAction = requiredActions.some(req => {
-			switch (challenge.type) {
-				case 'trigger':
-					return req === `launch_${actionData.layer}` && actionType === 'launch';
-				case 'management':
-					return (req === 'launch_any' && actionType === 'launch') ||
-						(req === 'stop_any' && actionType === 'stop');
-				case 'beat':
-					return req === 'beat_trigger' && actionType === 'launch' && checkBeatTiming();
-				case 'opacity':
-					return req === 'opacity_change' && actionType === 'opacity';
-				case 'effects':
-					return req.startsWith('effect_') && actionType === 'effect' &&
-						req === `effect_${actionData.effect}`;
-				default:
-					return false;
-			}
-		});
-
-		if (isRequiredAction) {
-			// Good action!
-			const points = calculatePoints(actionType, actionData);
-			actions.updateGameScore(points);
-			actions.completeChallengeAction(actionType);
-
-			// Show feedback
-			const feedbacks = ["NICE!", "GOOD!", "PERFECT!", "AWESOME!"];
-			const feedback = feedbacks[Math.floor(Math.random() * feedbacks.length)];
-			actions.setGameFeedback(feedback);
-			setTimeout(() => actions.setGameFeedback(null), 1500);
-
-			// Check if level is complete
-			if (completedActions.length + 1 >= requiredActions.length) {
-				handleLevelComplete();
-			}
-		} else if (challenge.type !== 'freestyle') {
-			// Wrong action (except in freestyle mode)
-			actions.updateGameScore(-10);
-			actions.setGameFeedback("WRONG!");
-			setTimeout(() => actions.setGameFeedback(null), 1000);
-		}
-	}, [gameMode, currentLevelData, actions]);
 
 	// Check if action is on beat
 	const checkBeatTiming = useCallback(() => {
@@ -274,6 +256,133 @@ const VJGame = () => {
 		}, 3000);
 	}, [gameTimer, beatTimer, timeRemaining, currentLevelData, actions, gameMode.currentLevel]);
 
+	// Handle different types of game actions
+	const handleGameAction = useCallback((actionType, actionData = {}) => {
+		console.log('=== GAME ACTION ===');
+		console.log('Action:', actionType, actionData);
+		console.log('Game active:', gameMode.isActive);
+		console.log('Current level:', gameMode.currentLevel);
+		console.log('Level data exists:', !!currentLevelData);
+
+		if (!gameMode.isActive || !currentLevelData) {
+			console.log('❌ Game not active or no level data');
+			return;
+		}
+
+		// Get challenge from gameMode or fallback to currentLevelData
+		let challenge = gameMode.challenge;
+
+		if (!challenge || !challenge.type || !Array.isArray(challenge.requiredActions)) {
+			console.log('🔄 Challenge invalid, using currentLevelData challenge');
+			challenge = currentLevelData.challenge;
+
+			// Ensure we have a valid challenge structure
+			if (!challenge || !challenge.type || !Array.isArray(challenge.requiredActions)) {
+				console.error('❌ No valid challenge available');
+				return;
+			}
+
+			// Force set the challenge
+			actions.setGameChallenge(challenge);
+		}
+
+		const requiredActions = challenge.requiredActions;
+		const completedActions = gameMode.challenge?.completedActions || [];
+
+		console.log('Challenge type:', challenge.type);
+		console.log('Required actions:', requiredActions);
+		console.log('Completed actions:', completedActions);
+
+		// Check if this action is required and not already completed
+		let isRequiredAction = false;
+		let actionString = actionType;
+
+		// For Level 2 (management), we need to handle launch_any and stop_any
+		if (challenge.type === 'management') {
+			if (actionType === 'launch') {
+				actionString = 'launch_any';
+				const launchCount = completedActions.filter(a => a === 'launch_any').length;
+				const requiredLaunchCount = requiredActions.filter(a => a === 'launch_any').length;
+				isRequiredAction = requiredActions.includes('launch_any') && launchCount < requiredLaunchCount;
+				console.log('Launch action - completed:', launchCount, 'required:', requiredLaunchCount);
+			} else if (actionType === 'stop') {
+				actionString = 'stop_any';
+				const stopCount = completedActions.filter(a => a === 'stop_any').length;
+				const requiredStopCount = requiredActions.filter(a => a === 'stop_any').length;
+				isRequiredAction = requiredActions.includes('stop_any') && stopCount < requiredStopCount;
+				console.log('Stop action - completed:', stopCount, 'required:', requiredStopCount);
+			}
+		} else if (challenge.type === 'trigger') {
+			actionString = `${actionType}_${actionData.layer}`;
+			isRequiredAction = requiredActions.includes(actionString) && !completedActions.includes(actionString);
+		} else if (challenge.type === 'effects') {
+			actionString = `effect_${actionData.effect}`;
+			isRequiredAction = requiredActions.includes(actionString) && !completedActions.includes(actionString);
+		} else if (challenge.type === 'opacity') {
+			actionString = 'opacity_change';
+			isRequiredAction = requiredActions.includes(actionString) &&
+				completedActions.filter(a => a === 'opacity_change').length < requiredActions.filter(a => a === 'opacity_change').length;
+		} else if (challenge.type === 'beat') {
+			actionString = 'beat_trigger';
+			isRequiredAction = requiredActions.includes(actionString) && checkBeatTiming() &&
+				completedActions.filter(a => a === 'beat_trigger').length < requiredActions.filter(a => a === 'beat_trigger').length;
+		} else if (challenge.type === 'slider') {
+			if (actionType === 'opacity' && actionData.cycle) {
+				// Track slider movement cycles (complete cycle from min to max or max to min)
+				actionString = 'slider_cycle';
+				isRequiredAction = requiredActions.includes(actionString) &&
+					completedActions.filter(a => a === 'slider_cycle').length < requiredActions.filter(a => a === 'slider_cycle').length;
+			}
+		} else if (challenge.type === 'beat_extended') {
+			// Level 5: beat triggers on second row buttons (Q/W/E/R mapped to effects)
+			if (actionType === 'effect' && checkBeatTiming()) {
+				actionString = 'beat_trigger_row2';
+				isRequiredAction = requiredActions.includes(actionString) &&
+					completedActions.filter(a => a === 'beat_trigger_row2').length < requiredActions.filter(a => a === 'beat_trigger_row2').length;
+			}
+		} else if (challenge.type === 'horizontal_sliders') {
+			// Level 6: horizontal slider cycling (Z/X keys for zoom)
+			if (actionType === 'effect' && actionData.effect === 'zoom' && actionData.cycle) {
+				actionString = 'horizontal_cycle';
+				isRequiredAction = requiredActions.includes(actionString) &&
+					completedActions.filter(a => a === 'horizontal_cycle').length < requiredActions.filter(a => a === 'horizontal_cycle').length;
+			}
+		}
+
+		console.log('Action string:', actionString);
+		console.log('Is required action:', isRequiredAction);
+
+		if (isRequiredAction) {
+			// Good action!
+			console.log('✅ GOOD ACTION!');
+			const points = calculatePoints(actionType, actionData);
+			actions.updateGameScore(points);
+			actions.completeChallengeAction(actionString);
+
+			// Show feedback
+			const feedbacks = ["NICE!", "GOOD!", "PERFECT!", "AWESOME!"];
+			const feedback = feedbacks[Math.floor(Math.random() * feedbacks.length)];
+			actions.setGameFeedback(feedback);
+			setTimeout(() => actions.setGameFeedback(null), 1500);
+
+			// Check if level is complete
+			const newCompletedCount = completedActions.length + 1;
+			console.log('Progress:', newCompletedCount, '/', requiredActions.length);
+			if (newCompletedCount >= requiredActions.length) {
+				console.log('🎉 LEVEL COMPLETE!');
+				setTimeout(handleLevelComplete, 500); // Small delay to show final feedback
+			}
+		} else if (challenge.type !== 'freestyle') {
+			// Wrong action (except in freestyle mode)
+			console.log('❌ WRONG ACTION');
+			actions.updateGameScore(-10);
+			actions.setGameFeedback("WRONG!");
+			setTimeout(() => actions.setGameFeedback(null), 1000);
+		}
+
+		console.log('=== END GAME ACTION ===');
+	}, [gameMode, currentLevelData, actions, calculatePoints, checkBeatTiming, handleLevelComplete]);
+
 	// Handle level failure
 	const handleLevelFail = useCallback(() => {
 		if (gameTimer) {
@@ -284,6 +393,10 @@ const VJGame = () => {
 			clearInterval(beatTimer);
 			setBeatTimer(null);
 		}
+
+		// Reset visuals on failure too
+		actions.resetEffects();
+		[1, 2, 3, 4].forEach(layer => actions.stopLayer(layer));
 
 		actions.setGameFeedback("TIME'S UP! TRY AGAIN");
 
@@ -323,6 +436,11 @@ const VJGame = () => {
 		}
 	}, [gameMode.isActive, gameMode.currentLevel, timeRemaining, startLevel]);
 
+	// Debug: Monitor gameMode.challenge changes
+	useEffect(() => {
+		console.log('gameMode.challenge changed:', gameMode.challenge);
+	}, [gameMode.challenge]);
+
 	if (!gameMode.isActive) {
 		return null;
 	}
@@ -352,22 +470,22 @@ const VJGame = () => {
 						TIME: {Math.ceil(timeRemaining / 1000)}s
 					</div>
 					<div className="actions-remaining">
-						{gameMode.challenge.completedActions.length} / {gameMode.challenge.requiredActions.length}
+						{(gameMode.challenge?.completedActions?.length || 0)} / {(gameMode.challenge?.requiredActions?.length || 0)}
 					</div>
 				</div>
 				<div className="progress-bar">
 					<div
 						className="progress-fill"
 						style={{
-							width: `${(gameMode.challenge.completedActions.length /
-								(gameMode.challenge.requiredActions.length || 1)) * 100}%`
+							width: `${((gameMode.challenge?.completedActions?.length || 0) /
+								(gameMode.challenge?.requiredActions?.length || 1)) * 100}%`
 						}}
 					/>
 				</div>
 			</div>
 
 			{/* Beat Indicator (for rhythm levels) - Now inside panel */}
-			{(currentLevelData?.challenge.type === 'beat' || currentLevelData?.challenge.type === 'freestyle') && (
+			{(currentLevelData?.challenge.type === 'beat' || currentLevelData?.challenge.type === 'beat_extended' || currentLevelData?.challenge.type === 'freestyle') && (
 				<div className="beat-indicator">
 					<div
 						className={`beat-pulse ${Math.abs(gameMode.audio.beatPosition - 0.5) < 0.1 ? 'on-beat' : ''}`}
@@ -442,25 +560,45 @@ const VJGame = () => {
 	// Helper function to show current action hints
 	function getActionHint() {
 		const challenge = gameMode.challenge;
+
+		// Handle null challenge case
+		if (!challenge || !challenge.requiredActions || !challenge.completedActions) {
+			return "Loading challenge...";
+		}
+
 		const completed = challenge.completedActions.length;
 		const required = challenge.requiredActions;
 
 		if (completed >= required.length) return "LEVEL COMPLETE!";
 
-		const nextAction = required[completed];
+		// Find the next required action that hasn't been completed
+		const nextAction = required.find(req => !challenge.completedActions.includes(req));
+
+		if (!nextAction) return "LEVEL COMPLETE!";
 
 		switch (challenge.type) {
 			case 'trigger':
 				const layerNum = nextAction.split('_')[1];
 				return `Press ${layerNum} to launch video on Layer ${layerNum}`;
 			case 'management':
-				return nextAction.includes('launch') ?
-					"Launch any video (Press 1-4)" :
-					"Stop any layer (Shift+1-4)";
+				const launchCount = challenge.completedActions.filter(a => a === 'launch_any').length;
+				const stopCount = challenge.completedActions.filter(a => a === 'stop_any').length;
+
+				if (nextAction === 'launch_any') {
+					return `Launch video ${launchCount + 1}/2 (Press 1-4)`;
+				} else {
+					return `Stop layer ${stopCount + 1}/2 (Shift+1-4)`;
+				}
 			case 'beat':
 				return "Wait for the BEAT indicator to glow, then press 1-4";
-			case 'opacity':
-				return "Adjust blur using A/S keys";
+			case 'slider':
+				const cycleCount = challenge.completedActions.filter(a => a === 'slider_cycle').length;
+				return `Move blur slider fully UP and DOWN (${cycleCount + 1}/6 cycles) - Use A/S keys`;
+			case 'beat_extended':
+				return "Wait for the BEAT, then press Q/W/E/R for effects";
+			case 'horizontal_sliders':
+				const hCycleCount = challenge.completedActions.filter(a => a === 'horizontal_cycle').length;
+				return `Cycle zoom slider fully (${hCycleCount + 1}/3 cycles) - Use Z/X keys`;
 			case 'effects':
 				const effect = nextAction.split('_')[1];
 				const keyMap = {

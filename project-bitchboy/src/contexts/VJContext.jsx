@@ -143,7 +143,9 @@ function vjReducer(state, action) {
 			};
 
 		case VJ_ACTIONS.STOP_LAYER:
-			return {
+			console.log('🔴 VJ_ACTIONS.STOP_LAYER triggered for layer:', action.layer);
+			console.log('🔴 Before state:', state.layers[action.layer]);
+			const newState = {
 				...state,
 				layers: {
 					...state.layers,
@@ -154,6 +156,8 @@ function vjReducer(state, action) {
 					}
 				}
 			};
+			console.log('🔴 After state:', newState.layers[action.layer]);
+			return newState;
 
 		case VJ_ACTIONS.SET_LAYER_OPACITY:
 			return {

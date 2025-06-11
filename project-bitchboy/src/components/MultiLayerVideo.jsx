@@ -123,24 +123,39 @@ const MultiLayerVideo = () => {
 
 	// Handle video playback and opacity changes
 	useEffect(() => {
+		console.log('🎬 MultiLayerVideo: layers state changed:', layers);
 		Object.entries(layers).forEach(([layerNum, layer]) => {
 			const videoRef = videoRefs[layerNum];
 			if (!videoRef.current) return;
 
 			const videoElement = videoRef.current;
 
+			console.log(`🎬 Layer ${layerNum}:`, {
+				video: layer.video,
+				isPlaying: layer.isPlaying,
+				shouldShow: layer.video && layer.isPlaying
+			});
+
 			// Handle video source changes
 			if (layer.video && layer.isPlaying) {
 				const newSrc = `/movs/${layer.video}`;
 				if (videoElement.src !== newSrc) {
+					console.log(`🎬 Loading new video for layer ${layerNum}:`, newSrc);
 					videoElement.src = newSrc;
 					videoElement.load();
-					videoElement.play().catch(console.error);
+					videoElement.play().catch(err => {
+						console.warn(`Video play failed for layer ${layerNum}:`, err);
+						// Try to continue anyway
+					});
 				}
 				videoElement.style.display = 'block';
+				console.log(`🎬 Layer ${layerNum} set to visible`);
 			} else {
 				videoElement.style.display = 'none';
-				videoElement.pause();
+				if (!videoElement.paused) {
+					videoElement.pause();
+				}
+				console.log(`🎬 Layer ${layerNum} set to hidden (video: ${layer.video}, isPlaying: ${layer.isPlaying})`);
 			}
 		});
 	}, [layers[1].video, layers[1].isPlaying, layers[2].video, layers[2].isPlaying, layers[3].video, layers[3].isPlaying, layers[4].video, layers[4].isPlaying]); // Only depend on video/playing state
