@@ -1,16 +1,19 @@
 .pricing-page {
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
   align-content: center;
   height: 70vh;
   width: 100%;
 }
 
+/* Product card */
+
 .container {
+  right: 100px;
   position: relative;
-  width: 800px;
-  height: 500px;
+  width: 750px;
+  height: 480px;
   transition: 200ms;
 }
 
@@ -27,7 +30,7 @@
   max-width: 90%; 
   max-height: 70%; 
   user-select: none;
-  z-index: 0; /* Make sure it’s above background but below any overlays if needed */
+  z-index: 0;
 }
 
 #card {
@@ -39,7 +42,7 @@
   align-items: center;
   border-radius: 20px;
   transition: 700ms;
-  background: rgba(255, 255, 255, 0.2);
+  background: linear-gradient(45deg, #1a1a1a, #262626);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 2px solid rgba(255, 255, 255, 0.1);
@@ -650,7 +653,6 @@
   }
 }
 
-/* Modyfikacja istniejących styli */
 #card:hover .card-glare {
   opacity: 1;
 }
@@ -663,3 +665,297 @@
   border-color: rgba(92, 103, 255, 0.8);
   box-shadow: 0 0 10px rgba(92, 103, 255, 0.5);
 }
+
+
+/* Link to Kickstarter card */
+
+.container2 {
+  background-color: #e0f7fa; /* Light teal background */
+  display: flex;
+  width: 300px;
+  height: 75px;
+  position: relative;
+  border-radius: 5px;
+  transition:
+    transform 0.3s ease-in-out,
+    box-shadow 0.3s ease-in-out;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.container2:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.container2:hover .left-side {
+  width: 100%;
+  border-radius: 5px;
+}
+
+.left-side {
+  background: linear-gradient(45deg, #00ffaa, #0037ff); /* Teal gradient */
+  width: 85px;
+  height: 75px;
+  border-radius: 4px 0 0 4px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: width 0.3s ease-in-out;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.right-side {
+  width: calc(100% - 85px);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  cursor: pointer;
+  justify-content: space-between;
+  white-space: nowrap;
+  position: relative;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.right-side:hover {
+  background-color: #b2ebf2; /* Lighter teal hover */
+}
+
+.right-side::before {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  transition:
+    width 0.4s ease-out,
+    height 0.4s ease-out;
+}
+
+.right-side:hover::before {
+  width: 200px;
+  height: 200px;
+  opacity: 0;
+} /* Ripple effect on hover */
+
+.arrow {
+  width: 14px;
+  height: 14px;
+  margin-right: 12px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.right-side:hover .arrow {
+  transform: translateX(5px);
+} /* Arrow slides right on hover */
+
+.new {
+  font-size: 15px;
+  font-family: "Inter", sans-serif;
+  margin-left: auto;
+  margin-right: auto;
+  color: #1a3c34;
+  transition: color 0.3s ease-in-out;
+}
+
+.right-side:hover .new {
+  color: #00695c; /* Darker teal on hover */
+}
+
+.card {
+  width: 48px;
+  height: 30px;
+  background-color: #80deea; /* Light teal */
+  border-radius: 4px;
+  position: absolute;
+  display: flex;
+  z-index: 10;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 5px 5px 5px -2px rgba(38, 166, 154, 0.4);
+}
+
+.card-line {
+  width: 42px;
+  height: 8px;
+  background-color: #b2ebf2; /* Lighter teal */
+  border-radius: 1px;
+  margin-top: 4px;
+}
+
+@media only screen and (max-width: 480px) {
+  .container2 {
+    transform: scale(0.6);
+  }
+
+  .container2:hover {
+    transform: scale(0.63);
+  }
+
+  .new {
+    font-size: 13px;
+  }
+}
+
+.buttons {
+  width: 5px;
+  height: 5px;
+  background-color: #00796b; /* Dark teal */
+  box-shadow:
+    0 -6px 0 0 #004d40,
+    0 6px 0 0 #26a69a;
+  border-radius: 50%;
+  margin-top: 3px;
+  transform: rotate(90deg);
+  margin: 6px 0 0 -18px;
+}
+
+.container2:hover .card {
+  animation: slide-top 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55) both;
+}
+
+.container2:hover .post {
+  animation: slide-post 0.7s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+@keyframes slide-top {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-45px) rotate(90deg);
+  }
+  60% {
+    transform: translateY(-45px) rotate(90deg);
+  }
+  100% {
+    transform: translateY(-5px) rotate(90deg);
+  }
+}
+
+.post {
+  width: 42px;
+  height: 50px;
+  background-color: #f5f5f5;
+  position: absolute;
+  z-index: 11;
+  bottom: 6px;
+  top: 75px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.post-line {
+  width: 32px;
+  height: 5px;
+  background-color: #555;
+  position: absolute;
+  border-radius: 0 0 2px 2px;
+  right: 5px;
+  top: 5px;
+}
+
+.post-line:before {
+  content: "";
+  position: absolute;
+  width: 32px;
+  height: 5px;
+  background-color: #777;
+  top: -5px;
+}
+
+.screen {
+  width: 32px;
+  height: 15px;
+  background-color: #ffffff;
+  position: absolute;
+  top: 14px;
+  right: 5px;
+  border-radius: 2px;
+}
+
+.numbers {
+  width: 7px;
+  height: 7px;
+  background-color: #888;
+  box-shadow:
+    0 -11px 0 0 #888,
+    0 11px 0 0 #888;
+  border-radius: 1px;
+  position: absolute;
+  transform: rotate(90deg);
+  left: 17px;
+  top: 34px;
+}
+
+.numbers-line2 {
+  width: 7px;
+  height: 7px;
+  background-color: #aaa;
+  box-shadow:
+    0 -11px 0 0 #aaa,
+    0 11px 0 0 #aaa;
+  border-radius: 1px;
+  position: absolute;
+  transform: rotate(90deg);
+  left: 17px;
+  top: 45px;
+}
+
+@keyframes slide-post {
+  50% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-45px);
+  }
+}
+
+.icon {
+  position: absolute;
+  font-size: 11px;
+  font-family: "Inter", sans-serif;
+  width: 100%;
+  left: 0;
+  top: 0;
+  color: green; /* Red for alert */
+  text-align: center;
+  animation: bounce 2s infinite;
+}
+
+.container2:hover .icon {
+  animation:
+    fade-in-fwd 0.3s 0.7s backwards,
+    bounce 2s infinite;
+}
+
+@keyframes fade-in-fwd {
+  0% {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+
+
