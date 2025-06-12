@@ -12,6 +12,7 @@
   "dependencies": {
     "@react-three/drei": "^10.1.2",
     "@react-three/fiber": "^9.1.2",
+    "animejs": "^4.0.2",
     "@react-three/rapier": "^2.1.0",
     "gsap": "^3.13.0",
     "meshline": "^3.3.1",

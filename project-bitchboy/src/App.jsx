@@ -5,6 +5,7 @@ import AboutPage from './pages/AboutPage.jsx';
 import DemoPage from './pages/DemoPage.jsx';
 import PricingPage from './pages/PricingPage.jsx';
 import BlogPage from './pages/BlogPage.jsx';
+import InteractivePage from './pages/InteractivePage.jsx'
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
                   <Route path="/demo" element={<DemoPage/>}/>
                   <Route path="/pricing" element={<PricingPage/>}/>
                   <Route path="/blog" element={<BlogPage/>}/>
+                  <Route path="/interactive-demo" element={<InteractivePage/>}/>
               </Routes>
           </div>
       </BrowserRouter>
