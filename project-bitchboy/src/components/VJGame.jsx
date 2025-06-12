@@ -93,17 +93,28 @@ const VJGame = () => {
 	const [gameTimer, setGameTimer] = useState(null);
 	const [beatTimer, setBeatTimer] = useState(null);
 	const [audioContext, setAudioContext] = useState(null);
+	const [musicInitialized, setMusicInitialized] = useState(false);
 
 	// Current level data
 	const currentLevelData = GAME_LEVELS[gameMode.currentLevel];
 
-	// Initialize audio context for beat detection
+	// Initialize audio context and music manager
 	useEffect(() => {
 		if (gameMode.isActive && !audioContext) {
 			const ctx = new (window.AudioContext || window.webkitAudioContext)();
 			setAudioContext(ctx);
 		}
-	}, [gameMode.isActive, audioContext]);
+
+		// Initialize music manager when game becomes active
+		if (gameMode.isActive && !musicInitialized) {
+			console.log('🎵 Initializing music manager...');
+			// Give music manager time to load files
+			setTimeout(() => {
+				setMusicInitialized(true);
+				console.log('🎵 Music manager ready');
+			}, 2000);
+		}
+	}, [gameMode.isActive, audioContext, musicInitialized]);
 
 	// Start level timer
 	const startLevel = useCallback(() => {
@@ -152,31 +163,39 @@ const VJGame = () => {
 
 		// Start music and beat detection for the level
 		const level = gameMode.currentLevel;
-		console.log(`🎵 Starting music for level ${level}`);
+		console.log(`🎵 Starting music for level ${level}, Music ready: ${musicInitialized}`);
 
 		// Check if we need beat detection for this level
 		const needsBeatDetection = challenge.type === 'beat' || challenge.type === 'beat_extended' || challenge.type === 'freestyle';
 
-		if (needsBeatDetection) {
-			// Start music with beat detection callback
-			musicManager.playLevel(level, () => {
-				// This callback is called on each beat
-				const currentTime = Date.now();
-				console.log('🎵 BEAT! Time for button press!');
+		if (musicInitialized) {
+			if (needsBeatDetection) {
+				// Start music with beat detection callback
+				musicManager.playLevel(level, () => {
+					// This callback is called on each beat
+					const currentTime = Date.now();
+					console.log('🎵 BEAT! Time for button press!');
 
-				actions.updateGameAudio({
-					beatPosition: 1, // Peak of beat
-					lastBeatTime: currentTime
+					actions.updateGameAudio({
+						beatPosition: 1, // Peak of beat
+						lastBeatTime: currentTime
+					});
 				});
-			});
+			} else {
+				// Start music without beat detection
+				musicManager.playLevel(level);
+			}
 		} else {
-			// Start music without beat detection
-			musicManager.playLevel(level);
+			console.log('⏳ Music manager not ready yet, will use fallback beat');
+			if (needsBeatDetection) {
+				// Use fallback beat detection
+				startBeatDetection();
+			}
 		}
 
 		actions.setGameFeedback("LEVEL STARTED!");
 		setTimeout(() => actions.setGameFeedback(null), 2000);
-	}, [currentLevelData, actions, gameTimer, gameMode.challenge, gameMode.currentLevel]);
+	}, [currentLevelData, actions, gameTimer, gameMode.challenge, gameMode.currentLevel, musicInitialized]);
 
 	// Beat detection simulation (simplified)
 	const startBeatDetection = useCallback(() => {
@@ -430,6 +449,8 @@ const VJGame = () => {
 
 	// Handle level failure
 	const handleLevelFail = useCallback(() => {
+		console.log('⏰ Level failed - cleaning up');
+
 		if (gameTimer) {
 			clearInterval(gameTimer);
 			setGameTimer(null);
@@ -443,15 +464,23 @@ const VJGame = () => {
 		musicManager.stop();
 		musicManager.playFailSound();
 
-		// Reset visuals on failure too
-		actions.resetEffects();
-		[1, 2, 3, 4].forEach(layer => actions.stopLayer(layer));
+		// Reset visuals on failure too (with safeguard)
+		try {
+			actions.resetEffects();
+			[1, 2, 3, 4].forEach(layer => {
+				console.log(`🛑 Stopping layer ${layer} on fail`);
+				actions.stopLayer(layer);
+			});
+		} catch (error) {
+			console.error('Error stopping layers:', error);
+		}
 
 		actions.setGameFeedback("TIME'S UP! TRY AGAIN");
 
 		// Restart level after 2 seconds
 		setTimeout(() => {
 			actions.setGameFeedback(null);
+			console.log('🔄 Restarting level after fail');
 			startLevel();
 		}, 2000);
 	}, [gameTimer, beatTimer, actions, startLevel]);
@@ -489,14 +518,17 @@ const VJGame = () => {
 	// Auto-start first level when game mode activates
 	useEffect(() => {
 		if (gameMode.isActive && gameMode.currentLevel === 1 && timeRemaining === 0) {
+			console.log('🎮 Auto-starting Level 1');
 			setTimeout(startLevel, 1000); // Give UI time to render
 		}
 	}, [gameMode.isActive, gameMode.currentLevel, timeRemaining, startLevel]);
 
-	// Debug: Monitor gameMode.challenge changes
+	// Debug: Monitor gameMode.challenge changes (reduced logging)
 	useEffect(() => {
-		console.log('gameMode.challenge changed:', gameMode.challenge);
-	}, [gameMode.challenge]);
+		if (gameMode.challenge?.type) {
+			console.log('Challenge set:', gameMode.challenge.type, 'Required:', gameMode.challenge.requiredActions?.length);
+		}
+	}, [gameMode.challenge?.type]);
 
 	if (!gameMode.isActive) {
 		return null;

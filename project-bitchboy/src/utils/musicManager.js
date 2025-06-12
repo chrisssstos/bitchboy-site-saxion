@@ -40,7 +40,10 @@ class MusicManager {
 
 		const extensions = ['wav', 'mp3', 'ogg'];
 
+		console.log('🎵 Starting to load music files...');
+
 		for (const file of musicFiles) {
+			let fileFound = false;
 			for (const ext of extensions) {
 				try {
 					const audio = new Audio(`/music/${file}.${ext}`);
@@ -48,18 +51,35 @@ class MusicManager {
 
 					// Test if file exists by trying to load it
 					await new Promise((resolve, reject) => {
-						audio.addEventListener('canplaythrough', resolve, { once: true });
-						audio.addEventListener('error', reject, { once: true });
+						const timeout = setTimeout(() => {
+							reject(new Error('Load timeout'));
+						}, 5000); // 5 second timeout
+
+						audio.addEventListener('canplaythrough', () => {
+							clearTimeout(timeout);
+							resolve();
+						}, { once: true });
+
+						audio.addEventListener('error', (e) => {
+							clearTimeout(timeout);
+							reject(e);
+						}, { once: true });
+
 						audio.load();
 					});
 
 					this.musicFiles[file] = audio;
-					console.log(`✅ Loaded music file: ${file}.${ext}`);
+					console.log(`✅ Successfully loaded: ${file}.${ext} (Duration: ${audio.duration}s)`);
+					fileFound = true;
 					break; // Found this file, move to next
 				} catch (error) {
 					// File doesn't exist or can't load, try next extension
 					continue;
 				}
+			}
+
+			if (!fileFound) {
+				console.log(`⚠️ No file found for ${file} in any format`);
 			}
 		}
 
@@ -87,16 +107,21 @@ class MusicManager {
 	}
 
 	playLevel(level, beatCallback = null) {
+		console.log(`🎵 playLevel called for level ${level}`);
 		this.stop(); // Stop any current music
 
 		const musicKey = `bitchboys-song-${level}`;
 		const audio = this.musicFiles[musicKey];
 
+		console.log(`🔍 Looking for music key: ${musicKey}, Available:`, Object.keys(this.musicFiles));
+
 		if (!audio) {
-			console.warn(`No music file found for level ${level}, using fallback beat`);
+			console.warn(`❌ No music file found for level ${level}, using fallback beat`);
 			this.playFallbackBeat(beatCallback);
 			return;
 		}
+
+		console.log(`✅ Found audio for level ${level}, attempting to play...`);
 
 		this.currentAudio = audio;
 		this.currentLevel = level;
@@ -104,18 +129,28 @@ class MusicManager {
 
 		// Set up looping
 		audio.loop = true;
+		audio.volume = 0.7; // Set reasonable volume
+
+		console.log(`🔊 Audio ready: duration=${audio.duration}s, state=${audio.readyState}`);
 
 		// Start playback
 		audio.play().then(() => {
 			this.isPlaying = true;
-			console.log(`🎵 Playing level ${level} music`);
+			console.log(`🎵 Successfully started playing level ${level} music!`);
+			console.log(`🎵 Current time: ${audio.currentTime}, Duration: ${audio.duration}`);
 
 			// Start beat detection for this track
 			if (beatCallback) {
+				console.log(`🥁 Starting beat detection for level ${level}`);
 				this.startBeatDetection(audio);
 			}
 		}).catch(error => {
-			console.error(`Failed to play level ${level} music:`, error);
+			console.error(`❌ Failed to play level ${level} music:`, error);
+			console.error(`❌ Error details:`, {
+				name: error.name,
+				message: error.message,
+				code: error.code
+			});
 			this.playFallbackBeat(beatCallback);
 		});
 	}
