@@ -1,31 +1,36 @@
 import "./css/LandingPage.css";
-import ModelAnimated from "./../components/jsx/LandingPage/ModelAnimated.jsx";
+import ModelSpin from "./../components/jsx/LandingPage/ModelSpin.jsx";
+import ModelScrollAnimated from "./../components/jsx/LandingPage/ModelScrollAnimated.jsx"; // Add this import
+import Balatro from "./Balatro/Balatro.jsx";
 
 function LandingPage() {
   return (
-    <div style={{ minHeight: "100vh", minWidth: "100vw", background: "#0c0c0c", position: "relative" }}>
-      <ModelAnimated />
+    <div style={{ minHeight: "400vh", minWidth: "100vw", background: "#ffffff", position: "relative" }}> {/* Increased height for scrolling */}
+      <ModelScrollAnimated />
+      <ModelSpin />
+      <div className="orange-bg"></div>
       <div className="centered-logo-container">
-        <img
-          src="/images/logotextwhite.svg"
-          alt="Logo"
-          className="centered-logo-img"
-        />
+        <div className="logo-reveal-wrapper">
+          <img
+            src="/images/background/logotextblack.svg"
+            alt="Logo"
+            className="centered-logo-img"
+          />
+        </div>
       </div>
 
-      {/* Subscribe button */}
-      <button className="subscribe-button">Sign Up for Updates</button>
+      <img
+        src="/images/background/arrow.png"
+        alt="arrow"
+        className="arrow-img"
+      />
 
-      {/* Diagonal stripes */}
-      <div className="diagonal-stripe" id="stripe1"></div>
-      <div className="diagonal-stripe" id="stripe2"></div>
-      <div className="diagonal-stripe" id="stripe3"></div>
+      <div className="arrow-text">
+        Try it out here!
+      </div>
 
-      {/* Scroll Sections */}
-      <section id="section-1" className="scroll-section"></section>
-      <section id="section-2" className="scroll-section"></section>
-      <section id="section-3" className="scroll-section"></section>
-      <section id="section-4" className="scroll-section"></section>
+      <button className="subscribe-button">Connect with us!</button>
+
     </div>
   );
 }

@@ -11,25 +11,25 @@ function Footer() {
                     href="https://www.instagram.com/bitchboy.vj/"
                 >
                     <img
-                        src={"/images/logoinstagram.svg"}
+                        src={"/images/footer/instagram-black.svg"}
                         alt={"Instagram"}
                     />
                 </a>
                 <a>
                     <img
-                        src={"/images/logoyoutube.svg"}
+                        src={"/images/footer/youtube-black.svg"}
                         alt={"Youtube"}
                     />
                 </a>
                 <a>
                     <img
-                        src={"/images/logodiscord.svg"}
+                        src={"/images/footer/discord-black.svg"}
                         alt={"Discord"}
                     />
                 </a>
                 <a>
                     <img
-                        src={"/images/logofacebook.svg"}
+                        src={"/images/footer/facebook-black.svg"}
                         alt={"Facebook"}
                     />
                 </a>
