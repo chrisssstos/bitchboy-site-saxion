@@ -197,7 +197,7 @@ const VJGame = () => {
 		setTimeout(() => actions.setGameFeedback(null), 2000);
 	}, [currentLevelData, actions, gameTimer, gameMode.challenge, gameMode.currentLevel, musicInitialized]);
 
-	// Beat detection simulation (simplified)
+	// Beat detection simulation 
 	const startBeatDetection = useCallback(() => {
 		if (beatTimer) clearInterval(beatTimer);
 
@@ -216,24 +216,7 @@ const VJGame = () => {
 				lastActualBeatTime = currentTime;
 				console.log('🎵 BEAT! Time for button press!');
 
-				// Play a simple beep sound for the beat
-				try {
-					const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-					const oscillator = audioContext.createOscillator();
-					const gainNode = audioContext.createGain();
-
-					oscillator.connect(gainNode);
-					gainNode.connect(audioContext.destination);
-
-					oscillator.frequency.setValueAtTime(800, audioContext.currentTime); // High pitched beep
-					gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-					gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-
-					oscillator.start(audioContext.currentTime);
-					oscillator.stop(audioContext.currentTime + 0.1);
-				} catch (e) {
-					console.log('Audio not supported');
-				}
+				// NO ANNOYING BEEP SOUND - REMOVED!
 
 				actions.updateGameAudio({
 					beatPosition: 1, // Peak of beat
@@ -610,6 +593,43 @@ const VJGame = () => {
 					}}
 				>
 					SKIP LEVEL
+				</button>
+
+				{/* Debug: Manual music test */}
+				<button
+					className="test-button"
+					onClick={() => {
+						console.log('🎵 DIRECT music test - Level 3 WAV file');
+						// Direct test of the exact file that loaded successfully
+						const audio = new Audio('/music/bitchboys-song-3.wav');
+						audio.volume = 0.7;
+						audio.loop = false; // Don't loop for test
+
+						audio.addEventListener('loadedmetadata', () => {
+							console.log(`📊 Audio loaded: ${audio.duration}s duration`);
+						});
+
+						audio.addEventListener('canplay', () => {
+							console.log('✅ Audio ready to play');
+						});
+
+						audio.addEventListener('error', (e) => {
+							console.error('❌ Audio error:', e);
+						});
+
+						audio.play().then(() => {
+							console.log('✅ MUSIC PLAYING NOW!');
+							setTimeout(() => {
+								audio.pause();
+								console.log('⏸️ Music stopped after 5 seconds');
+							}, 5000); // Play for 5 seconds
+						}).catch(error => {
+							console.error('❌ Play failed:', error);
+						});
+					}}
+					style={{ backgroundColor: '#00ff00', marginLeft: '10px', color: 'black' }}
+				>
+					🎵 PLAY LEVEL 3 MUSIC NOW
 				</button>
 			</div>
 

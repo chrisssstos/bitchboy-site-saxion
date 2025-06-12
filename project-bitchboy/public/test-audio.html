@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Audio Diagnostic Test</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 20px;
+		}
+
+		.test-section {
+			margin: 20px 0;
+			padding: 15px;
+			border: 1px solid #ccc;
+		}
+
+		.success {
+			color: green;
+		}
+
+		.error {
+			color: red;
+		}
+
+		.info {
+			color: blue;
+		}
+
+		button {
+			padding: 10px;
+			margin: 5px;
+		}
+
+		#log {
+			background: #f0f0f0;
+			padding: 10px;
+			height: 200px;
+			overflow-y: scroll;
+			font-family: monospace;
+		}
+	</style>
+</head>
+
+<body>
+	<h1>🎵 Audio Diagnostic Test</h1>
+
+	<div class="test-section">
+		<h2>1. Direct File Access Test</h2>
+		<p>Click this link to test direct access:</p>
+		<a href="/music/bitchboys-song-3.mp3" target="_blank">📁 /music/bitchboys-song-3.mp3</a>
+		<p><em>Should download or play the file. If you see HTML/404, the file isn't being served.</em></p>
+	</div>
+
+	<div class="test-section">
+		<h2>2. HTML Audio Element Test</h2>
+		<audio id="htmlAudio" controls style="width: 100%;">
+			<source src="/music/bitchboys-song-3.mp3" type="audio/mpeg">
+			Your browser does not support the audio element.
+		</audio>
+		<p><em>If this shows an error or won't play, there's a format/serving issue.</em></p>
+	</div>
+
+	<div class="test-section">
+		<h2>3. JavaScript Audio Test</h2>
+		<button onclick="testJavaScriptAudio()">🎵 Test JavaScript Audio</button>
+		<button onclick="testWithUserGesture()">🎵 Test with User Gesture</button>
+		<button onclick="testFetch()">📡 Test Fetch Request</button>
+		<button onclick="clearLog()">🗑️ Clear Log</button>
+	</div>
+
+	<div class="test-section">
+		<h2>4. Browser Support Test</h2>
+		<button onclick="testBrowserSupport()">🔍 Check Browser Support</button>
+	</div>
+
+	<div class="test-section">
+		<h2>5. Log Output</h2>
+		<div id="log"></div>
+	</div>
+
+	<script>
+		function log(message, type = 'info') {
+			const logDiv = document.getElementById('log');
+			const timestamp = new Date().toLocaleTimeString();
+			const className = type === 'error' ? 'error' : type === 'success' ? 'success' : 'info';
+			logDiv.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+			logDiv.scrollTop = logDiv.scrollHeight;
+			console.log(message);
+		}
+
+		function clearLog() {
+			document.getElementById('log').innerHTML = '';
+		}
+
+		async function testFetch() {
+			log('🔍 Testing fetch request to /music/bitchboys-song-3.mp3...');
+
+			try {
+				const response = await fetch('/music/bitchboys-song-3.mp3');
+				log(`📡 Fetch response status: ${response.status} ${response.statusText}`);
+				log(`📡 Content-Type: ${response.headers.get('content-type')}`);
+				log(`📡 Content-Length: ${response.headers.get('content-length')}`);
+
+				if (response.ok) {
+					log('✅ Fetch successful - file is accessible!', 'success');
+				} else {
+					log(`❌ Fetch failed - HTTP ${response.status}`, 'error');
+				}
+			} catch (error) {
+				log(`❌ Fetch error: ${error.message}`, 'error');
+			}
+		}
+
+		function testJavaScriptAudio() {
+			log('🎵 Testing JavaScript Audio object...');
+
+			const audio = new Audio('/music/bitchboys-song-3.mp3');
+
+			audio.addEventListener('loadstart', () => log('📥 Audio: loadstart'));
+			audio.addEventListener('loadedmetadata', () => {
+				log(`📊 Audio: metadata loaded - Duration: ${audio.duration}s`);
+			});
+			audio.addEventListener('canplay', () => log('✅ Audio: canplay', 'success'));
+			audio.addEventListener('canplaythrough', () => log('✅ Audio: canplaythrough', 'success'));
+			audio.addEventListener('error', (e) => {
+				log(`❌ Audio error: ${e.message}`, 'error');
+				if (audio.error) {
+					log(`❌ Audio error code: ${audio.error.code}`, 'error');
+					log(`❌ Audio error message: ${audio.error.message}`, 'error');
+				}
+			});
+
+			audio.load();
+		}
+
+		function testWithUserGesture() {
+			log('🎵 Testing audio playback with user gesture...');
+
+			const audio = new Audio('/music/bitchboys-song-3.mp3');
+			audio.volume = 0.3;
+
+			audio.addEventListener('loadedmetadata', () => {
+				log(`📊 Metadata loaded - Duration: ${audio.duration}s`);
+			});
+
+			audio.play().then(() => {
+				log('✅ Audio playback started successfully!', 'success');
+				setTimeout(() => {
+					audio.pause();
+					log('⏸️ Audio paused after 2 seconds');
+				}, 2000);
+			}).catch(error => {
+				log(`❌ Audio playback failed: ${error.message}`, 'error');
+			});
+		}
+
+		function testBrowserSupport() {
+			log('🔍 Checking browser audio support...');
+
+			const audio = document.createElement('audio');
+
+			// Test MP3 support
+			const mp3Support = audio.canPlayType('audio/mpeg');
+			log(`🎵 MP3 support: ${mp3Support || 'none'}`);
+
+			// Test other formats
+			const wavSupport = audio.canPlayType('audio/wav');
+			log(`🎵 WAV support: ${wavSupport || 'none'}`);
+
+			const oggSupport = audio.canPlayType('audio/ogg');
+			log(`🎵 OGG support: ${oggSupport || 'none'}`);
+
+			// Test Web Audio API
+			const webAudioSupport = !!(window.AudioContext || window.webkitAudioContext);
+			log(`🎵 Web Audio API support: ${webAudioSupport ? 'yes' : 'no'}`);
+
+			// Test autoplay policy
+			log('🎵 Testing autoplay policy...');
+			const testAudio = new Audio('/music/bitchboys-song-3.mp3');
+			testAudio.volume = 0;
+			testAudio.play().then(() => {
+				log('✅ Autoplay allowed', 'success');
+				testAudio.pause();
+			}).catch(() => {
+				log('⚠️ Autoplay blocked - user gesture required');
+			});
+		}
+
+		// Auto-run some tests on page load
+		window.addEventListener('load', () => {
+			log('🚀 Page loaded, running initial tests...');
+			testBrowserSupport();
+			testFetch();
+		});
+	</script>
+</body>
+
+</html>

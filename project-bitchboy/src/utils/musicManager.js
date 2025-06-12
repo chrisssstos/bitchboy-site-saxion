@@ -38,7 +38,7 @@ class MusicManager {
 			'bitchboys-song-7'
 		];
 
-		const extensions = ['wav', 'mp3', 'ogg'];
+		const extensions = ['mp3', 'wav', 'ogg']; // Try mp3 first since that's what we have
 
 		console.log('🎵 Starting to load music files...');
 
@@ -46,14 +46,21 @@ class MusicManager {
 			let fileFound = false;
 			for (const ext of extensions) {
 				try {
+					// First, check if file exists using fetch (avoids audio errors)
+					const response = await fetch(`/music/${file}.${ext}`, { method: 'HEAD' });
+					if (!response.ok) {
+						continue; // File doesn't exist, try next extension
+					}
+
+					// File exists, now create audio element
 					const audio = new Audio(`/music/${file}.${ext}`);
 					audio.preload = 'metadata';
 
-					// Test if file exists by trying to load it
+					// Test if file can be loaded as audio
 					await new Promise((resolve, reject) => {
 						const timeout = setTimeout(() => {
 							reject(new Error('Load timeout'));
-						}, 5000); // 5 second timeout
+						}, 3000); // 3 second timeout
 
 						audio.addEventListener('canplaythrough', () => {
 							clearTimeout(timeout);
@@ -111,9 +118,26 @@ class MusicManager {
 		this.stop(); // Stop any current music
 
 		const musicKey = `bitchboys-song-${level}`;
-		const audio = this.musicFiles[musicKey];
+		let audio = this.musicFiles[musicKey];
 
 		console.log(`🔍 Looking for music key: ${musicKey}, Available:`, Object.keys(this.musicFiles));
+
+		// If no preloaded audio, try to create one directly
+		if (!audio) {
+			console.log(`🔄 No preloaded audio, trying direct load for level ${level}`);
+			const extensions = ['mp3', 'wav', 'ogg'];
+
+			for (const ext of extensions) {
+				try {
+					audio = new Audio(`/music/bitchboys-song-${level}.${ext}`);
+					audio.preload = 'auto';
+					console.log(`🎵 Trying direct load: /music/bitchboys-song-${level}.${ext}`);
+					break;
+				} catch (error) {
+					continue;
+				}
+			}
+		}
 
 		if (!audio) {
 			console.warn(`❌ No music file found for level ${level}, using fallback beat`);
@@ -134,9 +158,10 @@ class MusicManager {
 		console.log(`🔊 Audio ready: duration=${audio.duration}s, state=${audio.readyState}`);
 
 		// Start playback
+		console.log(`🎵 Attempting to play audio...`);
 		audio.play().then(() => {
 			this.isPlaying = true;
-			console.log(`🎵 Successfully started playing level ${level} music!`);
+			console.log(`🎵 ✅ MUSIC IS PLAYING! Level ${level} music started successfully!`);
 			console.log(`🎵 Current time: ${audio.currentTime}, Duration: ${audio.duration}`);
 
 			// Start beat detection for this track
@@ -151,6 +176,7 @@ class MusicManager {
 				message: error.message,
 				code: error.code
 			});
+			console.log(`🔄 Falling back to silent beat detection`);
 			this.playFallbackBeat(beatCallback);
 		});
 	}
@@ -175,7 +201,7 @@ class MusicManager {
 	}
 
 	playFallbackBeat(beatCallback) {
-		// Fallback when no music file is available
+		// Fallback when no music file is available - SILENT VERSION
 		this.beatCallback = beatCallback;
 		this.isPlaying = true;
 
@@ -189,7 +215,7 @@ class MusicManager {
 				}
 			}, beatInterval);
 
-			console.log('🥁 Using fallback beat detection (no music file)');
+			console.log('🥁 Using fallback beat detection (SILENT - no annoying sounds)');
 		}
 	}
 
@@ -224,22 +250,9 @@ class MusicManager {
 	}
 
 	playBeep(frequency = 800, duration = 0.1) {
-		if (!this.audioContext) return;
-
-		const oscillator = this.audioContext.createOscillator();
-		const gainNode = this.audioContext.createGain();
-
-		oscillator.connect(gainNode);
-		gainNode.connect(this.audioContext.destination);
-
-		oscillator.frequency.value = frequency;
-		oscillator.type = 'sine';
-
-		gainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
-		gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
-
-		oscillator.start(this.audioContext.currentTime);
-		oscillator.stop(this.audioContext.currentTime + duration);
+		// DISABLED - No more annoying beeps!
+		console.log('🔇 Beep sound disabled (was annoying)');
+		return;
 	}
 
 	setVolume(level, volume) {

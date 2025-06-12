@@ -1,4 +1,4 @@
-# Start VJ Game Development Server
+Y# Start VJ Game Development Server
 # This script handles PowerShell compatibility issues
 
 Write-Host "🎮 Starting VJ Game Development Server..." -ForegroundColor Green
