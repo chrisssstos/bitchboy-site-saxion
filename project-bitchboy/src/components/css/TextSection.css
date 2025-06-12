@@ -1,0 +1,19 @@
+.text-section {
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+}
+
+.text-section-title {
+    color: var(--color-white, #ffffff);
+    font-family: Bahnschrift, serif;
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.text-section-text {
+    color: var(--color-white, #ffffff);
+    font-family: Bahnschrift, serif;
+    font-size: 1.125rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
