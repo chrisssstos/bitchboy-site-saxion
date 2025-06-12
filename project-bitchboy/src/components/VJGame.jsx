@@ -33,9 +33,9 @@ const GAME_LEVELS = {
 		instructions: "Press buttons 1-4 ON THE BEAT - listen for the rhythm!",
 		challenge: {
 			type: 'beat',
-			requiredActions: ['beat_trigger', 'beat_trigger', 'beat_trigger'],
+			requiredActions: Array(20).fill('beat_trigger'), // 20 beat presses required
 			timeLimit: 60000,
-			beatTolerance: 150 // ms tolerance for beat matching
+			beatTolerance: 200 // ms tolerance for beat matching (more forgiving)
 		},
 		points: 200
 	}
@@ -169,22 +169,34 @@ const VJGame = () => {
 			console.log(`🎵 Attempting to play bitchboys-song-3.wav directly...`);
 			audio.play().then(() => {
 				console.log(`🎵 ✅ MUSIC IS PLAYING! Level 3 success!`);
+
+				// Start beat detection SYNCHRONIZED with music start
+				if (needsBeatDetection) {
+					console.log(`🎵 Starting SYNCHRONIZED beat detection for level ${level}`);
+					// Small delay to ensure audio is actually playing
+					setTimeout(() => startBeatDetection(), 100);
+				}
 			}).catch(error => {
 				console.error(`🎵 ❌ Music failed:`, error);
+				// Start beat detection anyway for fallback
+				if (needsBeatDetection) {
+					console.log(`🎵 Starting fallback beat detection for level ${level}`);
+					setTimeout(() => startBeatDetection(), 200);
+				}
 			});
-		}
-
-		// Start beat detection if needed
-		if (needsBeatDetection) {
-			console.log(`🎵 Starting beat detection for level ${level}`);
-			setTimeout(() => startBeatDetection(), 200);
+		} else {
+			// Start beat detection if needed (for other levels)
+			if (needsBeatDetection) {
+				console.log(`🎵 Starting beat detection for level ${level}`);
+				setTimeout(() => startBeatDetection(), 200);
+			}
 		}
 
 		actions.setGameFeedback("LEVEL STARTED!");
 		setTimeout(() => actions.setGameFeedback(null), 2000);
 	}, [currentLevelData, actions, gameMode.currentLevel, musicInitialized]);
 
-	// Beat detection simulation 
+	// Beat detection simulation - more forgiving and consistent
 	const startBeatDetection = useCallback(() => {
 		if (beatTimer) clearInterval(beatTimer);
 
@@ -192,7 +204,20 @@ const VJGame = () => {
 		const bpm = 120;
 		const beatInterval = (60 / bpm) * 1000; // ms per beat (500ms at 120 BPM)
 
+		// Start first beat immediately to sync with music
 		let lastActualBeatTime = Date.now();
+		let beatCount = 0;
+
+		console.log('🎵 Starting beat detection with more forgiving timing - SYNCHRONIZED');
+
+		// Trigger the first beat immediately
+		actions.updateGameAudio({
+			beatPosition: 1,
+			lastBeatTime: lastActualBeatTime
+		});
+		beatCount++;
+		console.log(`🎵 BEAT #${beatCount}! (INITIAL SYNC BEAT)`);
+
 
 		const timer = setInterval(() => {
 			const currentTime = Date.now();
@@ -201,7 +226,8 @@ const VJGame = () => {
 			// Check if we should trigger a new beat
 			if (timeSinceLastBeat >= beatInterval) {
 				lastActualBeatTime = currentTime;
-				console.log('🎵 BEAT! Time for button press!');
+				beatCount++;
+				console.log(`🎵 BEAT #${beatCount}! Time for button press! (More forgiving timing)`);
 
 				// NO ANNOYING BEEP SOUND - REMOVED!
 
@@ -217,25 +243,30 @@ const VJGame = () => {
 					lastBeatTime: lastActualBeatTime
 				});
 			}
-		}, 50); // Update every 50ms for smooth animation
+		}, 25); // Update every 25ms for smoother detection (was 50ms)
 
 		setBeatTimer(timer);
 	}, [actions, beatTimer]);
 
-	// Check if action is on beat
+	// Check if action is on beat - more forgiving timing
 	const checkBeatTiming = useCallback(() => {
 		const { lastBeatTime } = gameMode.audio || {};
 		if (!lastBeatTime) {
-			console.log('🎵 No beat time recorded yet');
-			return false;
+			console.log('🎵 No beat time recorded yet - allowing action');
+			return true; // Allow actions when beat detection hasn't started yet
 		}
 
 		const currentTime = Date.now();
 		const timeSinceBeat = currentTime - lastBeatTime;
-		const beatTolerance = currentLevelData?.challenge?.beatTolerance || 150;
+		const beatTolerance = currentLevelData?.challenge?.beatTolerance || 300;
 
-		const onBeat = timeSinceBeat < beatTolerance;
-		console.log(`🎵 Beat timing: ${timeSinceBeat}ms since beat, tolerance: ${beatTolerance}ms, onBeat: ${onBeat}`);
+		// More forgiving: allow actions both before and after the beat
+		// Check if we're within tolerance of the last beat OR close to the next beat
+		const beatInterval = 500; // 120 BPM = 500ms per beat
+		const timeUntilNextBeat = beatInterval - (timeSinceBeat % beatInterval);
+
+		const onBeat = timeSinceBeat < beatTolerance || timeUntilNextBeat < beatTolerance;
+		console.log(`🎵 Beat timing: ${timeSinceBeat}ms since beat, ${timeUntilNextBeat}ms until next, tolerance: ${beatTolerance}ms, onBeat: ${onBeat}`);
 		return onBeat;
 	}, [gameMode.audio, currentLevelData]);
 
@@ -592,62 +623,7 @@ const VJGame = () => {
 					SKIP LEVEL
 				</button>
 
-				{/* Debug: Manual music test */}
-				<button
-					className="test-button"
-					onClick={() => {
-						console.log('🎵 DIRECT music test - Level 3 WAV file');
-						// Direct test of the exact file that loaded successfully
-						const audio = new Audio('/music/bitchboys-song-3.wav');
-						audio.volume = 0.7;
-						audio.loop = false; // Don't loop for test
 
-						audio.addEventListener('loadedmetadata', () => {
-							console.log(`📊 Audio loaded: ${audio.duration}s duration`);
-						});
-
-						audio.addEventListener('canplay', () => {
-							console.log('✅ Audio ready to play');
-						});
-
-						audio.addEventListener('error', (e) => {
-							console.error('❌ Audio error:', e);
-						});
-
-						audio.play().then(() => {
-							console.log('✅ MUSIC PLAYING NOW!');
-							setTimeout(() => {
-								audio.pause();
-								console.log('⏸️ Music stopped after 5 seconds');
-							}, 5000); // Play for 5 seconds
-						}).catch(error => {
-							console.error('❌ Play failed:', error);
-						});
-					}}
-					style={{ backgroundColor: '#00ff00', marginLeft: '10px', color: 'black' }}
-				>
-					🎵 TEST MUSIC
-				</button>
-
-				{/* Force start Level 3 with music */}
-				<button
-					className="test-button"
-					onClick={() => {
-						console.log('🎵 FORCING LEVEL 3 START WITH MUSIC');
-						// Force call music manager directly
-						musicManager.playLevel(3, () => {
-							const currentTime = Date.now();
-							console.log('🎵 BEAT! Time for button press!');
-							actions.updateGameAudio({
-								beatPosition: 1,
-								lastBeatTime: currentTime
-							});
-						});
-					}}
-					style={{ backgroundColor: '#ff0000', marginLeft: '10px', color: 'white' }}
-				>
-					🔥 FORCE LEVEL 3 MUSIC
-				</button>
 			</div>
 
 			{/* Progress Overview */}
@@ -722,7 +698,7 @@ const VJGame = () => {
 				}
 			case 'beat':
 				const beatCount = challenge.completedActions.filter(a => a === 'beat_trigger').length;
-				return `Listen for the beat and press 1-4 ON THE BEAT (${beatCount}/3 complete)`;
+				return `Listen for the beat and press 1-4 ON THE BEAT (${beatCount}/20 complete)`;
 			default:
 				return "Follow the instructions above";
 		}

@@ -160,7 +160,7 @@ const MultiLayerVideo = () => {
 		});
 	}, [layers[1].video, layers[1].isPlaying, layers[2].video, layers[2].isPlaying, layers[3].video, layers[3].isPlaying, layers[4].video, layers[4].isPlaying]); // Only depend on video/playing state
 
-	// Handle opacity changes separately
+	// Handle opacity and z-index changes separately
 	useEffect(() => {
 		Object.entries(layers).forEach(([layerNum, layer]) => {
 			const videoRef = videoRefs[layerNum];
@@ -171,8 +171,11 @@ const MultiLayerVideo = () => {
 			// Handle opacity changes - always update, strobe will override if active
 			videoElement.style.opacity = layer.opacity;
 			videoElement.dataset.layerOpacity = layer.opacity;
+
+			// Handle z-index changes for layer stacking
+			videoElement.style.zIndex = layer.zIndex;
 		});
-	}, [layers[1].opacity, layers[2].opacity, layers[3].opacity, layers[4].opacity]); // Only depend on opacity changes
+	}, [layers[1].opacity, layers[2].opacity, layers[3].opacity, layers[4].opacity, layers[1].zIndex, layers[2].zIndex, layers[3].zIndex, layers[4].zIndex]); // Depend on opacity and z-index changes
 
 	return (
 		<div className="multi-layer-video">

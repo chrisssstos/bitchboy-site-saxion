@@ -4,10 +4,10 @@ import React, { createContext, useContext, useReducer, useCallback } from 'react
 const initialState = {
 	// Video layers (up to 4 layers as per client requirements)
 	layers: {
-		1: { video: null, opacity: 1, isPlaying: false },
-		2: { video: null, opacity: 1, isPlaying: false },
-		3: { video: null, opacity: 1, isPlaying: false },
-		4: { video: null, opacity: 1, isPlaying: false }
+		1: { video: null, opacity: 1, isPlaying: false, zIndex: 1 },
+		2: { video: null, opacity: 1, isPlaying: false, zIndex: 2 },
+		3: { video: null, opacity: 1, isPlaying: false, zIndex: 3 },
+		4: { video: null, opacity: 1, isPlaying: false, zIndex: 4 }
 	},
 
 	// Available videos for the grid
@@ -100,6 +100,7 @@ const VJ_ACTIONS = {
 	LAUNCH_VIDEO: 'LAUNCH_VIDEO',
 	STOP_LAYER: 'STOP_LAYER',
 	SET_LAYER_OPACITY: 'SET_LAYER_OPACITY',
+	BRING_LAYER_TO_FRONT: 'BRING_LAYER_TO_FRONT',
 
 	// Effect actions
 	TOGGLE_EFFECT: 'TOGGLE_EFFECT',
@@ -130,16 +131,21 @@ const VJ_ACTIONS = {
 function vjReducer(state, action) {
 	switch (action.type) {
 		case VJ_ACTIONS.LAUNCH_VIDEO:
+			// When launching a video, also bring that layer to front
+			const maxZIndex = Math.max(...Object.values(state.layers).map(layer => layer.zIndex));
+			const updatedLayers = { ...state.layers };
+
+			// Set the activated layer to have the highest z-index
+			updatedLayers[action.layer] = {
+				...state.layers[action.layer],
+				video: action.video,
+				isPlaying: true,
+				zIndex: maxZIndex + 1
+			};
+
 			return {
 				...state,
-				layers: {
-					...state.layers,
-					[action.layer]: {
-						...state.layers[action.layer],
-						video: action.video,
-						isPlaying: true
-					}
-				}
+				layers: updatedLayers
 			};
 
 		case VJ_ACTIONS.STOP_LAYER:
@@ -163,6 +169,19 @@ function vjReducer(state, action) {
 					[action.layer]: {
 						...state.layers[action.layer],
 						opacity: action.opacity
+					}
+				}
+			};
+
+		case VJ_ACTIONS.BRING_LAYER_TO_FRONT:
+			const currentMaxZIndex = Math.max(...Object.values(state.layers).map(layer => layer.zIndex));
+			return {
+				...state,
+				layers: {
+					...state.layers,
+					[action.layer]: {
+						...state.layers[action.layer],
+						zIndex: currentMaxZIndex + 1
 					}
 				}
 			};
@@ -370,6 +389,10 @@ export function VJProvider({ children }) {
 
 		setLayerOpacity: useCallback((layer, opacity) => {
 			dispatch({ type: VJ_ACTIONS.SET_LAYER_OPACITY, layer, opacity });
+		}, []),
+
+		bringLayerToFront: useCallback((layer) => {
+			dispatch({ type: VJ_ACTIONS.BRING_LAYER_TO_FRONT, layer });
 		}, []),
 
 		toggleEffect: useCallback((effect) => {
