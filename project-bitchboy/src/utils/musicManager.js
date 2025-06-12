@@ -114,38 +114,33 @@ class MusicManager {
 	}
 
 	playLevel(level, beatCallback = null) {
-		console.log(`🎵 playLevel called for level ${level}`);
+		console.log(`🎵 🔥 playLevel called for level ${level} 🔥`);
+		console.log(`🎵 Stop any current music first...`);
 		this.stop(); // Stop any current music
 
 		const musicKey = `bitchboys-song-${level}`;
 		let audio = this.musicFiles[musicKey];
 
-		console.log(`🔍 Looking for music key: ${musicKey}, Available:`, Object.keys(this.musicFiles));
+		console.log(`🔍 Looking for music key: ${musicKey}`);
+		console.log(`🔍 Available preloaded music:`, Object.keys(this.musicFiles));
+		console.log(`🔍 Found preloaded audio: ${!!audio}`);
 
-		// If no preloaded audio, try to create one directly
+		// If no preloaded audio, check if we have ANY music file (fallback to level 3)
 		if (!audio) {
-			console.log(`🔄 No preloaded audio, trying direct load for level ${level}`);
-			const extensions = ['mp3', 'wav', 'ogg'];
+			console.log(`🔄 No music for level ${level}, checking for fallback...`);
 
-			for (const ext of extensions) {
-				try {
-					audio = new Audio(`/music/bitchboys-song-${level}.${ext}`);
-					audio.preload = 'auto';
-					console.log(`🎵 Trying direct load: /music/bitchboys-song-${level}.${ext}`);
-					break;
-				} catch (error) {
-					continue;
-				}
+			// Try level 3 as fallback (we know it exists)
+			if (level !== 3 && this.musicFiles['bitchboys-song-3']) {
+				console.log(`🎵 Using Level 3 music as fallback for level ${level}`);
+				audio = this.musicFiles['bitchboys-song-3'];
+			} else {
+				console.warn(`❌ No music file found for level ${level}, using silent beat`);
+				this.playFallbackBeat(beatCallback);
+				return;
 			}
 		}
 
-		if (!audio) {
-			console.warn(`❌ No music file found for level ${level}, using fallback beat`);
-			this.playFallbackBeat(beatCallback);
-			return;
-		}
-
-		console.log(`✅ Found audio for level ${level}, attempting to play...`);
+		console.log(`✅ Found audio for level ${level}, setting up...`);
 
 		this.currentAudio = audio;
 		this.currentLevel = level;
@@ -155,34 +150,63 @@ class MusicManager {
 		audio.loop = true;
 		audio.volume = 0.7; // Set reasonable volume
 
-		console.log(`🔊 Audio ready: duration=${audio.duration}s, state=${audio.readyState}`);
+		console.log(`🔊 Audio properties: duration=${audio.duration}s, readyState=${audio.readyState}, paused=${audio.paused}`);
 
-		// Start playback
-		console.log(`🎵 Attempting to play audio...`);
-		audio.play().then(() => {
-			this.isPlaying = true;
-			console.log(`🎵 ✅ MUSIC IS PLAYING! Level ${level} music started successfully!`);
-			console.log(`🎵 Current time: ${audio.currentTime}, Duration: ${audio.duration}`);
+		// Force load if needed
+		if (audio.readyState < 2) { // Less than HAVE_CURRENT_DATA
+			console.log(`🔄 Audio not ready, forcing load...`);
+			audio.load();
+		}
 
-			// Start beat detection for this track
-			if (beatCallback) {
-				console.log(`🥁 Starting beat detection for level ${level}`);
-				this.startBeatDetection(audio);
+		// Multiple play attempts with increasing delays
+		const playAttempt = (attemptNumber = 1) => {
+			console.log(`🎵 🔥 PLAY ATTEMPT ${attemptNumber} for level ${level} 🔥`);
+
+			const playPromise = audio.play();
+
+			if (playPromise !== undefined) {
+				playPromise.then(() => {
+					this.isPlaying = true;
+					console.log(`🎵 ✅ SUCCESS! Level ${level} music is playing! (Attempt ${attemptNumber})`);
+					console.log(`🎵 Audio state: currentTime=${audio.currentTime}, paused=${audio.paused}, duration=${audio.duration}`);
+
+					// Start beat detection for this track
+					if (beatCallback) {
+						console.log(`🥁 Starting beat detection for level ${level}`);
+						this.startBeatDetection(audio);
+					}
+				}).catch(error => {
+					console.error(`❌ Play attempt ${attemptNumber} failed:`, error);
+
+					if (attemptNumber < 3) {
+						console.log(`🔄 Retrying play in ${attemptNumber * 200}ms...`);
+						setTimeout(() => playAttempt(attemptNumber + 1), attemptNumber * 200);
+					} else {
+						console.log(`🔄 All play attempts failed, falling back to silent beat detection`);
+						this.playFallbackBeat(beatCallback);
+					}
+				});
+			} else {
+				// Immediate return, no promise
+				this.isPlaying = true;
+				console.log(`🎵 ✅ Immediate play success for level ${level}!`);
+
+				if (beatCallback) {
+					console.log(`🥁 Starting beat detection for level ${level}`);
+					this.startBeatDetection(audio);
+				}
 			}
-		}).catch(error => {
-			console.error(`❌ Failed to play level ${level} music:`, error);
-			console.error(`❌ Error details:`, {
-				name: error.name,
-				message: error.message,
-				code: error.code
-			});
-			console.log(`🔄 Falling back to silent beat detection`);
-			this.playFallbackBeat(beatCallback);
-		});
+		};
+
+		// Start the play attempts
+		playAttempt();
 	}
 
 	startBeatDetection(audio) {
-		if (!this.beatCallback) return;
+		if (!this.beatCallback) {
+			console.log('🔇 No beat callback - skipping beat detection');
+			return;
+		}
 
 		// For real music, we'll use a simple BPM-based approach
 		// In a real implementation, you'd want to use Web Audio API 
@@ -197,7 +221,7 @@ class MusicManager {
 			}
 		}, beatInterval);
 
-		console.log(`🥁 Beat detection started at ${BPM} BPM`);
+		console.log(`🥁 Beat detection started at ${BPM} BPM for level ${this.currentLevel}`);
 	}
 
 	playFallbackBeat(beatCallback) {
