@@ -440,12 +440,10 @@ const VJGame = () => {
 		}
 	}, [gameMode.currentLevel]);
 
-	// Auto-start certain levels
+	// Auto-start all levels
 	useEffect(() => {
 		if (gameMode.isActive && timeRemaining === 0 && musicInitialized) {
-			if (gameMode.currentLevel === 1 || gameMode.currentLevel === 3 || gameMode.currentLevel === 4) {
-				setTimeout(() => startLevel(), 500);
-			}
+			setTimeout(() => startLevel(), 500);
 		}
 	}, [gameMode.isActive, gameMode.currentLevel, musicInitialized]);
 
@@ -460,7 +458,6 @@ const VJGame = () => {
 				<div className="game-title">SUPER VJ PRO</div>
 				<div className="game-header-row">
 					<div className="game-level">LEVEL {gameMode.currentLevel}</div>
-					<div className="game-score">SCORE: {gameMode.score}</div>
 				</div>
 			</div>
 
@@ -497,16 +494,6 @@ const VJGame = () => {
 			{/* Level Controls */}
 			<div className="level-controls">
 				<button
-					className="start-button"
-					onClick={() => {
-						startLevel();
-					}}
-					disabled={timeRemaining > 0}
-				>
-					{timeRemaining > 0 ? 'IN PROGRESS' : 'START LEVEL'}
-				</button>
-
-				<button
 					className="skip-button"
 					onClick={() => {
 						if (gameMode.currentLevel < 4) {
@@ -517,8 +504,6 @@ const VJGame = () => {
 				>
 					SKIP LEVEL
 				</button>
-
-
 			</div>
 
 			{/* Progress Overview */}
