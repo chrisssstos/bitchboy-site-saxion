@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useRef } from 'react';
 import { useVJ } from '../contexts/VJContext';
 
 // Mapping configuration for 3D controller elements
@@ -85,6 +85,10 @@ const VJ3DController = ({
 }) => {
 	const { state, actions } = useVJ();
 
+	// Track slider states to prevent duplicate scoring
+	const sliderScoredState = useRef(new Map()); // Which sliders have already scored
+	const sliderLastValue = useRef(new Map()); // Last known value for each slider
+
 	// Convert slider value (0-100) to mapped range
 	const mapSliderValue = useCallback((value, range) => {
 		const [min, max] = range;
@@ -111,6 +115,45 @@ const VJ3DController = ({
 			// Convert 0-100 to 0-1 for opacity
 			const opacity = value / 100;
 			actions.setLayerOpacity(mapping.layer, opacity);
+
+			const sliderKey = `${group}_${index}`;
+			const lastValue = sliderLastValue.current.get(sliderKey);
+			const hasScored = sliderScoredState.current.get(sliderKey);
+
+			// Update last known value
+			sliderLastValue.current.set(sliderKey, value);
+
+			// Check if slider is at extreme values (0 or 100) for Level 4
+			if (value === 0 || value === 100) {
+				console.log(`🎛️ Slider at extreme value: ${value}% on layer ${mapping.layer}`);
+				console.log(`🎛️ Has already scored: ${hasScored}, Last value: ${lastValue}`);
+
+				// Only score if:
+				// 1. Slider hasn't scored yet, OR
+				// 2. Slider has been moved away from extreme (between 1-99) and is now back at extreme
+				const canScore = !hasScored || (lastValue !== undefined && lastValue > 0 && lastValue < 100);
+
+				if (canScore && state.gameMode.isActive) {
+					console.log(`🎛️ Dispatching slider_extreme game action`);
+					sliderScoredState.current.set(sliderKey, true);
+					window.dispatchEvent(new CustomEvent('vj-game-action', {
+						detail: {
+							type: 'slider_extreme',
+							value: value,
+							slider: sliderKey,
+							layer: mapping.layer
+						}
+					}));
+				} else if (!canScore) {
+					console.log(`🎛️ Slider ${sliderKey} already scored - must move away from extreme first`);
+				} else {
+					console.log(`🎛️ Game not active - not dispatching action`);
+				}
+			} else if (hasScored && value > 0 && value < 100) {
+				// Reset scoring flag when slider moves away from extremes
+				console.log(`🎛️ Slider ${sliderKey} moved to middle position (${value}%) - can score again`);
+				sliderScoredState.current.set(sliderKey, false);
+			}
 		} else if (mapping.type === 'effectIntensity') {
 			const mappedValue = mapSliderValue(value, mapping.range);
 
@@ -212,6 +255,13 @@ const VJ3DController = ({
 			handleButtonPress(parseInt(index), pressed);
 		});
 	}, [buttonStates, handleButtonPress]);
+
+	// Reset slider scoring state when level changes
+	useEffect(() => {
+		console.log(`🎛️ Level changed to ${state.gameMode.currentLevel} - resetting slider scoring state`);
+		sliderScoredState.current.clear();
+		sliderLastValue.current.clear();
+	}, [state.gameMode.currentLevel]);
 
 	// Expose handlers for 3D model to use
 	useEffect(() => {

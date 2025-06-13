@@ -38,6 +38,17 @@ const GAME_LEVELS = {
 			beatTolerance: 200 // ms tolerance for beat matching (more forgiving)
 		},
 		points: 200
+	},
+	4: {
+		title: "SLIDER MASTERY",
+		description: "Master opacity control using the bottom sliders",
+		instructions: "Move any bottom slider to 0% or 100% opacity to score points!",
+		challenge: {
+			type: 'slider',
+			requiredActions: ['slider_extreme', 'slider_extreme', 'slider_extreme'], // 3 extreme slider positions required
+			timeLimit: 45000 // 45 seconds
+		},
+		points: 250
 	}
 };
 
@@ -284,6 +295,9 @@ const VJGame = () => {
 			case 'beat_trigger':
 				basePoints = 30; // Bonus for timing
 				break;
+			case 'slider_extreme':
+				basePoints = 25; // Good points for slider mastery
+				break;
 			default:
 				basePoints = 10;
 		}
@@ -323,7 +337,7 @@ const VJGame = () => {
 
 		// Auto-advance to next level after 3 seconds
 		setTimeout(() => {
-			if (gameMode.currentLevel < 3) {
+			if (gameMode.currentLevel < 4) {
 				actions.setGameLevel(gameMode.currentLevel + 1);
 				actions.setGameFeedback(null);
 			} else {
@@ -342,6 +356,7 @@ const VJGame = () => {
 		console.log('Game active:', gameMode.isActive);
 		console.log('Current level:', gameMode.currentLevel);
 		console.log('Level data exists:', !!currentLevelData);
+		console.log('Time remaining:', timeRemaining);
 
 		if (!gameMode.isActive || !currentLevelData) {
 			console.log('❌ Game not active or no level data');
@@ -403,6 +418,14 @@ const VJGame = () => {
 				isRequiredAction = requiredActions.includes(actionString) && onBeat &&
 					completedActions.filter(a => a === 'beat_trigger').length < requiredActions.filter(a => a === 'beat_trigger').length;
 			}
+		} else if (challenge.type === 'slider') {
+			// Level 4: Slider mastery - move sliders to 0 or 100
+			if (actionType === 'slider_extreme') {
+				actionString = 'slider_extreme';
+				isRequiredAction = requiredActions.includes(actionString) &&
+					completedActions.filter(a => a === 'slider_extreme').length < requiredActions.filter(a => a === 'slider_extreme').length;
+				console.log(`🎛️ Slider extreme action detected - value: ${actionData.value}, slider: ${actionData.slider}`);
+			}
 		}
 
 		console.log('Action string:', actionString);
@@ -428,12 +451,15 @@ const VJGame = () => {
 				console.log('🎉 LEVEL COMPLETE!');
 				setTimeout(handleLevelComplete, 500); // Small delay to show final feedback
 			}
-		} else if (challenge.type !== 'freestyle') {
-			// Wrong action (except in freestyle mode)
+		} else if (challenge.type !== 'freestyle' && challenge.type !== 'slider') {
+			// Wrong action (except in freestyle mode and slider mode)
 			console.log('❌ WRONG ACTION');
 			actions.updateGameScore(-10);
 			actions.setGameFeedback("WRONG!");
 			setTimeout(() => actions.setGameFeedback(null), 1000);
+		} else if (challenge.type === 'slider' && actionType !== 'slider_extreme') {
+			// For slider level, only penalize if it's not any slider action
+			console.log('🎛️ Slider level - ignoring non-slider action:', actionType);
 		}
 
 		console.log('=== END GAME ACTION ===');
@@ -542,6 +568,9 @@ const VJGame = () => {
 			} else if (gameMode.currentLevel === 3) {
 				console.log('🎮 🎵 Auto-starting Level 3 WITH MUSIC!');
 				setTimeout(() => startLevel(), 500);
+			} else if (gameMode.currentLevel === 4) {
+				console.log('🎮 🎛️ Auto-starting Level 4 - Slider Mastery!');
+				setTimeout(() => startLevel(), 500);
 			}
 		}
 	}, [gameMode.isActive, gameMode.currentLevel, musicInitialized]);
@@ -614,11 +643,11 @@ const VJGame = () => {
 				<button
 					className="skip-button"
 					onClick={() => {
-						if (gameMode.currentLevel < 3) {
+						if (gameMode.currentLevel < 4) {
 							actions.setGameLevel(gameMode.currentLevel + 1);
 						}
 					}}
-					disabled={gameMode.currentLevel >= 3}
+					disabled={gameMode.currentLevel >= 4}
 				>
 					SKIP LEVEL
 				</button>
@@ -699,6 +728,9 @@ const VJGame = () => {
 			case 'beat':
 				const beatCount = challenge.completedActions.filter(a => a === 'beat_trigger').length;
 				return `Listen for the beat and press 1-4 ON THE BEAT (${beatCount}/20 complete)`;
+			case 'slider':
+				const sliderCount = challenge.completedActions.filter(a => a === 'slider_extreme').length;
+				return `Move bottom sliders to 0% or 100% opacity (${sliderCount}/3 complete)`;
 			default:
 				return "Follow the instructions above";
 		}
