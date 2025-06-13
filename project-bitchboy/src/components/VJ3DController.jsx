@@ -125,16 +125,12 @@ const VJ3DController = ({
 
 			// Check if slider is at extreme values (0 or 100) for Level 4
 			if (value === 0 || value === 100) {
-				console.log(`🎛️ Slider at extreme value: ${value}% on layer ${mapping.layer}`);
-				console.log(`🎛️ Has already scored: ${hasScored}, Last value: ${lastValue}`);
-
 				// Only score if:
 				// 1. Slider hasn't scored yet, OR
 				// 2. Slider has been moved away from extreme (between 1-99) and is now back at extreme
 				const canScore = !hasScored || (lastValue !== undefined && lastValue > 0 && lastValue < 100);
 
 				if (canScore && state.gameMode.isActive) {
-					console.log(`🎛️ Dispatching slider_extreme game action`);
 					sliderScoredState.current.set(sliderKey, true);
 					window.dispatchEvent(new CustomEvent('vj-game-action', {
 						detail: {
@@ -144,14 +140,9 @@ const VJ3DController = ({
 							layer: mapping.layer
 						}
 					}));
-				} else if (!canScore) {
-					console.log(`🎛️ Slider ${sliderKey} already scored - must move away from extreme first`);
-				} else {
-					console.log(`🎛️ Game not active - not dispatching action`);
 				}
 			} else if (hasScored && value > 0 && value < 100) {
 				// Reset scoring flag when slider moves away from extremes
-				console.log(`🎛️ Slider ${sliderKey} moved to middle position (${value}%) - can score again`);
 				sliderScoredState.current.set(sliderKey, false);
 			}
 		} else if (mapping.type === 'effectIntensity') {
@@ -258,7 +249,6 @@ const VJ3DController = ({
 
 	// Reset slider scoring state when level changes
 	useEffect(() => {
-		console.log(`🎛️ Level changed to ${state.gameMode.currentLevel} - resetting slider scoring state`);
 		sliderScoredState.current.clear();
 		sliderLastValue.current.clear();
 	}, [state.gameMode.currentLevel]);
@@ -281,24 +271,6 @@ const VJ3DController = ({
 		<div className="vj-3d-controller">
 			{/* This component doesn't render anything visible */}
 			{/* It just manages the connection between 3D model and VJ state */}
-
-			{/* Debug info - can be removed in production */}
-			<div className="controller-debug" style={{
-				position: 'absolute',
-				top: '10px',
-				right: '10px',
-				background: 'rgba(0,0,0,0.8)',
-				color: 'white',
-				padding: '10px',
-				borderRadius: '5px',
-				fontSize: '12px',
-				fontFamily: 'monospace',
-				zIndex: 999,
-				pointerEvents: 'none'
-			}}>
-				<div>Active Effects: {Object.entries(state.effects).filter(([key, effect]) => effect.active).map(([key]) => key).join(', ') || 'None'}</div>
-				<div>Active Layers: {Object.entries(state.layers).filter(([key, layer]) => layer.isPlaying).map(([key]) => `L${key}`).join(', ') || 'None'}</div>
-			</div>
 		</div>
 	);
 };

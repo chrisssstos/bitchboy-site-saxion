@@ -73,12 +73,9 @@ const VJGame = () => {
 
 		// Initialize music manager when game becomes active
 		if (gameMode.isActive && !musicInitialized) {
-			console.log('🎵 Initializing music manager...');
-
 			// Enable audio context immediately with user interaction
 			const enableAudio = () => {
 				if (audioContext && audioContext.state === 'suspended') {
-					console.log('🎵 Resuming audio context...');
 					audioContext.resume();
 				}
 			};
@@ -89,45 +86,27 @@ const VJGame = () => {
 			// Give music manager time to load files
 			setTimeout(() => {
 				setMusicInitialized(true);
-				console.log('🎵 Music manager ready');
 			}, 1000); // Reduced from 2000ms to 1000ms for faster init
 		}
 	}, [gameMode.isActive, audioContext, musicInitialized]);
 
 	// Start level timer
 	const startLevel = useCallback(() => {
-		console.log('🎮 ===== STARTING LEVEL =====');
-		console.log('Starting level. currentLevelData:', currentLevelData); // Debug log
 		if (!currentLevelData) {
-			console.error('No currentLevelData available!');
 			return;
 		}
 
 		// DON'T RESET VISUALS FOR LEVEL 3 - KEEP MUSIC PLAYING
 		if (gameMode.currentLevel !== 3) {
-			console.log('🔄 Resetting visuals (not Level 3)');
 			actions.resetEffects();
 			[1, 2, 3, 4].forEach(layer => actions.stopLayer(layer));
-		} else {
-			console.log('🎵 Level 3 - NOT resetting to preserve music');
 		}
 
 		const challenge = currentLevelData.challenge;
-		console.log('Setting challenge:', challenge); // Debug log
-
-		// Set challenge with immediate verification
 		actions.setGameChallenge(challenge);
-
-		// Add a small delay to ensure state has updated
-		setTimeout(() => {
-			console.log('Challenge after setting:', gameMode.challenge);
-		}, 100);
-
-		console.log(`⏱️ Setting timer to ${challenge.timeLimit}ms (${challenge.timeLimit / 1000}s)`);
 
 		// Clear any existing timer BEFORE setting new time
 		if (gameTimer) {
-			console.log(`⏱️ Clearing existing timer`);
 			clearInterval(gameTimer);
 			setGameTimer(null);
 		}
@@ -137,22 +116,18 @@ const VJGame = () => {
 
 		// Create a new timer that properly decrements
 		let currentTime = challenge.timeLimit;
-		console.log(`⏱️ Initial timer setup: ${currentTime}ms (${currentTime / 1000}s) for Level ${gameMode.currentLevel}`);
 
 		const timer = setInterval(() => {
 			currentTime -= 1000;
-			console.log(`⏱️ Timer tick: ${Math.ceil(currentTime / 1000)}s remaining (currentTime=${currentTime})`);
 
 			if (currentTime <= 0) {
 				// Time's up!
-				console.log(`⏰ TIME'S UP! Level ${gameMode.currentLevel} failed`);
 				clearInterval(timer);
 				setGameTimer(null);
 				setTimeRemaining(0);
 				handleLevelFail();
 			} else {
 				setTimeRemaining(currentTime);
-				console.log(`⏱️ Updated timeRemaining state to: ${currentTime}ms`);
 			}
 		}, 1000);
 
@@ -160,45 +135,29 @@ const VJGame = () => {
 
 		// Start music and beat detection for the level
 		const level = gameMode.currentLevel;
-		console.log(`🎵 ATTEMPTING TO START MUSIC FOR LEVEL ${level}`);
-		console.log(`🎵 Music ready: ${musicInitialized}`);
-		console.log(`🎵 Challenge type: ${challenge.type}`);
-
-		// Check if we need beat detection for this level
 		const needsBeatDetection = challenge.type === 'beat' || challenge.type === 'beat_extended' || challenge.type === 'freestyle';
-		console.log(`🎵 Needs beat detection: ${needsBeatDetection}`);
 
 		// SIMPLE MUSIC FOR LEVEL 3 ONLY!
 		if (level === 3) {
-			console.log(`🎵 🔥 LEVEL 3 - PLAYING MUSIC NOW! 🔥`);
-
 			// Create fresh audio element every time to avoid conflicts
 			const audio = new Audio('/music/bitchboys-song-3.wav');
 			audio.loop = true;
 			audio.volume = 0.7;
 
-			console.log(`🎵 Attempting to play bitchboys-song-3.wav directly...`);
 			audio.play().then(() => {
-				console.log(`🎵 ✅ MUSIC IS PLAYING! Level 3 success!`);
-
 				// Start beat detection SYNCHRONIZED with music start
 				if (needsBeatDetection) {
-					console.log(`🎵 Starting SYNCHRONIZED beat detection for level ${level}`);
-					// Small delay to ensure audio is actually playing
 					setTimeout(() => startBeatDetection(), 100);
 				}
-			}).catch(error => {
-				console.error(`🎵 ❌ Music failed:`, error);
+			}).catch(() => {
 				// Start beat detection anyway for fallback
 				if (needsBeatDetection) {
-					console.log(`🎵 Starting fallback beat detection for level ${level}`);
 					setTimeout(() => startBeatDetection(), 200);
 				}
 			});
 		} else {
 			// Start beat detection if needed (for other levels)
 			if (needsBeatDetection) {
-				console.log(`🎵 Starting beat detection for level ${level}`);
 				setTimeout(() => startBeatDetection(), 200);
 			}
 		}
@@ -207,63 +166,34 @@ const VJGame = () => {
 		setTimeout(() => actions.setGameFeedback(null), 2000);
 	}, [currentLevelData, actions, gameMode.currentLevel, musicInitialized]);
 
-	// Beat detection simulation - more forgiving and consistent
+	// Beat detection simulation - lightweight and optimized
 	const startBeatDetection = useCallback(() => {
 		if (beatTimer) clearInterval(beatTimer);
 
-		// Simulate 120 BPM beat detection (matching Java implementation)
-		const bpm = 120;
-		const beatInterval = (60 / bpm) * 1000; // ms per beat (500ms at 120 BPM)
-
-		// Start first beat immediately to sync with music
 		let lastActualBeatTime = Date.now();
-		let beatCount = 0;
 
-		console.log('🎵 Starting beat detection with more forgiving timing - SYNCHRONIZED');
-
-		// Trigger the first beat immediately
+		// Set initial beat state
 		actions.updateGameAudio({
 			beatPosition: 1,
 			lastBeatTime: lastActualBeatTime
 		});
-		beatCount++;
-		console.log(`🎵 BEAT #${beatCount}! (INITIAL SYNC BEAT)`);
 
-
+		// Simple timer that only updates beat time every 500ms (120 BPM)
 		const timer = setInterval(() => {
-			const currentTime = Date.now();
-			const timeSinceLastBeat = currentTime - lastActualBeatTime;
-
-			// Check if we should trigger a new beat
-			if (timeSinceLastBeat >= beatInterval) {
-				lastActualBeatTime = currentTime;
-				beatCount++;
-				console.log(`🎵 BEAT #${beatCount}! Time for button press! (More forgiving timing)`);
-
-				// NO ANNOYING BEEP SOUND - REMOVED!
-
-				actions.updateGameAudio({
-					beatPosition: 1, // Peak of beat
-					lastBeatTime: currentTime
-				});
-			} else {
-				// Smooth interpolation for beat position
-				const beatPosition = timeSinceLastBeat / beatInterval;
-				actions.updateGameAudio({
-					beatPosition: beatPosition,
-					lastBeatTime: lastActualBeatTime
-				});
-			}
-		}, 25); // Update every 25ms for smoother detection (was 50ms)
+			lastActualBeatTime = Date.now();
+			actions.updateGameAudio({
+				beatPosition: 1,
+				lastBeatTime: lastActualBeatTime
+			});
+		}, 500); // Only update on actual beats, not every 25ms
 
 		setBeatTimer(timer);
 	}, [actions, beatTimer]);
 
-	// Check if action is on beat - more forgiving timing
+	// Check if action is on beat - simplified and lightweight
 	const checkBeatTiming = useCallback(() => {
 		const { lastBeatTime } = gameMode.audio || {};
 		if (!lastBeatTime) {
-			console.log('🎵 No beat time recorded yet - allowing action');
 			return true; // Allow actions when beat detection hasn't started yet
 		}
 
@@ -271,13 +201,8 @@ const VJGame = () => {
 		const timeSinceBeat = currentTime - lastBeatTime;
 		const beatTolerance = currentLevelData?.challenge?.beatTolerance || 300;
 
-		// More forgiving: allow actions both before and after the beat
-		// Check if we're within tolerance of the last beat OR close to the next beat
-		const beatInterval = 500; // 120 BPM = 500ms per beat
-		const timeUntilNextBeat = beatInterval - (timeSinceBeat % beatInterval);
-
-		const onBeat = timeSinceBeat < beatTolerance || timeUntilNextBeat < beatTolerance;
-		console.log(`🎵 Beat timing: ${timeSinceBeat}ms since beat, ${timeUntilNextBeat}ms until next, tolerance: ${beatTolerance}ms, onBeat: ${onBeat}`);
+		// Simple check: within tolerance of the last beat
+		const onBeat = timeSinceBeat < beatTolerance;
 		return onBeat;
 	}, [gameMode.audio, currentLevelData]);
 
@@ -309,7 +234,6 @@ const VJGame = () => {
 
 	// Handle level completion
 	const handleLevelComplete = useCallback(() => {
-		console.log('🎉 handleLevelComplete called - clearing timers');
 		if (gameTimer) {
 			clearInterval(gameTimer);
 			setGameTimer(null);
@@ -342,7 +266,6 @@ const VJGame = () => {
 				actions.setGameFeedback(null);
 			} else {
 				// Game complete!
-				console.log('🎮 Game complete - stopping all music');
 				musicManager.stop(); // Make sure music stops at end
 				actions.setGameFeedback("YOU ARE A TRUE VJ!");
 			}
@@ -351,15 +274,7 @@ const VJGame = () => {
 
 	// Handle different types of game actions
 	const handleGameAction = useCallback((actionType, actionData = {}) => {
-		console.log('=== GAME ACTION ===');
-		console.log('Action:', actionType, actionData);
-		console.log('Game active:', gameMode.isActive);
-		console.log('Current level:', gameMode.currentLevel);
-		console.log('Level data exists:', !!currentLevelData);
-		console.log('Time remaining:', timeRemaining);
-
 		if (!gameMode.isActive || !currentLevelData) {
-			console.log('❌ Game not active or no level data');
 			return;
 		}
 
@@ -367,25 +282,15 @@ const VJGame = () => {
 		let challenge = gameMode.challenge;
 
 		if (!challenge || !challenge.type || !Array.isArray(challenge.requiredActions)) {
-			console.log('🔄 Challenge invalid, using currentLevelData challenge');
 			challenge = currentLevelData.challenge;
-
-			// Ensure we have a valid challenge structure
 			if (!challenge || !challenge.type || !Array.isArray(challenge.requiredActions)) {
-				console.error('❌ No valid challenge available');
 				return;
 			}
-
-			// Force set the challenge
 			actions.setGameChallenge(challenge);
 		}
 
 		const requiredActions = challenge.requiredActions;
 		const completedActions = gameMode.challenge?.completedActions || [];
-
-		console.log('Challenge type:', challenge.type);
-		console.log('Required actions:', requiredActions);
-		console.log('Completed actions:', completedActions);
 
 		// Check if this action is required and not already completed
 		let isRequiredAction = false;
@@ -398,13 +303,11 @@ const VJGame = () => {
 				const launchCount = completedActions.filter(a => a === 'launch_any').length;
 				const requiredLaunchCount = requiredActions.filter(a => a === 'launch_any').length;
 				isRequiredAction = requiredActions.includes('launch_any') && launchCount < requiredLaunchCount;
-				console.log('Launch action - completed:', launchCount, 'required:', requiredLaunchCount);
 			} else if (actionType === 'stop') {
 				actionString = 'stop_any';
 				const stopCount = completedActions.filter(a => a === 'stop_any').length;
 				const requiredStopCount = requiredActions.filter(a => a === 'stop_any').length;
 				isRequiredAction = requiredActions.includes('stop_any') && stopCount < requiredStopCount;
-				console.log('Stop action - completed:', stopCount, 'required:', requiredStopCount);
 			}
 		} else if (challenge.type === 'trigger') {
 			actionString = `${actionType}_${actionData.layer}`;
@@ -414,7 +317,6 @@ const VJGame = () => {
 			if (actionType === 'launch') {
 				actionString = 'beat_trigger';
 				const onBeat = checkBeatTiming();
-				console.log(`🎵 Beat check: onBeat=${onBeat}, timeSinceBeat=${Date.now() - gameMode.audio.lastBeatTime}ms`);
 				isRequiredAction = requiredActions.includes(actionString) && onBeat &&
 					completedActions.filter(a => a === 'beat_trigger').length < requiredActions.filter(a => a === 'beat_trigger').length;
 			}
@@ -424,16 +326,11 @@ const VJGame = () => {
 				actionString = 'slider_extreme';
 				isRequiredAction = requiredActions.includes(actionString) &&
 					completedActions.filter(a => a === 'slider_extreme').length < requiredActions.filter(a => a === 'slider_extreme').length;
-				console.log(`🎛️ Slider extreme action detected - value: ${actionData.value}, slider: ${actionData.slider}`);
 			}
 		}
 
-		console.log('Action string:', actionString);
-		console.log('Is required action:', isRequiredAction);
-
 		if (isRequiredAction) {
 			// Good action!
-			console.log('✅ GOOD ACTION!');
 			const points = calculatePoints(actionType, actionData);
 			actions.updateGameScore(points);
 			actions.completeChallengeAction(actionString);
@@ -446,29 +343,19 @@ const VJGame = () => {
 
 			// Check if level is complete
 			const newCompletedCount = completedActions.length + 1;
-			console.log('Progress:', newCompletedCount, '/', requiredActions.length);
 			if (newCompletedCount >= requiredActions.length) {
-				console.log('🎉 LEVEL COMPLETE!');
 				setTimeout(handleLevelComplete, 500); // Small delay to show final feedback
 			}
 		} else if (challenge.type !== 'freestyle' && challenge.type !== 'slider') {
 			// Wrong action (except in freestyle mode and slider mode)
-			console.log('❌ WRONG ACTION');
 			actions.updateGameScore(-10);
 			actions.setGameFeedback("WRONG!");
 			setTimeout(() => actions.setGameFeedback(null), 1000);
-		} else if (challenge.type === 'slider' && actionType !== 'slider_extreme') {
-			// For slider level, only penalize if it's not any slider action
-			console.log('🎛️ Slider level - ignoring non-slider action:', actionType);
 		}
-
-		console.log('=== END GAME ACTION ===');
 	}, [gameMode, currentLevelData, actions, calculatePoints, checkBeatTiming, handleLevelComplete]);
 
 	// Handle level failure
 	const handleLevelFail = useCallback(() => {
-		console.log('⏰ Level failed - cleaning up');
-
 		if (gameTimer) {
 			clearInterval(gameTimer);
 			setGameTimer(null);
@@ -491,11 +378,10 @@ const VJGame = () => {
 		try {
 			actions.resetEffects();
 			[1, 2, 3, 4].forEach(layer => {
-				console.log(`🛑 Stopping layer ${layer} on fail`);
 				actions.stopLayer(layer);
 			});
 		} catch (error) {
-			console.error('Error stopping layers:', error);
+			// Silent fail
 		}
 
 		actions.setGameFeedback("TIME'S UP! TRY AGAIN");
@@ -503,7 +389,6 @@ const VJGame = () => {
 		// Restart level after 2 seconds
 		setTimeout(() => {
 			actions.setGameFeedback(null);
-			console.log('🔄 Restarting level after fail');
 			startLevel();
 		}, 2000);
 	}, [gameTimer, beatTimer, actions, gameMode.currentLevel, startLevel]);
@@ -534,26 +419,22 @@ const VJGame = () => {
 	// Stop music when game is deactivated (but not when switching levels)
 	useEffect(() => {
 		if (!gameMode.isActive) {
-			console.log('🛑 Game deactivated - stopping music');
 			musicManager.stop();
 		}
 	}, [gameMode.isActive]);
 
 	// Reset timer when level changes
 	useEffect(() => {
-		console.log(`🔄 Level changed to ${gameMode.currentLevel} - resetting timer`);
 		setTimeRemaining(0); // Reset timer to 0 when switching levels
 
 		// Clear any existing timer
 		if (gameTimer) {
-			console.log(`🔄 Clearing gameTimer on level change`);
 			clearInterval(gameTimer);
 			setGameTimer(null);
 		}
 
 		// Clear beat timer too
 		if (beatTimer) {
-			console.log(`🔄 Clearing beatTimer on level change`);
 			clearInterval(beatTimer);
 			setBeatTimer(null);
 		}
@@ -562,25 +443,11 @@ const VJGame = () => {
 	// Auto-start certain levels
 	useEffect(() => {
 		if (gameMode.isActive && timeRemaining === 0 && musicInitialized) {
-			if (gameMode.currentLevel === 1) {
-				console.log('🎮 Auto-starting Level 1');
-				setTimeout(() => startLevel(), 500);
-			} else if (gameMode.currentLevel === 3) {
-				console.log('🎮 🎵 Auto-starting Level 3 WITH MUSIC!');
-				setTimeout(() => startLevel(), 500);
-			} else if (gameMode.currentLevel === 4) {
-				console.log('🎮 🎛️ Auto-starting Level 4 - Slider Mastery!');
+			if (gameMode.currentLevel === 1 || gameMode.currentLevel === 3 || gameMode.currentLevel === 4) {
 				setTimeout(() => startLevel(), 500);
 			}
 		}
 	}, [gameMode.isActive, gameMode.currentLevel, musicInitialized]);
-
-	// Debug: Monitor gameMode.challenge changes (reduced logging)
-	useEffect(() => {
-		if (gameMode.challenge?.type) {
-			console.log('Challenge set:', gameMode.challenge.type, 'Required:', gameMode.challenge.requiredActions?.length);
-		}
-	}, [gameMode.challenge?.type]);
 
 	if (!gameMode.isActive) {
 		return null;
@@ -632,7 +499,6 @@ const VJGame = () => {
 				<button
 					className="start-button"
 					onClick={() => {
-						console.log(`🎮 START LEVEL BUTTON CLICKED - Level ${gameMode.currentLevel}`);
 						startLevel();
 					}}
 					disabled={timeRemaining > 0}

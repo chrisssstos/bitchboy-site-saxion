@@ -6,8 +6,6 @@ const VJKeyboardControls = () => {
 	const { state, actions } = useVJ();
 	const { effects, gameMode } = state;
 
-	console.log('🎹 VJKeyboardControls component rendering');
-
 	// Track extreme values for level progression
 	const [sliderAtMin, setSliderAtMin] = React.useState(false);
 	const [sliderAtMax, setSliderAtMax] = React.useState(false);
@@ -17,7 +15,6 @@ const VJKeyboardControls = () => {
 	// Dispatch game actions when in game mode
 	const dispatchGameAction = useCallback((actionType, actionData = {}) => {
 		if (gameMode.isActive) {
-			console.log('Dispatching game action:', actionType, actionData); // Debug log
 			window.dispatchEvent(new CustomEvent('vj-game-action', {
 				detail: { type: actionType, ...actionData }
 			}));
