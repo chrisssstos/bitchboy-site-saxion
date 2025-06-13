@@ -4,47 +4,74 @@ import { useRef, useEffect, useMemo } from "react";
 import * as THREE from "three";
 
 const ANIMATION_CONFIG = {
-  section1: {
+  sectionStart: {
     start: 0,
-    end: 0.25,
-    position: { x: 2, y: -2, z: 0 },
-    rotation: { x: 0, y: 0, z: 0 },
+    end: 0.1,
+    position: { x: -5, y: 10, z: 0 },
+    rotation: { x: 0, y: Math.PI/2, z: 0 },
     scale: { x: 0, y: 0, z: 0 },
     opacity: 1
   },
 
-  section2: {
-    start: 0.25,
-    end: 0.5,
-    position: { x: -1, y: -3, z: 2 },
-    rotation: { x: 0, y: Math.PI/5, z: 0 },
+  sectionIntro: {
+    start: 0.2,
+    end: 0.35,
+    position: { x: -1, y: -2, z: 2 },
+    rotation: { x: 0.3, y: Math.PI/5, z: 0 },
     scale: { x: 1.5, y: 1.5, z: 1.5 },
     opacity: 1
   },
 
-  section3: {
-    start: 0.5,
-    end: 0.65,
-    position: { x: 4, y: -5, z: -1 },
-    rotation: { x: 0, y: -Math.PI /8, z: Math.PI / 8 },
-    scale: { x: 2.5, y: 2.5, z: 2.5 },
+  sectionLines1: {
+    start: 0.35,
+    end: 0.40,
+    position: { x: 3.5, y: -1, z: 0 },
+    rotation: { x: 0.4, y: -0.4, z: 0 },
+    scale: { x: 2, y: 2, z: 2 },
     opacity: 1
   },
 
-  section4: {
-    start: 0.65,
-    end: 0.95,
-    position: { x: -0.8, y: -1.2, z: 4 },
-    rotation: { x: 0, y: Math.PI /4, z: 0 },
-    scale: { x: 1, y: 1, z: 1 },
+  holdLines1: {
+    start: 0.40,
+    end: 0.60,
+    position: { x: 3.5, y: -1, z: 0 },
+    rotation: { x: 0.4, y: -0.4, z: 0 },
+    scale: { x: 2, y: 2, z: 2 },
     opacity: 1
   },
 
-  section5: {
+  sectionLines2: {
+    start: 0.60,
+    end: 0.70, 
+    position: { x: -2.5, y: -2, z: 0 },
+    rotation: { x: 0.2, y: 0.4, z: 0 },
+    scale: { x: 2, y: 2, z: 2 },
+    opacity: 1
+  },
+
+  holdLines2: {
+    start: 0.70,
+    end: 0.85,
+    position: { x: -2.5, y: -2, z: 0 }, 
+    rotation: { x: 0.2, y: 0.4, z: 0 },
+    scale: { x: 2, y: 2, z: 2 },
+    opacity: 1
+  },
+
+  sectionZoom: {
     start: 0.95,
     end: 1,
-    position: { x: 0, y: -3, z: 0 }, // <-- customize as you like
-    rotation: { x: -1, y: 0, z: 0 },
+    position: { x: -1.5, y: -1.4, z: 0 },
+    rotation: { x: 0.2, y: 0.5, z: 0 },
+    scale: { x: 1.5, y: 1.5, z: 1.5 },
+    opacity: 1
+  },
+
+  sectionEnd: {
+    start: 0.95,
+    end: 1,
+    position: { x: -1.5, y: -30, z: 0 },
+    rotation: { x: 0.2, y: 0.5, z: 0 },
     scale: { x: 1.5, y: 1.5, z: 1.5 },
     opacity: 1
   }
@@ -96,16 +123,27 @@ function ScrollAnimatedModel() {
   const getAnimationState = (scrollProgress) => {
     const config = ANIMATION_CONFIG;
 
-    if (scrollProgress <= config.section1.end) {
-      return interpolateKeyframes(scrollProgress, config.section1, config.section2, config.section1.start, config.section1.end);
-    } else if (scrollProgress <= config.section2.end) {
-      return interpolateKeyframes(scrollProgress, config.section2, config.section3, config.section2.start, config.section2.end);
-    } else if (scrollProgress <= config.section3.end) {
-      return interpolateKeyframes(scrollProgress, config.section3, config.section4, config.section3.start, config.section3.end);
-    } else if (scrollProgress <= config.section4.end) {
-      return interpolateKeyframes(scrollProgress, config.section4, config.section5, config.section4.start, config.section4.end);
+    if (scrollProgress <= config.sectionStart.end) {
+      return interpolateKeyframes(scrollProgress, config.sectionStart, config.sectionIntro, 
+        config.sectionStart.start, config.sectionStart.end);
+    } else if (scrollProgress <= config.sectionIntro.end) {
+      return interpolateKeyframes(scrollProgress, config.sectionIntro, config.sectionLines1, 
+        config.sectionIntro.start, config.sectionIntro.end);
+    } else if (scrollProgress <= config.sectionLines1.end) {
+      return interpolateKeyframes(scrollProgress, config.sectionLines1, config.holdLines1, 
+        config.sectionLines1.start, config.sectionLines1.end);
+    } else if (scrollProgress <= config.holdLines1.end) {
+      return config.holdLines1;
+    } else if (scrollProgress <= config.sectionLines2.end) {
+      return interpolateKeyframes(scrollProgress, config.holdLines1, config.sectionLines2, 
+        config.sectionLines2.start, config.sectionLines2.end);
+    } else if (scrollProgress <= config.holdLines2.end) {
+      return config.holdLines2;  // Stay in Lines2 position
+    } else if (scrollProgress <= config.sectionZoom.end) {
+      return interpolateKeyframes(scrollProgress, config.holdLines2, config.sectionZoom, 
+        config.sectionZoom.start, config.sectionZoom.end);
     } else {
-      return config.section5;
+      return config.sectionEnd;
     }
   };
 
