@@ -1,23 +1,8 @@
 import "./css/PricingPage.css";
-import Balatro from "./Balatro/Balatro.jsx";
 
 export default function PricingPage() {
   return (
     <div className="pricing-page">
-      <div className="absolute inset-0 z-0 w-full h-full">
-                <Balatro
-                  pixelFilter={1000}
-                  color1="#FFFFFF"
-                  color2="#FF6B00"
-                  color3="#FFFFFF"
-                  lighting={10}
-                  contrast={0.4}
-                  spinAmount={0.5}
-                  spinSpeed={10}
-                  mouseInteraction={false}
-                  spinEase={1}
-                />
-              </div>
       {/* Product card */}
       <div className="container noselect">
         
