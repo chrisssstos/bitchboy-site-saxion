@@ -8,6 +8,7 @@ import { useKnobInteraction } from "../components/userKnobInteraction";
 import { useButtonInteraction } from "../components/userButtonInteraction";
 
 function Model(props) {
+  // blender model
   const { scene } = useGLTF("/bitchboy3d(v10).glb");
   const originalMaterials = useRef(new Map());
   
@@ -38,6 +39,27 @@ function Model(props) {
         originalMaterials.current.set(child.uuid, child.material.clone());
         child.userData.isToggled = false;
         child.userData.clickable = true;
+
+        // Buttons 1-28 become orange
+        const match = child.name.match(/^Button_(\d+)$/);
+        if (match) {
+          const index = parseInt(match[1], 10);
+
+          const skipButtons =
+            (index >= 6 && index <= 8) ||
+            (index >= 14 && index <= 16) ||
+            (index >= 22 && index <= 24) ||
+            (index >= 30 && index <= 32);
+
+          if (index >= 1 && index <= 29 && !skipButtons) {
+            child.material = new THREE.MeshStandardMaterial({ color: "#FFA500" });
+          }
+
+          if (skipButtons) {
+            child.material = new THREE.MeshStandardMaterial({ color: "#636363" })
+          }
+
+        }
       }
     });
   }, [scene]);
