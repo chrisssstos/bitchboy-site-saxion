@@ -15,8 +15,8 @@ const initialState = {
 		'bitchboy_spiral.mp4',
 		'bitchboy_anime.mp4',
 		'bitchboy_cool.mp4',
-		'bitchboy_eye.mp4',
-		'bitchboy_unc.mp4'
+		'bitchboy_unc.mp4',
+		'bitchboy_eye.mp4'
 	],
 
 	// Current page (for multiple grids)
