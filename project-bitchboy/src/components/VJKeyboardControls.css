@@ -10,10 +10,10 @@
 	font-family: 'Courier New', monospace;
 	font-size: 12px;
 	color: #fff;
-	z-index: 1000;
+	z-index: 2;
 	max-height: 90vh;
 	overflow-y: auto;
-	box-shadow: 0 0 20px rgba(255, 0, 150, 0.3);
+	box-shadow: 0 0 20px var(--color-orange);
 }
 
 .control-section {
@@ -28,7 +28,7 @@
 }
 
 .control-section h3 {
-	color: #ff0080;
+	color: var(--color-orange);
 	margin: 0 0 8px 0;
 	font-size: 14px;
 	font-weight: bold;

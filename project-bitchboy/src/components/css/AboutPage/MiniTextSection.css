@@ -1,0 +1,22 @@
+.mini-text-section {
+    background: #1c1c1c;
+    border-radius: 0.75rem;
+    margin: 1rem 0;
+    padding: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.mini-text-section:hover {
+    background: #2a2a2a;
+}
+.mini-text-section-title {
+    color: var(--color-orange);
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+.mini-text-section-content {
+    margin-top: 0.75rem;
+    color: var(--color-white);
+    font-size: 1rem;
+    line-height: 1.6;
+}

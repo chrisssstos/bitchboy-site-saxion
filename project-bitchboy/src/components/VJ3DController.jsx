@@ -9,40 +9,29 @@ const CONTROLLER_MAPPING = {
 		0: { type: 'launch', layer: 1, video: 'bitchboy_spiral.mp4' },
 		1: { type: 'launch', layer: 1, video: 'bitchboy_anime.mp4' },
 		2: { type: 'launch', layer: 1, video: 'bitchboy_cool.mp4' },
+		3: { type: 'launch', layer: 1, video: 'bitchboy_unc.mp4' },
+		4: { type: 'launch', layer: 1, video: 'bitchboy_eye.mp4' },
 
-		// Second row (Layer 2) 
-		3: { type: 'launch', layer: 2, video: 'bitchboy_spiral.mp4' },
-		4: { type: 'launch', layer: 2, video: 'bitchboy_anime.mp4' },
-		5: { type: 'launch', layer: 2, video: 'bitchboy_cool.mp4' },
+		// Second row (Layer 2)
+		8: { type: 'launch', layer: 2, video: 'bitchboy_spiral.mp4' },
+		9: { type: 'launch', layer: 2, video: 'bitchboy_anime.mp4' },
+		10: { type: 'launch', layer: 2, video: 'bitchboy_cool.mp4' },
+		11: { type: 'launch', layer: 2, video: 'bitchboy_unc.mp4' },
+		12: { type: 'launch', layer: 2, video: 'bitchboy_eye.mp4'},
 
 		// Third row (Layer 3)
-		6: { type: 'launch', layer: 3, video: 'bitchboy_eye.mp4' },
-		7: { type: 'launch', layer: 3, video: 'bitchboy_unc.mp4' },
-		8: { type: 'launch', layer: 3, video: 'bitchboy_spiral.mp4' },
+		16: { type: 'launch', layer: 3, video: 'bitchboy_spiral.mp4' },
+		17: { type: 'launch', layer: 3, video: 'bitchboy_anime.mp4' },
+		18: { type: 'launch', layer: 3, video: 'bitchboy_cool.mp4' },
+		19: { type: 'launch', layer: 3, video: 'bitchboy_unc.mp4' },
+		20: { type: 'launch', layer: 3, video: 'bitchboy_eye.mp4' },
 
 		// Fourth row (Layer 4)
-		9: { type: 'launch', layer: 4, video: 'bitchboy_eye.mp4' },
-		10: { type: 'launch', layer: 4, video: 'bitchboy_unc.mp4' },
-		11: { type: 'launch', layer: 4, video: 'bitchboy_anime.mp4' },
-
-		// Function buttons
-		12: { type: 'effect', effect: 'invert' },
-		13: { type: 'effect', effect: 'colorize' },
-		14: { type: 'effect', effect: 'mirror' },
-		15: { type: 'effect', effect: 'dotScreen' },
-		16: { type: 'effect', effect: 'strobe' },
-		17: { type: 'effect', effect: 'stingySphere' },
-
-		// Layer stop buttons
-		18: { type: 'stop', layer: 1 },
-		19: { type: 'stop', layer: 2 },
-		20: { type: 'stop', layer: 3 },
-		21: { type: 'stop', layer: 4 },
-
-		// Reset and utility
-		22: { type: 'reset' },
-		23: { type: 'page', page: 1 },
-		24: { type: 'page', page: 2 }
+		24: { type: 'launch', layer: 4, video: 'bitchboy_spiral.mp4' },
+		25: { type: 'launch', layer: 4, video: 'bitchboy_anime.mp4' },
+		26: { type: 'launch', layer: 4, video: 'bitchboy_cool.mp4' },
+		27: { type: 'launch', layer: 4, video: 'bitchboy_unc.mp4' },
+		28: { type: 'launch', layer: 4, video: 'bitchboy_eye.mp4' }
 	},
 
 	// Bottom sliders (layer opacity control)

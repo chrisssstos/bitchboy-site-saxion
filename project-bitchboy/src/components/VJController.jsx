@@ -204,6 +204,7 @@ const VJController = () => {
 			// Switch videos with number keys
 			if (key === '1') {
 				switchVideo(1);
+				console.log("AAAAHHH");
 				needsUpdate = false;
 			} else if (key === '2') {
 				switchVideo(2);
