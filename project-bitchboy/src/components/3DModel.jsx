@@ -9,7 +9,7 @@ import { useButtonInteraction } from "../components/userButtonInteraction";
 
 function Model(props) {
   // blender model
-  const { scene } = useGLTF("/bitchboy3d(v10).glb");
+  const { scene } = useGLTF("/bitchboy3d(v11).glb");
   const originalMaterials = useRef(new Map());
   
   // ✅ ADD SLIDER HOOK BACK
@@ -60,6 +60,25 @@ function Model(props) {
           }
 
         }
+
+        // gray out bottom buttons
+        const bottomMatch = child.name.match(/^Button_bottom_(\d+)$/);
+        if (bottomMatch) {
+          const index = parseInt(bottomMatch[1], 10);
+          if (index >= 1 && index <= 8){
+            child.material = new THREE.MeshStandardMaterial({ color: "#636363" })
+          }
+        }
+
+          // gray out middle buttons
+          const middleMatch = child.name.match(/^Button_middle_(\d+)$/);
+          if (middleMatch) {
+            const index = parseInt(middleMatch[1], 10);
+            if (index >= 1 && index <= 9){
+              child.material = new THREE.MeshStandardMaterial({ color: "#636363" })
+            }
+          }
+
       }
     });
   }, [scene]);

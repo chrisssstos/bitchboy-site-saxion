@@ -28,8 +28,16 @@ export function useButtonInteraction(scene, originalMaterialsRef) {
             console.log(`🎮 VJ Button ${buttonIndex} pressed:`, obj.name);
             window.vjController.handleButtonPress(buttonIndex, true);
           }
+        } else {
+          console.log("Middle?");
+          // pop up here
         }
+        // bottom button
+      } else {
+        console.log("Bottom?");
+        // pop up here
       }
+
     }
 
     return true;
