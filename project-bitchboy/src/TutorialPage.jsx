@@ -1,16 +1,16 @@
 import React from 'react';
-import { VJProvider } from '../contexts/VJContext';
-import MultiLayerVideo from '../components/MultiLayerVideo';
-import VJ3DController from '../components/VJ3DController';
-import Model from '../components/3DModel';
-import VJKeyboardControls from '../components/VJKeyboardControls';
-import VJGame from '../components/VJGame';
-import GameModeToggle from '../components/GameModeToggle';
-import '../pages/css/InteractivePage.css';
+import { VJProvider } from './contexts/VJContext';
+import MultiLayerVideo from './components/MultiLayerVideo';
+import VJ3DController from './components/VJ3DController';
+import Model from './components/3DModel';
+import VJKeyboardControls from './components/VJKeyboardControls';
+import VJGame from './components/VJGame';
+import GameModeToggle from './components/GameModeToggle';
+import './App.css';
 import { Canvas } from '@react-three/fiber';
 import { Stage, PresentationControls } from '@react-three/drei';
 
-function InteractivePage() {
+function App() {
   return (
     <VJProvider>
       <div className="AppContainer">
@@ -35,7 +35,7 @@ function InteractivePage() {
               enabled={false}
               global={false}
             >
-              <Stage environment="sunset" intensity={0.0005} shadows={{ type: "contact", opacity: 1, blur: 2 }}>
+              <Stage environment="sunset" intensity={0.0005}>
                 <Model scale={0.01} />
               </Stage>
             </PresentationControls>
@@ -55,4 +55,4 @@ function InteractivePage() {
   );
 }
 
-export default InteractivePage;
+export default App;
