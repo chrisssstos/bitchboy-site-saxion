@@ -1,5 +1,4 @@
 // __tests__/LandingPage.test.jsx
-/* eslint-env jest */
 /* eslint-env vitest */
 
 
