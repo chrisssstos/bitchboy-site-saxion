@@ -2,7 +2,7 @@
   position: absolute;
   bottom: 0;
   right: 0;
-  transform: translate(5%, 20%);
+  transform: translate(-20%, 20%);
   transform-origin: bottom right;
 
   perspective: 800px;
