@@ -64,7 +64,7 @@ export default function PricingPage() {
       <a href="https://www.kickstarter.com/" target="_blank" rel="noopener noreferrer">
       <div class="container2">
         <div class="left-side">
-          <div class="card">
+          <div class="card-swipe">
             <div class="card-line"></div>
             <div class="buttons"></div>
           </div>
