@@ -11,7 +11,7 @@ function Model(props) {
   // blender model
   const { scene } = useGLTF("/bitchboy3d(v11).glb");
   const originalMaterials = useRef(new Map());
-  
+
   // ✅ ADD SLIDER HOOK BACK
   const {
     handleSliderPointerDown,
@@ -86,7 +86,7 @@ function Model(props) {
   // Combined pointer handlers that delegate to appropriate handlers
   function handlePointerDown(e) {
     console.log("Clicked:", e.object.name);
-    
+
     // ✅ TRY SLIDER FIRST
     if (handleSliderPointerDown(e)) return;
     if (handleKnobPointerDown(e)) return;
@@ -121,10 +121,10 @@ function Model(props) {
   function handleClick(e) {
     e.stopPropagation();
     const mesh = e.object;
-    
+
     // ✅ USE CORRECT DRAGGING VARIABLES
     if (isDraggingSlider || isDraggingKnob) return;
-    
+
     // Button logic (this can also be separated if needed)
     if (!mesh.name.includes("Button")) return;
     if (!mesh.userData.clickable) return;

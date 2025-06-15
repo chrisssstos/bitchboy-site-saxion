@@ -10,18 +10,18 @@ import InteractivePage from './pages/InteractivePage.jsx'
 
 function App() {
   return (
-      <BrowserRouter>
-          <div className="content">
-              <Routes>
-                  <Route path="/" element={<LandingPage/>}/>
-                  <Route path="/about" element={<AboutPage/>}/>
-                  <Route path="/demo" element={<DemoPage/>}/>
-                  <Route path="/pricing" element={<PricingPage/>}/>
-                  <Route path="/blog" element={<BlogPage/>}/>
-                  <Route path="/interactive-demo" element={<InteractivePage/>}/>
-              </Routes>
-          </div>
-      </BrowserRouter>
+    <BrowserRouter>
+      <div className="content">
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/demo" element={<DemoPage />} />
+          <Route path="/pricing" element={<PricingPage />} />
+          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/interactive-demo" element={<InteractivePage />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 
