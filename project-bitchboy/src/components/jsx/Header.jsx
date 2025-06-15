@@ -28,7 +28,7 @@ function Header() {
                     Pricing
                 </a>
                 <a href="/about" className="page">
-                    Team
+                    About
                 </a>
                 <a href="/blog" className="page">
                     Blog

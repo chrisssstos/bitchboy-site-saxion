@@ -1,0 +1,23 @@
+.overlay {
+    /* position: absolute; */
+    color: #ffffff;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 100%);
+    padding: 0.5rem;
+    overflow: hidden;
+}
+
+.overlay h3 {
+    font-size: 1rem;
+    margin: 0;
+    text-align: center;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.overlay p {
+    font-size: 0.875rem;
+    text-align: center;
+}
