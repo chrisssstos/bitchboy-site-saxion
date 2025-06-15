@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { VJProvider } from '../contexts/VJContext';
 import MultiLayerVideo from '../components/MultiLayerVideo';
 import VJ3DController from '../components/VJ3DController';
@@ -11,6 +11,12 @@ import { Canvas } from '@react-three/fiber';
 import { Stage, PresentationControls } from '@react-three/drei';
 
 function InteractivePage() {
+  const [showKeyboardControls, setShowKeyboardControls] = useState(false);
+
+  const toggleKeyboardControls = () => {
+    setShowKeyboardControls(!showKeyboardControls);
+  };
+
   return (
     <VJProvider>
       <div className="AppContainer">
@@ -45,8 +51,18 @@ function InteractivePage() {
         {/* Game Mode Toggle Button */}
         <GameModeToggle />
 
-        {/* Keyboard Controls Panel */}
-        <VJKeyboardControls />
+        {/* Keyboard Controls Toggle Button */}
+        <button 
+          className={`keyboard-toggle-btn ${showKeyboardControls ? 'active' : ''}`}
+          onClick={toggleKeyboardControls}
+        >
+          {showKeyboardControls ? '→' : '←'}
+        </button>
+
+        {/* Keyboard Controls Panel - Slide Animation Container */}
+        <div className={`keyboard-controls-container ${showKeyboardControls ? 'visible' : ''}`}>
+          {showKeyboardControls && <VJKeyboardControls />}
+        </div>
 
         {/* VJ Game Tutorial System */}
         <VJGame />
