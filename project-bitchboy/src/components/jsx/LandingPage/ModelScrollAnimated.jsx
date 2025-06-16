@@ -61,7 +61,7 @@ const ANIMATION_CONFIG = {
   sectionEnd: {
     start: 0.95,
     end: 1,
-    position: { x: -2, y: -0.7, z: 0 },
+    position: { x: -2, y: -1.2, z: 0 },
     rotation: { x: 0.2, y: 0.5, z: 0 },
     scale: { x: 1.5, y: 1.5, z: 1.5 },
     opacity: 1
