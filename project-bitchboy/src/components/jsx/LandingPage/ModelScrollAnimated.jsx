@@ -16,7 +16,7 @@ const ANIMATION_CONFIG = {
   sectionIntro: {
     start: 0.2,
     end: 0.35,
-    position: { x: -1, y: -2, z: 2 },
+    position: { x: -1.5, y: -1, z: 3 },
     rotation: { x: 0.3, y: Math.PI/5, z: 0 },
     scale: { x: 1.5, y: 1.5, z: 1.5 },
     opacity: 1
@@ -58,23 +58,14 @@ const ANIMATION_CONFIG = {
     opacity: 1
   },
 
-  sectionZoom: {
+  sectionEnd: {
     start: 0.95,
     end: 1,
-    position: { x: -1.5, y: -1.4, z: 0 },
+    position: { x: -2, y: -0.7, z: 0 },
     rotation: { x: 0.2, y: 0.5, z: 0 },
     scale: { x: 1.5, y: 1.5, z: 1.5 },
     opacity: 1
   },
-
-  sectionEnd: {
-    start: 0.95,
-    end: 1,
-    position: { x: -1.5, y: -30, z: 0 },
-    rotation: { x: 0.2, y: 0.5, z: 0 },
-    scale: { x: 1.5, y: 1.5, z: 1.5 },
-    opacity: 1
-  }
 };
 
 function ScrollAnimatedModel() {
@@ -138,12 +129,10 @@ function ScrollAnimatedModel() {
       return interpolateKeyframes(scrollProgress, config.holdLines1, config.sectionLines2, 
         config.sectionLines2.start, config.sectionLines2.end);
     } else if (scrollProgress <= config.holdLines2.end) {
-      return config.holdLines2;  // Stay in Lines2 position
-    } else if (scrollProgress <= config.sectionZoom.end) {
-      return interpolateKeyframes(scrollProgress, config.holdLines2, config.sectionZoom, 
-        config.sectionZoom.start, config.sectionZoom.end);
-    } else {
-      return config.sectionEnd;
+      return config.holdLines2;
+    } else if (scrollProgress <= config.sectionEnd.end) {
+      return interpolateKeyframes(scrollProgress, config.holdLines2, config.sectionEnd, 
+        config.sectionEnd.start, config.sectionEnd.end);
     }
   };
 
@@ -225,6 +214,7 @@ export default function ScrollModelAnimation() {
           intensity={0.4} 
           color="#ff6b35"
         />
+
         <ScrollAnimatedModel />
       </Canvas>
     </div>
