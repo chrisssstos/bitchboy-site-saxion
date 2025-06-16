@@ -24,7 +24,7 @@ function LandingPage() {
   return (
     <div
       style={{
-        minHeight: "2200vh",
+        minHeight: "1200vh",
         minWidth: "100vw",
         background: "#ffffff",
         position: "relative",
@@ -36,6 +36,7 @@ function LandingPage() {
       <ScrollText />
       <ModelLines />
       <div className="orange-bg"></div>
+      <div className="orange-bg2"></div>
       <div className="centered-logo-container">
         <div className="logo-reveal-wrapper">
           <img
@@ -60,12 +61,20 @@ function LandingPage() {
         Another text block
       </div>
 
+      <img
+        src="/images/background/logotextblack.svg"
+        alt="Logo"
+        className="bottom-logo"
+      />
+
+      <img
+        src="/images/demogif.gif"
+        alt="Demo GIF"
+        className="demo-gif"
+        style={{ display: "block", margin: "40px auto", maxWidth: "90%", height: "auto" }}
+      />
+
       <div className="bottom-section">
-        <img
-          src="/images/background/logotextblack.svg"
-          alt="Logo"
-          className="bottom-logo"
-        />
         <button 
           className="demo-button"
           onClick={handleDemoClick}

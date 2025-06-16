@@ -21,13 +21,22 @@
 }
 
 .header-logo {
+    display: inline-block;
     position: absolute;
-    right: 3rem;
-    align-items: center;
-    width: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    height: auto;
+    z-index: 10;
 }
 
 
+
+.header-logo img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
 
 .header-pages{
     position: absolute;

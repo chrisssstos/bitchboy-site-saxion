@@ -88,6 +88,10 @@ function BitchboyModel({ isInteracting, onReturningToPosition }) {
         scale={2.2}
         position={[0, -0.1, 0]}
         rotation={[-Math.PI / 40, -Math.PI / 12, 0]}
+        style={{
+          cursor: "pointer", // Makes the mouse pointer appear clicky
+          pointerEvents: "auto", // Enables pointer events
+        }}
       />
       <OrbitControls
         ref={setControlsRef}
