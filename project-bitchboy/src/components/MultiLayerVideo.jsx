@@ -123,44 +123,29 @@ const MultiLayerVideo = () => {
 
 	// Handle video playback and opacity changes
 	useEffect(() => {
-		console.log('🎬 MultiLayerVideo: layers state changed:', layers);
 		Object.entries(layers).forEach(([layerNum, layer]) => {
 			const videoRef = videoRefs[layerNum];
 			if (!videoRef.current) return;
 
 			const videoElement = videoRef.current;
 
-			console.log(`🎬 Layer ${layerNum}:`, {
-				video: layer.video,
-				isPlaying: layer.isPlaying,
-				shouldShow: layer.video && layer.isPlaying
-			});
-
 			// Handle video source changes
 			if (layer.video && layer.isPlaying) {
 				const newSrc = `/movs/${layer.video}`;
 				if (videoElement.src !== newSrc) {
-					console.log(`🎬 Loading new video for layer ${layerNum}:`, newSrc);
 					videoElement.src = newSrc;
 					videoElement.load();
-					videoElement.play().catch(err => {
-						console.warn(`Video play failed for layer ${layerNum}:`, err);
-						// Try to continue anyway
-					});
+					videoElement.play().catch(console.error);
 				}
 				videoElement.style.display = 'block';
-				console.log(`🎬 Layer ${layerNum} set to visible`);
 			} else {
 				videoElement.style.display = 'none';
-				if (!videoElement.paused) {
-					videoElement.pause();
-				}
-				console.log(`🎬 Layer ${layerNum} set to hidden (video: ${layer.video}, isPlaying: ${layer.isPlaying})`);
+				videoElement.pause();
 			}
 		});
 	}, [layers[1].video, layers[1].isPlaying, layers[2].video, layers[2].isPlaying, layers[3].video, layers[3].isPlaying, layers[4].video, layers[4].isPlaying]); // Only depend on video/playing state
 
-	// Handle opacity and z-index changes separately
+	// Handle opacity changes separately
 	useEffect(() => {
 		Object.entries(layers).forEach(([layerNum, layer]) => {
 			const videoRef = videoRefs[layerNum];
@@ -171,11 +156,8 @@ const MultiLayerVideo = () => {
 			// Handle opacity changes - always update, strobe will override if active
 			videoElement.style.opacity = layer.opacity;
 			videoElement.dataset.layerOpacity = layer.opacity;
-
-			// Handle z-index changes for layer stacking
-			videoElement.style.zIndex = layer.zIndex;
 		});
-	}, [layers[1].opacity, layers[2].opacity, layers[3].opacity, layers[4].opacity, layers[1].zIndex, layers[2].zIndex, layers[3].zIndex, layers[4].zIndex]); // Depend on opacity and z-index changes
+	}, [layers[1].opacity, layers[2].opacity, layers[3].opacity, layers[4].opacity]); // Only depend on opacity changes
 
 	return (
 		<div className="multi-layer-video">

@@ -17,6 +17,7 @@ import {
   useSphericalJoint,
 } from "@react-three/rapier";
 import { MeshLineGeometry, MeshLineMaterial } from "meshline";
+import Balatro from "../Balatro/Balatro.jsx";
 import cardGLB from "./card.glb";
 import card2GLB from "./card2.glb";
 import lanyard from "./lanyard.png";

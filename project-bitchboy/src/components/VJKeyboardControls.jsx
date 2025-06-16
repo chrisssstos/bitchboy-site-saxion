@@ -4,28 +4,10 @@ import './VJKeyboardControls.css';
 
 const VJKeyboardControls = () => {
 	const { state, actions } = useVJ();
-	const { effects, gameMode } = state;
-
-	// Track extreme values for level progression
-	const [sliderAtMin, setSliderAtMin] = React.useState(false);
-	const [sliderAtMax, setSliderAtMax] = React.useState(false);
-	const [zoomAtMin, setZoomAtMin] = React.useState(false);
-	const [zoomAtMax, setZoomAtMax] = React.useState(false);
-
-	// Dispatch game actions when in game mode
-	const dispatchGameAction = useCallback((actionType, actionData = {}) => {
-		if (gameMode.isActive) {
-			window.dispatchEvent(new CustomEvent('vj-game-action', {
-				detail: { type: actionType, ...actionData }
-			}));
-		}
-	}, [gameMode.isActive]);
+	const { effects } = state;
 
 	const handleKeyDown = useCallback((event) => {
 		const key = event.key.toLowerCase();
-
-		// Debug ALL key presses
-		console.log('🎹 Key pressed:', key, 'shiftKey:', event.shiftKey);
 
 		// Prevent default for space and arrow keys
 		if ([' ', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(key)) {
@@ -40,38 +22,14 @@ const VJKeyboardControls = () => {
 			const videos = state.videoLibrary;
 			if (videos.length > 0) {
 				actions.launchVideo(layerNum, videos[layerNum - 1] || videos[0]);
-
-				// Dispatch game action
-				dispatchGameAction('launch', { layer: layerNum, video: videos[layerNum - 1] || videos[0] });
 			}
 			return;
 		}
 
 		// LAYER STOP CONTROLS (Shift + Numbers)
-		// Check for both event.shiftKey and key combination
-		if ((event.shiftKey && key >= '1' && key <= '4') ||
-			(key === '!' || key === '@' || key === '#' || key === '$')) {
-			event.preventDefault(); // Prevent browser shortcuts
-
-			let layerNum;
-			if (event.shiftKey && key >= '1' && key <= '4') {
-				layerNum = parseInt(key);
-			} else {
-				// Handle shifted number keys (!, @, #, $)
-				const shiftMap = { '!': 1, '@': 2, '#': 3, '$': 4 };
-				layerNum = shiftMap[key];
-			}
-
-			console.log('🛑 STOP KEY DETECTED:', `Shift+${layerNum}`, 'actual key:', key, 'shiftKey:', event.shiftKey);
-			console.log('🛑 Current state layers:', state.layers);
-
-			// ALWAYS stop the layer - this is the core functionality!
+		if (event.shiftKey && key >= '1' && key <= '4') {
+			const layerNum = parseInt(key);
 			actions.stopLayer(layerNum);
-
-			// Also dispatch the game action for tracking
-			dispatchGameAction('stop', { layer: layerNum });
-
-			console.log('🛑 Layer stop action called for:', layerNum);
 			return;
 		}
 
@@ -79,23 +37,19 @@ const VJKeyboardControls = () => {
 		switch (key) {
 			case 'q': // Invert
 				actions.toggleEffect('invert');
-				dispatchGameAction('effect', { effect: 'invert' });
 				break;
 			case 'w': // Hue rotate +
 				actions.setEffectParam('hueRotate', 'degrees',
 					(effects.hueRotate.degrees + 30) % 360);
 				if (!effects.hueRotate.active) actions.toggleEffect('hueRotate');
-				dispatchGameAction('effect', { effect: 'hue' });
 				break;
 			case 'e': // Hue rotate -
 				actions.setEffectParam('hueRotate', 'degrees',
 					(effects.hueRotate.degrees - 30 + 360) % 360);
 				if (!effects.hueRotate.active) actions.toggleEffect('hueRotate');
-				dispatchGameAction('effect', { effect: 'hue' });
 				break;
 			case 'r': // Colorize
 				actions.toggleEffect('colorize');
-				dispatchGameAction('effect', { effect: 'colorize' });
 				break;
 			case 't': // Reset color effects
 				actions.setEffectParam('hueRotate', 'degrees', 0);
@@ -110,39 +64,17 @@ const VJKeyboardControls = () => {
 				actions.setEffectParam('loRez', 'blur', newBlur);
 				if (newBlur > 0 && !effects.loRez.active) actions.toggleEffect('loRez');
 				if (newBlur === 0 && effects.loRez.active) actions.toggleEffect('loRez');
-
-				// Track cycles for Level 4
-				if (newBlur === 10 && !sliderAtMax) {
-					setSliderAtMax(true);
-					if (sliderAtMin) {
-						dispatchGameAction('opacity', { value: newBlur, cycle: true });
-						setSliderAtMin(false);
-					}
-				}
-				dispatchGameAction('opacity', { value: newBlur });
 				break;
 			case 's': // Blur -
 				const reducedBlur = Math.max(effects.loRez.blur - 1, 0);
 				actions.setEffectParam('loRez', 'blur', reducedBlur);
 				if (reducedBlur === 0 && effects.loRez.active) actions.toggleEffect('loRez');
-
-				// Track cycles for Level 4
-				if (reducedBlur === 0 && !sliderAtMin) {
-					setSliderAtMin(true);
-					if (sliderAtMax) {
-						dispatchGameAction('opacity', { value: reducedBlur, cycle: true });
-						setSliderAtMax(false);
-					}
-				}
-				dispatchGameAction('opacity', { value: reducedBlur });
 				break;
 			case 'd': // Dot screen
 				actions.toggleEffect('dotScreen');
-				dispatchGameAction('effect', { effect: 'dotscreen' });
 				break;
 			case 'f': // Strobe
 				actions.toggleEffect('strobe');
-				dispatchGameAction('effect', { effect: 'strobe' });
 				break;
 			case 'g': // Reset filter effects
 				actions.toggleEffect('loRez', false);
@@ -157,52 +89,28 @@ const VJKeyboardControls = () => {
 				actions.setEffectParam('infiniteZoom', 'scale', newScale);
 				if (newScale > 1 && !effects.infiniteZoom.active) actions.toggleEffect('infiniteZoom');
 				if (newScale === 1 && effects.infiniteZoom.active) actions.toggleEffect('infiniteZoom');
-
-				// Track cycles for Level 6
-				if (Math.abs(newScale - 3) < 0.05 && !zoomAtMax) {
-					setZoomAtMax(true);
-					if (zoomAtMin) {
-						dispatchGameAction('effect', { effect: 'zoom', cycle: true });
-						setZoomAtMin(false);
-					}
-				}
-				dispatchGameAction('effect', { effect: 'zoom' });
 				break;
 			case 'x': // Zoom -
 				const reducedScale = Math.max(effects.infiniteZoom.scale - 0.1, 1);
 				actions.setEffectParam('infiniteZoom', 'scale', reducedScale);
 				if (reducedScale === 1 && effects.infiniteZoom.active) actions.toggleEffect('infiniteZoom');
-
-				// Track cycles for Level 6
-				if (Math.abs(reducedScale - 1) < 0.05 && !zoomAtMin) {
-					setZoomAtMin(true);
-					if (zoomAtMax) {
-						dispatchGameAction('effect', { effect: 'zoom', cycle: true });
-						setZoomAtMax(false);
-					}
-				}
-				dispatchGameAction('effect', { effect: 'zoom' });
 				break;
 			case 'c': // Mirror
 				actions.toggleEffect('mirror');
-				dispatchGameAction('effect', { effect: 'mirror' });
 				break;
 			case 'v': // Warp +
 				const newWarp = Math.min(effects.warpSpeed.perspective + 25, 200);
 				actions.setEffectParam('warpSpeed', 'perspective', newWarp);
 				if (newWarp > 0 && !effects.warpSpeed.active) actions.toggleEffect('warpSpeed');
 				if (newWarp === 0 && effects.warpSpeed.active) actions.toggleEffect('warpSpeed');
-				dispatchGameAction('effect', { effect: 'warp' });
 				break;
 			case 'b': // Warp -
 				const reducedWarp = Math.max(effects.warpSpeed.perspective - 25, 0);
 				actions.setEffectParam('warpSpeed', 'perspective', reducedWarp);
 				if (reducedWarp === 0 && effects.warpSpeed.active) actions.toggleEffect('warpSpeed');
-				dispatchGameAction('effect', { effect: 'warp' });
 				break;
 			case 'n': // Sphere rotation
 				actions.toggleEffect('stingySphere');
-				dispatchGameAction('effect', { effect: 'sphere' });
 				break;
 			case 'm': // Reset transform effects
 				actions.setEffectParam('infiniteZoom', 'scale', 1);
@@ -222,22 +130,12 @@ const VJKeyboardControls = () => {
 				actions.resetEffects();
 				break;
 		}
-	}, [state, actions, effects, dispatchGameAction]);
+	}, [state, actions, effects]);
 
 	useEffect(() => {
-		console.log('🎹 VJKeyboardControls mounted - adding event listener');
 		document.addEventListener('keydown', handleKeyDown);
-		return () => {
-			console.log('🎹 VJKeyboardControls unmounting - removing event listener');
-			document.removeEventListener('keydown', handleKeyDown);
-		};
+		return () => document.removeEventListener('keydown', handleKeyDown);
 	}, [handleKeyDown]);
-
-	// Don't show keyboard controls UI when in game mode (game has its own UI)
-	// But keep the keyboard listeners active!
-	if (gameMode.isActive) {
-		return <div style={{ display: 'none' }} />; // Hidden but still mounted
-	}
 
 	return (
 		<div className="vj-keyboard-controls">

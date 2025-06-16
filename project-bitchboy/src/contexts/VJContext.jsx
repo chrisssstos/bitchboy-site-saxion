@@ -4,10 +4,10 @@ import React, { createContext, useContext, useReducer, useCallback } from 'react
 const initialState = {
 	// Video layers (up to 4 layers as per client requirements)
 	layers: {
-		1: { video: null, opacity: 1, isPlaying: false, zIndex: 1 },
-		2: { video: null, opacity: 1, isPlaying: false, zIndex: 2 },
-		3: { video: null, opacity: 1, isPlaying: false, zIndex: 3 },
-		4: { video: null, opacity: 1, isPlaying: false, zIndex: 4 }
+		1: { video: null, opacity: 1, isPlaying: false },
+		2: { video: null, opacity: 1, isPlaying: false },
+		3: { video: null, opacity: 1, isPlaying: false },
+		4: { video: null, opacity: 1, isPlaying: false }
 	},
 
 	// Available videos for the grid
@@ -21,36 +21,6 @@ const initialState = {
 
 	// Current page (for multiple grids)
 	currentPage: 1,
-
-	// Game mode state
-	gameMode: {
-		isActive: false,
-		currentLevel: 1,
-		score: 0,
-		streak: 0,
-		bestScore: 0,
-		isPlaying: false,
-		feedback: null, // "NICE!", "PERFECT!", "FAIL!", etc.
-		progress: {
-			levelsCompleted: [],
-			skillsUnlocked: [],
-			totalScore: 0
-		},
-		audio: {
-			isPlaying: false,
-			currentTrack: null,
-			bpm: 120,
-			beatPosition: 0,
-			lastBeatTime: 0
-		},
-		challenge: {
-			type: null, // 'trigger', 'beat', 'opacity', 'effects', 'freestyle'
-			target: null,
-			timeLimit: null,
-			requiredActions: [],
-			completedActions: []
-		}
-	},
 
 	// Effects state
 	effects: {
@@ -100,7 +70,6 @@ const VJ_ACTIONS = {
 	LAUNCH_VIDEO: 'LAUNCH_VIDEO',
 	STOP_LAYER: 'STOP_LAYER',
 	SET_LAYER_OPACITY: 'SET_LAYER_OPACITY',
-	BRING_LAYER_TO_FRONT: 'BRING_LAYER_TO_FRONT',
 
 	// Effect actions
 	TOGGLE_EFFECT: 'TOGGLE_EFFECT',
@@ -113,39 +82,23 @@ const VJ_ACTIONS = {
 	PRESS_BUTTON: 'PRESS_BUTTON',
 
 	// Page actions
-	CHANGE_PAGE: 'CHANGE_PAGE',
-
-	// Game mode actions
-	TOGGLE_GAME_MODE: 'TOGGLE_GAME_MODE',
-	SET_GAME_LEVEL: 'SET_GAME_LEVEL',
-	UPDATE_GAME_SCORE: 'UPDATE_GAME_SCORE',
-	SET_GAME_FEEDBACK: 'SET_GAME_FEEDBACK',
-	UPDATE_GAME_AUDIO: 'UPDATE_GAME_AUDIO',
-	SET_GAME_CHALLENGE: 'SET_GAME_CHALLENGE',
-	COMPLETE_CHALLENGE_ACTION: 'COMPLETE_CHALLENGE_ACTION',
-	COMPLETE_LEVEL: 'COMPLETE_LEVEL',
-	RESET_GAME_STATE: 'RESET_GAME_STATE'
+	CHANGE_PAGE: 'CHANGE_PAGE'
 };
 
 // Reducer function
 function vjReducer(state, action) {
 	switch (action.type) {
 		case VJ_ACTIONS.LAUNCH_VIDEO:
-			// When launching a video, also bring that layer to front
-			const maxZIndex = Math.max(...Object.values(state.layers).map(layer => layer.zIndex));
-			const updatedLayers = { ...state.layers };
-
-			// Set the activated layer to have the highest z-index
-			updatedLayers[action.layer] = {
-				...state.layers[action.layer],
-				video: action.video,
-				isPlaying: true,
-				zIndex: maxZIndex + 1
-			};
-
 			return {
 				...state,
-				layers: updatedLayers
+				layers: {
+					...state.layers,
+					[action.layer]: {
+						...state.layers[action.layer],
+						video: action.video,
+						isPlaying: true
+					}
+				}
 			};
 
 		case VJ_ACTIONS.STOP_LAYER:
@@ -169,19 +122,6 @@ function vjReducer(state, action) {
 					[action.layer]: {
 						...state.layers[action.layer],
 						opacity: action.opacity
-					}
-				}
-			};
-
-		case VJ_ACTIONS.BRING_LAYER_TO_FRONT:
-			const currentMaxZIndex = Math.max(...Object.values(state.layers).map(layer => layer.zIndex));
-			return {
-				...state,
-				layers: {
-					...state.layers,
-					[action.layer]: {
-						...state.layers[action.layer],
-						zIndex: currentMaxZIndex + 1
 					}
 				}
 			};
@@ -258,113 +198,6 @@ function vjReducer(state, action) {
 				effects: initialState.effects
 			};
 
-		// Game mode actions
-		case VJ_ACTIONS.TOGGLE_GAME_MODE:
-			return {
-				...state,
-				gameMode: {
-					...state.gameMode,
-					isActive: !state.gameMode.isActive,
-					currentLevel: state.gameMode.isActive ? 1 : state.gameMode.currentLevel,
-					feedback: null
-				}
-			};
-
-		case VJ_ACTIONS.SET_GAME_LEVEL:
-			return {
-				...state,
-				gameMode: {
-					...state.gameMode,
-					currentLevel: action.level,
-					challenge: {
-						type: null,
-						target: null,
-						timeLimit: null,
-						requiredActions: [],
-						completedActions: []
-					}
-				}
-			};
-
-		case VJ_ACTIONS.UPDATE_GAME_SCORE:
-			const newScore = state.gameMode.score + action.points;
-			return {
-				...state,
-				gameMode: {
-					...state.gameMode,
-					score: newScore,
-					bestScore: Math.max(state.gameMode.bestScore, newScore),
-					streak: action.points > 0 ? state.gameMode.streak + 1 : 0
-				}
-			};
-
-		case VJ_ACTIONS.SET_GAME_FEEDBACK:
-			return {
-				...state,
-				gameMode: {
-					...state.gameMode,
-					feedback: action.feedback
-				}
-			};
-
-		case VJ_ACTIONS.UPDATE_GAME_AUDIO:
-			return {
-				...state,
-				gameMode: {
-					...state.gameMode,
-					audio: {
-						...state.gameMode.audio,
-						...action.audioData
-					}
-				}
-			};
-
-		case VJ_ACTIONS.SET_GAME_CHALLENGE:
-			return {
-				...state,
-				gameMode: {
-					...state.gameMode,
-					challenge: {
-						...action.challenge,
-						completedActions: []
-					}
-				}
-			};
-
-		case VJ_ACTIONS.COMPLETE_CHALLENGE_ACTION:
-			return {
-				...state,
-				gameMode: {
-					...state.gameMode,
-					challenge: {
-						...state.gameMode.challenge,
-						completedActions: [...state.gameMode.challenge.completedActions, action.action]
-					}
-				}
-			};
-
-		case VJ_ACTIONS.COMPLETE_LEVEL:
-			return {
-				...state,
-				gameMode: {
-					...state.gameMode,
-					progress: {
-						...state.gameMode.progress,
-						levelsCompleted: [...state.gameMode.progress.levelsCompleted, action.level],
-						totalScore: state.gameMode.progress.totalScore + state.gameMode.score
-					}
-				}
-			};
-
-		case VJ_ACTIONS.RESET_GAME_STATE:
-			return {
-				...state,
-				gameMode: {
-					...initialState.gameMode,
-					progress: state.gameMode.progress // Keep progress
-				}
-			};
-
 		default:
 			return state;
 	}
@@ -389,10 +222,6 @@ export function VJProvider({ children }) {
 
 		setLayerOpacity: useCallback((layer, opacity) => {
 			dispatch({ type: VJ_ACTIONS.SET_LAYER_OPACITY, layer, opacity });
-		}, []),
-
-		bringLayerToFront: useCallback((layer) => {
-			dispatch({ type: VJ_ACTIONS.BRING_LAYER_TO_FRONT, layer });
 		}, []),
 
 		toggleEffect: useCallback((effect) => {
@@ -421,42 +250,6 @@ export function VJProvider({ children }) {
 
 		resetEffects: useCallback(() => {
 			dispatch({ type: VJ_ACTIONS.RESET_EFFECTS });
-		}, []),
-
-		toggleGameMode: useCallback(() => {
-			dispatch({ type: VJ_ACTIONS.TOGGLE_GAME_MODE });
-		}, []),
-
-		setGameLevel: useCallback((level) => {
-			dispatch({ type: VJ_ACTIONS.SET_GAME_LEVEL, level });
-		}, []),
-
-		updateGameScore: useCallback((points) => {
-			dispatch({ type: VJ_ACTIONS.UPDATE_GAME_SCORE, points });
-		}, []),
-
-		setGameFeedback: useCallback((feedback) => {
-			dispatch({ type: VJ_ACTIONS.SET_GAME_FEEDBACK, feedback });
-		}, []),
-
-		updateGameAudio: useCallback((audioData) => {
-			dispatch({ type: VJ_ACTIONS.UPDATE_GAME_AUDIO, audioData });
-		}, []),
-
-		setGameChallenge: useCallback((challenge) => {
-			dispatch({ type: VJ_ACTIONS.SET_GAME_CHALLENGE, challenge });
-		}, []),
-
-		completeChallengeAction: useCallback((action) => {
-			dispatch({ type: VJ_ACTIONS.COMPLETE_CHALLENGE_ACTION, action });
-		}, []),
-
-		completeLevel: useCallback((level) => {
-			dispatch({ type: VJ_ACTIONS.COMPLETE_LEVEL, level });
-		}, []),
-
-		resetGameState: useCallback(() => {
-			dispatch({ type: VJ_ACTIONS.RESET_GAME_STATE });
 		}, [])
 	};
 

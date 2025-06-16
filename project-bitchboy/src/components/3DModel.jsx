@@ -8,10 +8,9 @@ import { useKnobInteraction } from "../components/userKnobInteraction";
 import { useButtonInteraction } from "../components/userButtonInteraction";
 
 function Model(props) {
-  // blender model
-  const { scene } = useGLTF("/bitchboy3d(v11).glb");
+  const { scene } = useGLTF("/bitchboy3d(v10).glb");
   const originalMaterials = useRef(new Map());
-
+  
   // ✅ ADD SLIDER HOOK BACK
   const {
     handleSliderPointerDown,
@@ -39,46 +38,6 @@ function Model(props) {
         originalMaterials.current.set(child.uuid, child.material.clone());
         child.userData.isToggled = false;
         child.userData.clickable = true;
-
-        // Buttons 1-28 become orange
-        const match = child.name.match(/^Button_(\d+)$/);
-        if (match) {
-          const index = parseInt(match[1], 10);
-
-          const skipButtons =
-            (index >= 6 && index <= 8) ||
-            (index >= 14 && index <= 16) ||
-            (index >= 22 && index <= 24) ||
-            (index >= 30 && index <= 32);
-
-          if (index >= 1 && index <= 29 && !skipButtons) {
-            child.material = new THREE.MeshStandardMaterial({ color: "#FFA500" });
-          }
-
-          if (skipButtons) {
-            child.material = new THREE.MeshStandardMaterial({ color: "#636363" })
-          }
-
-        }
-
-        // gray out bottom buttons
-        const bottomMatch = child.name.match(/^Button_bottom_(\d+)$/);
-        if (bottomMatch) {
-          const index = parseInt(bottomMatch[1], 10);
-          if (index >= 1 && index <= 8){
-            child.material = new THREE.MeshStandardMaterial({ color: "#636363" })
-          }
-        }
-
-          // gray out middle buttons
-          const middleMatch = child.name.match(/^Button_middle_(\d+)$/);
-          if (middleMatch) {
-            const index = parseInt(middleMatch[1], 10);
-            if (index >= 1 && index <= 9){
-              child.material = new THREE.MeshStandardMaterial({ color: "#636363" })
-            }
-          }
-
       }
     });
   }, [scene]);
@@ -86,7 +45,7 @@ function Model(props) {
   // Combined pointer handlers that delegate to appropriate handlers
   function handlePointerDown(e) {
     console.log("Clicked:", e.object.name);
-
+    
     // ✅ TRY SLIDER FIRST
     if (handleSliderPointerDown(e)) return;
     if (handleKnobPointerDown(e)) return;
@@ -121,10 +80,10 @@ function Model(props) {
   function handleClick(e) {
     e.stopPropagation();
     const mesh = e.object;
-
+    
     // ✅ USE CORRECT DRAGGING VARIABLES
     if (isDraggingSlider || isDraggingKnob) return;
-
+    
     // Button logic (this can also be separated if needed)
     if (!mesh.name.includes("Button")) return;
     if (!mesh.userData.clickable) return;
