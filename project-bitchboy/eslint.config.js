@@ -30,12 +30,4 @@ export default [
       ],
     },
   },
-
-  {
-    files: ['**/*.test.{js,jsx,ts,tsx}', '**/__tests__/*.{js,jsx,ts,tsx}'],
-    env: {
-      vitest: true,
-    },
-    // If you want, you can also add testing-library plugin/rules here
-  },
 ]

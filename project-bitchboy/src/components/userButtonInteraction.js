@@ -14,30 +14,17 @@ export function useButtonInteraction(scene, originalMaterialsRef) {
     obj.position.z -= 0.1;
     obj.userData.wasPressed = true;
 
-    obj.material = new THREE.MeshStandardMaterial({ color: "#50C878" });
+    obj.material = new THREE.MeshStandardMaterial({ color: "#ada0a3" });
 
     // Connect to VJ system
     if (window.vjController && window.vjController.handleButtonPress) {
       // Extract button index from name (assuming format like "Button_01", "Button_02", etc.)
-      // skips middle and bottom (nested ifs = cringe i know)
-      if(!obj.name.includes('bottom')){
-        if(!obj.name.includes('middle')){
-          const match = obj.name.match(/Button.*?(\d+)/);
-          if (match) {
-            const buttonIndex = parseInt(match[1]) - 1; // Convert to 0-based index
-            console.log(`🎮 VJ Button ${buttonIndex} pressed:`, obj.name);
-            window.vjController.handleButtonPress(buttonIndex, true);
-          }
-        } else {
-          console.log("Middle?");
-          // pop up here
-        }
-        // bottom button
-      } else {
-        console.log("Bottom?");
-        // pop up here
+      const match = obj.name.match(/Button.*?(\d+)/);
+      if (match) {
+        const buttonIndex = parseInt(match[1]) - 1; // Convert to 0-based index
+        console.log(`🎮 VJ Button ${buttonIndex} pressed:`, obj.name);
+        window.vjController.handleButtonPress(buttonIndex, true);
       }
-
     }
 
     return true;

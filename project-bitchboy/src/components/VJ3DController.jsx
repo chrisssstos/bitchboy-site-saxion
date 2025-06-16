@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useRef } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useVJ } from '../contexts/VJContext';
 
 // Mapping configuration for 3D controller elements
@@ -74,10 +74,6 @@ const VJ3DController = ({
 }) => {
 	const { state, actions } = useVJ();
 
-	// Track slider states to prevent duplicate scoring
-	const sliderScoredState = useRef(new Map()); // Which sliders have already scored
-	const sliderLastValue = useRef(new Map()); // Last known value for each slider
-
 	// Convert slider value (0-100) to mapped range
 	const mapSliderValue = useCallback((value, range) => {
 		const [min, max] = range;
@@ -104,36 +100,6 @@ const VJ3DController = ({
 			// Convert 0-100 to 0-1 for opacity
 			const opacity = value / 100;
 			actions.setLayerOpacity(mapping.layer, opacity);
-
-			const sliderKey = `${group}_${index}`;
-			const lastValue = sliderLastValue.current.get(sliderKey);
-			const hasScored = sliderScoredState.current.get(sliderKey);
-
-			// Update last known value
-			sliderLastValue.current.set(sliderKey, value);
-
-			// Check if slider is at extreme values (0 or 100) for Level 4
-			if (value === 0 || value === 100) {
-				// Only score if:
-				// 1. Slider hasn't scored yet, OR
-				// 2. Slider has been moved away from extreme (between 1-99) and is now back at extreme
-				const canScore = !hasScored || (lastValue !== undefined && lastValue > 0 && lastValue < 100);
-
-				if (canScore && state.gameMode.isActive) {
-					sliderScoredState.current.set(sliderKey, true);
-					window.dispatchEvent(new CustomEvent('vj-game-action', {
-						detail: {
-							type: 'slider_extreme',
-							value: value,
-							slider: sliderKey,
-							layer: mapping.layer
-						}
-					}));
-				}
-			} else if (hasScored && value > 0 && value < 100) {
-				// Reset scoring flag when slider moves away from extremes
-				sliderScoredState.current.set(sliderKey, false);
-			}
 		} else if (mapping.type === 'effectIntensity') {
 			const mappedValue = mapSliderValue(value, mapping.range);
 
@@ -236,12 +202,6 @@ const VJ3DController = ({
 		});
 	}, [buttonStates, handleButtonPress]);
 
-	// Reset slider scoring state when level changes
-	useEffect(() => {
-		sliderScoredState.current.clear();
-		sliderLastValue.current.clear();
-	}, [state.gameMode.currentLevel]);
-
 	// Expose handlers for 3D model to use
 	useEffect(() => {
 		// Store handlers in global scope for 3D model to access
@@ -260,6 +220,24 @@ const VJ3DController = ({
 		<div className="vj-3d-controller">
 			{/* This component doesn't render anything visible */}
 			{/* It just manages the connection between 3D model and VJ state */}
+
+			{/* Debug info - can be removed in production */}
+			<div className="controller-debug" style={{
+				position: 'absolute',
+				top: '10px',
+				right: '10px',
+				background: 'rgba(0,0,0,0.8)',
+				color: 'white',
+				padding: '10px',
+				borderRadius: '5px',
+				fontSize: '12px',
+				fontFamily: 'monospace',
+				zIndex: 999,
+				pointerEvents: 'none'
+			}}>
+				<div>Active Effects: {Object.entries(state.effects).filter(([key, effect]) => effect.active).map(([key]) => key).join(', ') || 'None'}</div>
+				<div>Active Layers: {Object.entries(state.layers).filter(([key, layer]) => layer.isPlaying).map(([key]) => `L${key}`).join(', ') || 'None'}</div>
+			</div>
 		</div>
 	);
 };

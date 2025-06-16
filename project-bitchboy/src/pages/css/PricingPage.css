@@ -770,7 +770,7 @@
   color: black; /* Darker teal on hover */
 }
 
-.card-swipe {
+.card {
   width: 48px;
   height: 30px;
   background-color: #80deea; /* Light teal */
@@ -818,7 +818,7 @@
   margin: 6px 0 0 -18px;
 }
 
-.container2:hover .card-swipe {
+.container2:hover .card {
   animation: slide-top 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55) both;
 }
 
