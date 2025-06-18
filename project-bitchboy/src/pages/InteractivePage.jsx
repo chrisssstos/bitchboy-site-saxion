@@ -4,6 +4,7 @@ import MultiLayerVideo from '../components/MultiLayerVideo';
 import VJ3DController from '../components/VJ3DController';
 import Model from '../components/3DModel';
 import VJKeyboardControls from '../components/VJKeyboardControls';
+import VJKeyboardHandler from '../components/VJKeyboardHandler';
 import VJGame from '../components/VJGame';
 import GameModeToggle from '../components/GameModeToggle';
 import '../pages/css/InteractivePage.css';
@@ -27,6 +28,8 @@ function InteractivePage() {
 
         {/* VJ Controller Bridge (invisible but manages 3D ↔ VJ communication) */}
         <VJ3DController />
+
+        <VJKeyboardHandler /> 
 
         {/* Overlaid 3D Model - Positioned in lower portion */}
         <div className="ModelOverlay">
