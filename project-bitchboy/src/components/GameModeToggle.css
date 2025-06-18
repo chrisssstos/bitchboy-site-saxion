@@ -1,6 +1,6 @@
 .game-mode-toggle {
 	position: fixed;
-	top: 20px;
+	top: 250px;
 	left: 20px;
 	z-index: 2;
 	background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
