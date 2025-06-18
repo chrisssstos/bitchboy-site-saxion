@@ -1,6 +1,13 @@
 import "../css/Header.css";
+import { useState } from 'react';
 
 function Header() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   return (
     <header className="header">
       <nav className="header-nav">
@@ -20,7 +27,13 @@ function Header() {
           />
         </a>
 
-        <div className="header-pages">
+        <button className="hamburger-menu" onClick={toggleMenu}>
+          <div className={`hamburger-line ${isMenuOpen ? 'open' : ''}`}></div>
+          <div className={`hamburger-line ${isMenuOpen ? 'open' : ''}`}></div>
+          <div className={`hamburger-line ${isMenuOpen ? 'open' : ''}`}></div>
+        </button>
+
+        <div className={`header-pages ${isMenuOpen ? 'open' : ''}`}>
           <a href="/interactive-demo" className="page">
             Interactive
           </a>

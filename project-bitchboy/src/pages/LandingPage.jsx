@@ -54,13 +54,6 @@ function LandingPage() {
       <div className="arrow-text">Try it out here!</div>
 
 
-      <div className="custom-text-block" style={{
-        top: '150vh',
-        right: '15vw',
-      }}>
-        Another text block
-      </div>
-
       <img
         src="/images/background/logotextblack.svg"
         alt="Logo"
