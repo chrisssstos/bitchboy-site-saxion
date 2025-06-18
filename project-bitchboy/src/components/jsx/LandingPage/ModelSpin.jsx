@@ -89,14 +89,16 @@ function BitchboyModel({ isInteracting, onReturningToPosition }) {
         position={[0, -0.1, 0]}
         rotation={[-Math.PI / 40, -Math.PI / 12, 0]}
         style={{
-          cursor: "pointer", // Makes the mouse pointer appear clicky
-          pointerEvents: "auto", // Enables pointer events
+          cursor: "inherit",
+          pointerEvents: "auto",
         }}
       />
       <OrbitControls
         ref={setControlsRef}
         enablePan={false}
         enableZoom={false}
+        enableDamping={true}
+        dampingFactor={0.05}
       />
     </>
   );
@@ -105,6 +107,7 @@ function BitchboyModel({ isInteracting, onReturningToPosition }) {
 export default function ModelSpin() {
   const [isInteracting, setIsInteracting] = useState(false);
   const [isReturningToPosition, setIsReturningToPosition] = useState(false);
+  const [isHovering, setIsHovering] = useState(false); // Add this state
   const timeoutRef = useRef();
 
   const handleStart = () => {
@@ -128,6 +131,7 @@ export default function ModelSpin() {
         height: "100vh",
         zIndex: 2,
         pointerEvents: "none",
+        cursor: isHovering ? "grab" : "default",
       }}
     >
       {isReturningToPosition && (
@@ -141,6 +145,12 @@ export default function ModelSpin() {
         onPointerDown={handleStart}
         onPointerUp={handleEnd}
         onPointerOut={handleEnd}
+        style={{ 
+          cursor: isInteracting ? "grabbing" : isHovering ? "grab" : "default",
+          pointerEvents: "auto" 
+        }}
+        onPointerOver={() => setIsHovering(true)}
+        onPointerLeave={() => setIsHovering(false)}
       >
         
         <ambientLight intensity={0.5} />
