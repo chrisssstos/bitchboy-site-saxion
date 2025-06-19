@@ -2,25 +2,25 @@
   width: 100vw;
   background: #ffffff;
   border-top: #888 0.125rem solid;
-  padding: 2rem 0;
+  padding: 2rem 0; /* Increased padding for more spacing */
   display: flex;
+  flex-direction: column; /* Stack items vertically */
   align-items: center;
   z-index: 2;
 }
 
 .footer-text {
   color: #000000;
-  margin: 0;
-  padding-left: 2rem;
+  margin: 0 0 1rem 0; /* Added bottom margin for spacing */
   font-size: 1rem;
   font-weight: 600;
   letter-spacing: 0.05em;
-  text-align: left;
+  text-align: center;
 }
 
-.footer-icons{
-  margin-left: auto;
+.footer-icons {
   display: flex;
+  justify-content: center;
 }
 
 .footer-icons a {
@@ -31,6 +31,29 @@
   transition: opacity 0.3s;
 }
 
+.footer-icons a:last-child {
+  padding-right: 0; /* Remove padding for the last icon */
+}
+
 .footer-icons a:hover {
   opacity: 0.5;
+}
+
+.footer-credits {
+  color: #666666; /* Grey color for credits */
+  font-size: 0.9rem;
+  text-align: center;
+  line-height: 1.5;
+  margin-top: 2rem; /* Added top margin for spacing */
+}
+
+.footer-credits a {
+  color: #666666; /* Grey color for links */
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+.footer-credits a:hover {
+  color: #000000; /* Darker color on hover */
 }
