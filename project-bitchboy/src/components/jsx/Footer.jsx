@@ -83,7 +83,7 @@ function Footer() {
                 </a>
                 ,{" "}
                 <a
-                    href="https://www.linkedin.com/in/emhyr-bayat/"
+                    href="https://www.linkedin.com/in/amir-bayat-97775828b/"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
