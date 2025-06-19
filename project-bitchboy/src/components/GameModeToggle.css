@@ -1,8 +1,9 @@
 .game-mode-toggle {
-	position: fixed;
-	top: 250px;
+	position: absolute; /* Ensure it's positioned relative to the container */
+	top: 130px;
 	left: 20px;
-	z-index: 2;
+	z-index: 1000; /* High z-index to ensure it's above other elements */
+	pointer-events: auto; /* Ensure the button can receive pointer events */
 	background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
 	border: 2px solid #555;
 	border-radius: 12px;
