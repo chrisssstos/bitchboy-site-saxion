@@ -127,10 +127,11 @@ body {
 
 .cyber-button {
   position: absolute;
-  left: 12rem;
+  left: calc(4rem);
   top: calc(5rem + 9rem);
   z-index: 2;
-  transform: translateX(-50%);
+  transform: translateX(-100%);
+  opacity: 0;
   background: var(--color-black);
   border: none;
   border-radius: 0px;
@@ -142,31 +143,35 @@ body {
   letter-spacing: 4px;
   color: var(--color-orange);
   text-transform: uppercase;
-  box-shadow:
-    0 0 15px var(--color-orange),
-    inset 0 0 15px var(--color-orange);
+  box-shadow:    0 0 15px var(--color-orange),    inset 0 0 15px var(--color-orange);
   text-shadow: 0 0 5px var(--color-orange);
-  transition: all 0.3s;
+  animation: slide-in 1.5s ease-out forwards;
+  -webkit-transform: translateX(-100%);
+  -moz-transform: translateX(-100%);
+  -ms-transform: translateX(-100%);
+  -o-transform: translateX(-100%);
 }
 
-.cyber-button::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    120deg,
-    transparent,
-    rgba(253,166,58),
-    transparent
-  );
-  transition: 1s;
+@keyframes slide-in {
+  0% {
+    transform: translateX(-100%); /* Start off-screen */
+    opacity: 0; /* Fully transparent */
+  }
+  100% {
+    transform: translateX(0); /* Slide into position */
+    opacity: 1; /* Fully visible */
+  }
 }
 
-.cyber-button:hover::before {
-  left: 100%;
+.cyber-button:hover {
+  transform: translateX(0) scale(1.2);
+  box-shadow:
+    0 0 25px var(--color-orange),
+    inset 0 0 25px var(--color-orange);
+}
+
+.cyber-button:active {
+  transform: translateX(0) scale(0.95);
 }
 
 .glitch {
@@ -614,6 +619,7 @@ ScrollModelAnimation {
 
   .orange-bg {
     height: 40vh;
+    top: 30rem;
   }
 
   .orange-bg2 {
@@ -641,11 +647,12 @@ ScrollModelAnimation {
 
   /* Add ModelSpin responsive styles */
   div[style*="position: absolute"][style*="left: 1"] {
-    left: 0 !important;
-    width: 100vw !important;
+    left: -10% !important;
+    top: 10vh !important;
+    width: 120vw !important;
     height: 70vh !important;
     transform: scale(0.8);
-  }
+}
 
   canvas {
     width: 100% !important;
@@ -656,9 +663,9 @@ ScrollModelAnimation {
 /* Mobile Responsive */
 @media screen and (max-width: 500px) {
   .centered-logo-container {
+    left: calc(50% - 13rem);
     top: calc(-15rem + 9rem);
     margin-top: -30px;
-    left: 0;
   }
 
   .centered-logo-img {
@@ -716,6 +723,7 @@ ScrollModelAnimation {
 
   .orange-bg {
     height: 40vh;
+    top: 24rem;
   }
 
   .orange-bg2 {
@@ -724,28 +732,49 @@ ScrollModelAnimation {
 
   .cyber-button {
     top: calc(0.5rem + 9rem);
-    left: 30%;
+    left: calc(50% - 9rem);
     width: 16rem;
     height: 3.5rem;
     font-size: 1.1rem;
     transform: translateX(-50%) scale(0.8);
+    -webkit-transform: translateX(-50%) scale(0.8);
+    -moz-transform: translateX(-50%) scale(0.8);
+    -ms-transform: translateX(-50%) scale(0.8);
+    -o-transform: translateX(-50%) scale(0.8);
+      box-shadow:
+    0 0 15px var(--color-orange),
+    inset 0 0 15px var(--color-orange);
+    text-shadow: 0 0 5px var(--color-orange);
+    animation: slide-in 1.5s ease-out forwards; /* Trigger animation */
+  }
+
+  @keyframes slide-in {
+    0% {
+      transform: translateX(-100%); /* Start off-screen */
+      opacity: 0; /* Fully transparent */
+    }
+    100% {
+      transform: translateX(0); /* Slide into position */
+      opacity: 1; /* Fully visible */
+    }
   }
 
   .cyber-button:hover {
-    transform: translateX(-50%) scale(0.9);
+    transform: translateX(0) scale(1.2);
     box-shadow:
-        0 0 25px var(--color-orange),
-        inset 0 0 25px var(--color-orange);
+      0 0 25px var(--color-orange),
+      inset 0 0 25px var(--color-orange);
   }
 
   .cyber-button:active {
-    transform: translateX(-50%) scale(0.95);
+    transform: translateX(0) scale(0.95);
   }
+
 
   /* Add ModelSpin mobile styles */
   div[style*="position: absolute"][style*="left: 125"] {
-    left: 0 !important;
-    width: 100vw !important;
+    left: -35% !important;
+    width: 160vw !important;
     height: 50vh !important;
     transform: scale(0.6);
   }
