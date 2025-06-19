@@ -131,3 +131,18 @@
 .keyboard-controls-container.visible {
   right: 0;
 }
+
+/* Mobile Message */
+.mobile-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  background-color: white;
+  color: black;
+  font-size: 1.5rem;
+  text-align: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
