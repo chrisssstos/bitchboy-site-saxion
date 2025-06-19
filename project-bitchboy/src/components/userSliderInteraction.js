@@ -323,15 +323,25 @@ export function useSliderInteraction(scene) {
     const trackEndWorld = track.localToWorld(trackEndLocal.clone());
     const trackStartInParent = activeSlider.parent.worldToLocal(trackStartWorld.clone());
     const trackEndInParent = activeSlider.parent.worldToLocal(trackEndWorld.clone());
+    // You can adjust this value to set how much you want to "raise" the minimum position for bottom sliders.
+    // For example, set to 0.2 to prevent the slider from going all the way to the bottom.
+    const BOTTOM_SLIDER_MIN_LIMIT = 0.2; // 0 = full range, 0.2 = 20% up from bottom
 
-    const sliderMin = isBottom
+    let sliderMin = isBottom
       ? Math.min(trackStartInParent.x, trackEndInParent.x)
       : Math.min(trackStartInParent.z, trackEndInParent.z);
-    const sliderMax = isBottom
+    let sliderMax = isBottom
       ? Math.max(trackStartInParent.x, trackEndInParent.x)
       : Math.max(trackStartInParent.z, trackEndInParent.z);
 
     const normalized = (clampedCoord - trackAxisMin) / (trackAxisMax - trackAxisMin);
+
+    // For bottom sliders, raise the minimum limit by a percentage of the range
+    if (isBottom) {
+      const range = sliderMax - sliderMin;
+      sliderMin = sliderMin + range * BOTTOM_SLIDER_MIN_LIMIT;
+    }
+
     const mappedCoord = sliderMin + normalized * (sliderMax - sliderMin);
 
     if (isBottom) {
@@ -340,6 +350,7 @@ export function useSliderInteraction(scene) {
       activeSlider.position.set(activeSlider.position.x, activeSlider.position.y, mappedCoord);
     }
 
+    
     // Connect to VJ system
     if (window.vjController && window.vjController.handleSliderChange) {
       // Extract slider index from name (assuming format like "Slider_knob_top_1", "Slider_knob_bottom_1", etc.)

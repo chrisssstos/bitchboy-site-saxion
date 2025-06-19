@@ -1,6 +1,6 @@
 .vj-keyboard-controls {
-	position: fixed;
-	top: 120px;
+	position: absolute;
+	top: 6px;
 	right: 20px;
 	width: 350px;
 	background: rgba(0, 0, 0, 0.9);

@@ -555,7 +555,7 @@ ScrollModelAnimation {
   transform: none;
 }
 
-
+/* Mobile Responsive 968px */
 @media screen and (max-width: 968px) {
 
   .centered-logo-container {
@@ -645,7 +645,6 @@ ScrollModelAnimation {
     transform: translateX(-50%) scale(0.95);
   }
 
-  /* Add ModelSpin responsive styles */
   div[style*="position: absolute"][style*="left: 1"] {
     left: -10% !important;
     top: 10vh !important;
@@ -660,7 +659,7 @@ ScrollModelAnimation {
   }
 }
 
-/* Mobile Responsive */
+/* Mobile Responsive 500px */
 @media screen and (max-width: 500px) {
   .centered-logo-container {
     left: calc(50% - 13rem);
