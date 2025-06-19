@@ -28,7 +28,7 @@ To run the website on your localhost:
 
 - Install Firebase
 ```
-npm instal firebase
+npm install firebase
 ```
 - Replace [firebaseConfig.js](/project-bitchboy/firebase/firebaseConfig.js) with the copied config above. 
 - Since the config does not have the import for Firestore, add this to [firebaseConfig.js](/project-bitchboy/firebase/firebaseConfig.js)
