@@ -51,7 +51,7 @@ function Footer() {
             <div className="footer-credits">
                 <p>Website Credits:</p>
                 <a
-                    href="https://www.linkedin.com/in/david-maddin/"
+                    href="https://www.linkedin.com/in/davidmaddin/"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
@@ -59,7 +59,7 @@ function Footer() {
                 </a>
                 ,{" "}
                 <a
-                    href="https://www.linkedin.com/in/anh-nguyen/"
+                    href="https://www.linkedin.com/in/bao-anh-nguyen-2b931335a/"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
@@ -67,7 +67,7 @@ function Footer() {
                 </a>
                 ,{" "}
                 <a
-                    href="https://www.linkedin.com/in/an-nguyen/"
+                    href="https://github.com/nguyentuannguyenan"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
@@ -75,7 +75,7 @@ function Footer() {
                 </a>
                 ,{" "}
                 <a
-                    href="https://www.linkedin.com/in/syandana-suntana/"
+                    href="https://www.linkedin.com/in/syandana-suntana-4bb58727b/"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
