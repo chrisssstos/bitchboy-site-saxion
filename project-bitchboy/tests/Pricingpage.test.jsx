@@ -1,4 +1,4 @@
-// __tests__/PricingPage.test.jsx
+// __tests__/Pricingpage.test.jsx
 /* eslint-env vitest */
 
 import { render, screen } from '@testing-library/react';
@@ -43,7 +43,7 @@ describe('PricingPage', () => {
 
     // Check that the link to the Kickstarter section exists
     const externalLink = screen.getByRole('link', { name: /GRAB IT NOW/i });
-    expect(externalLink).toHaveAttribute('href', 'https://blocksystem.org/#team');
+    expect(externalLink).toHaveAttribute('href', 'https://www.kickstarter.com/');
     expect(externalLink).toHaveAttribute('target', '_blank');
     expect(externalLink).toHaveAttribute('rel', 'noopener noreferrer');
   });

@@ -49,10 +49,10 @@ export function useButtonInteraction(scene, originalMaterialsRef) {
         child.position.z += 0.1;
         child.userData.wasPressed = false;
 
-        const originalMat = originalMaterialsRef.current.get(child.uuid);
-        if (originalMat) {
-          child.material = originalMat;
-        }
+        // const originalMat = originalMaterialsRef.current.get(child.uuid);
+        // if (originalMat) {
+        //   child.material = originalMat;
+        // }
 
         // Connect to VJ system for button release
         if (window.vjController && window.vjController.handleButtonPress) {
