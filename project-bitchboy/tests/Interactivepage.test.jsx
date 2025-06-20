@@ -1,63 +1,83 @@
+/* eslint-env vitest */
+import { render, screen, fireEvent } from '@testing-library/react';
+import InteractivePage from '../src/pages/InteractivePage';
 import React from 'react';
-import { render, screen } from '@testing-library/react';
-import MultiLayerVideo from '../src/components/MultiLayerVideo';
-import { vi } from 'vitest';  // Import vi from vitest
 
-// Mock the VJContext and useVJ hook
-vi.mock('../src/contexts/VJContext', () => ({
-  useVJ: vi.fn(),
+// Mock canvas + drei components
+vi.mock('@react-three/fiber', () => ({
+  Canvas: ({ children }) => <div data-testid="mock-canvas">{children}</div>,
+}));
+vi.mock('@react-three/drei', () => ({
+  Stage: ({ children }) => <div>{children}</div>,
+  PresentationControls: ({ children }) => <div>{children}</div>,
 }));
 
-import { useVJ } from '../src/contexts/VJContext';
+// Mock custom components
+vi.mock('../src/components/3DModel', () => ({
+  default: () => <div data-testid="mock-3d-model">Mock 3D Model</div>,
+}));
+vi.mock('../src/components/MultiLayerVideo', () => ({
+  default: () => <div>Mock MultiLayerVideo</div>,
+}));
+vi.mock('../src/components/VJ3DController', () => ({
+  default: () => <div>Mock VJ3DController</div>,
+}));
+vi.mock('../src/components/VJKeyboardControls', () => ({
+  default: () => <div data-testid="keyboard-controls">Keyboard Controls</div>,
+}));
+vi.mock('../src/components/VJGame', () => ({
+  default: () => <div>Mock VJGame</div>,
+}));
+vi.mock('../src/components/GameModeToggle', () => ({
+  default: () => <button>Toggle Game Mode</button>,
+}));
 
-describe('MultiLayerVideo', () => {
+describe('InteractivePage', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    // Set default window size to desktop before each test
+    global.innerWidth = 1200;
+    global.dispatchEvent(new Event('resize'));
   });
 
-  it('renders video layers and updates visibility based on layer state', () => {
-    const mockState = {
-      state: {
-        layers: {
-          1: { video: 'vid1.mp4', isPlaying: true, opacity: 0.8, zIndex: 1 },
-          2: { video: '', isPlaying: false, opacity: 0, zIndex: 0 },
-          3: { video: '', isPlaying: false, opacity: 0, zIndex: 0 },
-          4: { video: '', isPlaying: false, opacity: 0, zIndex: 0 },
-        },
-        effects: {
-          invert: { active: false },
-          hueRotate: { active: false, degrees: 0 },
-          colorize: { active: false, intensity: 0 },
-          dotScreen: { active: false },
-          loRez: { active: false, blur: 0 },
-          infiniteZoom: { active: false, scale: 1 },
-          warpSpeed: { active: false, perspective: 0 },
-          mirror: { active: false },
-          stingySphere: { active: false, intensity: 15 },
-          transform: { scale: 1, rotateX: 0, rotateY: 0, rotateZ: 0, translateX: 0, translateY: 0 },
-          strobe: { active: false, speed: 10 },
-        },
-      },
-    };
-    useVJ.mockReturnValue(mockState);
+  test('renders core visual and control components', () => {
+    render(<InteractivePage />);
 
-    render(<MultiLayerVideo />);
-
-    // Layer 1 video should be visible and have src set
-    const layer1Video = screen.getByRole('video', { name: /layer 1/i });
-    expect(layer1Video.style.display).toBe('block');
-    expect(layer1Video.src).toContain('vid1.mp4');
-
-    // Layers 2-4 should be hidden
-    for (let i = 2; i <= 4; i++) {
-      const video = screen.getByRole('video', { name: new RegExp(`layer ${i}`, 'i') });
-      expect(video.style.display).toBe('none');
-    }
-
-    // Check debug info
-    expect(screen.getByText(/Layer 1:/)).toHaveTextContent('vid1.mp4');
-    expect(screen.getByText(/Layer 2:/)).toHaveTextContent('Stopped');
+    expect(screen.getByText('Mock MultiLayerVideo')).toBeInTheDocument();
+    expect(screen.getByText('Mock VJ3DController')).toBeInTheDocument();
+    expect(screen.getByTestId('mock-canvas')).toBeInTheDocument();
+    expect(screen.getByText('Mock VJGame')).toBeInTheDocument();
+    expect(screen.getByText('Toggle Game Mode')).toBeInTheDocument();
   });
 
-  // Add tests for style changes, strobe effect, opacity updates, etc.
+  test('toggles keyboard controls visibility when arrow button is clicked', () => {
+    render(<InteractivePage />);
+
+    const toggleButton = screen.getByRole('button', { name: /←/i });
+    expect(toggleButton).toBeInTheDocument();
+
+    expect(screen.queryByTestId('keyboard-controls')).not.toBeInTheDocument();
+
+    fireEvent.click(toggleButton);
+    expect(screen.getByTestId('keyboard-controls')).toBeInTheDocument();
+    expect(toggleButton.textContent).toBe('→');
+
+    fireEvent.click(toggleButton);
+    expect(screen.queryByTestId('keyboard-controls')).not.toBeInTheDocument();
+  });
+
+  test('renders mobile message if window width is small', () => {
+    global.innerWidth = 500;
+    global.dispatchEvent(new Event('resize'));
+
+    render(<InteractivePage />);
+    expect(
+      screen.getByText(/please open the website on a desktop browser/i)
+    ).toBeInTheDocument();
+  });
+
+  test('renders 3D model inside Canvas', () => {
+    render(<InteractivePage />);
+    expect(screen.getByTestId('mock-canvas')).toBeInTheDocument();
+    expect(screen.getByTestId('mock-3d-model')).toBeInTheDocument();
+  });
 });
