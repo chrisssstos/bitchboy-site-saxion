@@ -1,4 +1,4 @@
-// __tests__/LandingPage.test.jsx
+// __tests__/Landingpage.test.jsx
 /* eslint-env vitest */
 
 

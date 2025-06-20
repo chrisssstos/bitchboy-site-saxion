@@ -2,6 +2,17 @@
 import * as THREE from "three";
 
 export function useButtonInteraction(scene, originalMaterialsRef) {
+  const activeButtonInRow = new Map();
+
+  // there has to be a better way of doing this
+  function getRowForButton(buttonName) {
+    if (buttonName.match(/^Button_([1-5])$/)) return 1;
+    if (buttonName.match(/^Button_(9|10|11|12|13)$/)) return 2;
+    if (buttonName.match(/^Button_(17|18|19|20|21)$/)) return 3;
+    if (buttonName.match(/^Button_(25|26|27|28|29)$/)) return 4;
+    return null;
+  }
+
   function handleButtonPointerDown(e) {
     // Ensure this is the topmost intersection
     if (e.intersections && e.intersections[0].object.uuid !== e.object.uuid) {
@@ -11,15 +22,21 @@ export function useButtonInteraction(scene, originalMaterialsRef) {
     const obj = e.object;
     if (!obj.name.includes("Button")) return false;
 
-    // Store original material if not already saved
-    if (!originalMaterialsRef.current.has(obj.uuid)) {
-      originalMaterialsRef.current.set(obj.uuid, obj.material.clone());
+    const row = getRowForButton(obj.name);
+    if (!row) return false;
+
+    const activeButtonName = activeButtonInRow.get(row);
+    if (activeButtonName && activeButtonName !== obj.name) {
+      const activeButton = scene.getObjectByName(activeButtonName);
+      if (activeButton && originalMaterialsRef.current.has(activeButton.uuid)) {
+        activeButton.material = originalMaterialsRef.current.get(activeButton.uuid).clone();
+      }
     }
 
+    activeButtonInRow.set(row, obj.name);
+    obj.material = new THREE.MeshStandardMaterial({ color: "#50C878" }); // green
     obj.position.z -= 0.1;
     obj.userData.wasPressed = true;
-
-    obj.material = new THREE.MeshStandardMaterial({ color: "#50C878" });
 
     // Connect to VJ system
     if (window.vjController && window.vjController.handleButtonPress) {
@@ -35,12 +52,11 @@ export function useButtonInteraction(scene, originalMaterialsRef) {
           }
         } else {
           console.log("Middle?");
-          // pop up here
+          // Adding functionality to the middle (3x3) is possible here
         }
-        // bottom button
       } else {
         console.log("Bottom?");
-        // pop up here
+        // Adding functionality to the bottom row is possible here
       }
 
     }
@@ -54,9 +70,11 @@ export function useButtonInteraction(scene, originalMaterialsRef) {
         child.position.z += 0.1;
         child.userData.wasPressed = false;
 
-        const originalMat = originalMaterialsRef.current.get(child.uuid);
-        if (originalMat) {
-          child.material = originalMat;
+        const row = getRowForButton(child.name);
+        if (row && activeButtonInRow.get(row) !== child.name) {
+          if (originalMaterialsRef.current.has(child.uuid)) {
+            child.material = originalMaterialsRef.current.get(child.uuid).clone;
+          }
         }
 
         // Connect to VJ system for button release
