@@ -146,12 +146,12 @@
     top: 0;
     right: -100%;
     height: 100vh;
-    width: 250px;
+    width: 200px; /* Reduced from 250px */
     background: #ffffff;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 80px 20px;
+    padding: 80px 15px; /* Reduced horizontal padding */
     transition: right 0.3s ease;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
   }
@@ -211,7 +211,8 @@
   }
 
   .header-pages {
-    width: 200px;
+    width: 140px;
+    padding: 60px 12px;
   }
 
   .page {

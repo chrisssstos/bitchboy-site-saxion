@@ -9,3 +9,15 @@
   transform: scale(1);
   transform-origin: center;
 }
+
+@media screen and (max-width: 500px) {
+  .lanyard-wrapper {
+    margin-top: -40px;
+    margin-bottom: -180px;
+    height: 80vh;
+  }
+
+  canvas {
+    transform: translateY(-50px);
+  }
+}

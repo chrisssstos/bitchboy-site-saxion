@@ -25,7 +25,6 @@ function ScrollText() {
       transition: 'opacity 0.4s ease, transform 0.4s ease',
       zIndex: 1,
       margin: '150px auto 0',
-      backdropFilter: 'blur(5px)',
       borderRadius: '10px',
       padding: '20px',
     }}>
