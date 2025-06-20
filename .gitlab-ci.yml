@@ -13,6 +13,10 @@ install:
     - apt-get update && apt-get install -y npm
     - cd project-bitchboy
     - npm install
+  artifacts:
+    paths:
+      - project-bitchboy/node_modules
+    expire_in: 1 hour
 
 pages-testing:
   stage: test
