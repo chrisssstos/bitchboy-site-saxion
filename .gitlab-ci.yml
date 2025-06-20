@@ -4,6 +4,7 @@ stages:
   - install
   - test
   - build
+  - perf-test
 
 install:
   stage: install
@@ -44,7 +45,7 @@ build:
     - install
 
 performance-testing:
-  stage: test
+  stage: perf-test
   script:
     - echo "Performance testing"
     - cd project-bitchboy
