@@ -3,6 +3,11 @@ import * as THREE from "three";
 
 export function useButtonInteraction(scene, originalMaterialsRef) {
   function handleButtonPointerDown(e) {
+    // Ensure this is the topmost intersection
+    if (e.intersections && e.intersections[0].object.uuid !== e.object.uuid) {
+      return false;
+    }
+
     const obj = e.object;
     if (!obj.name.includes("Button")) return false;
 
