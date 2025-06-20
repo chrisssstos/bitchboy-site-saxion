@@ -85,3 +85,45 @@ Each report provides a score (0–100) in key categories:
 - SEO: Search engine discoverability
 
 Key explanation for the scoring can be found on the website once you go to the link in the links.json file
+
+## 🔧 Advice on optimizing the product
+
+If you have run the test using Lighthouse, you can probably see that the performance score for this website is quite low. This is mainly due to the usage of quite the amount of dependency that this website has in order to create all the effects. Thus, we did some research and found a few methods you could potentially use to optimize the performance of the website.
+
+### 1. **Lazy Loading**
+
+If you run the project locally or deployed it using any platforms, once you go to the website itself, you can see that it takes a few seconds to fully load (about 6-7 seconds to be precise). This is because the website is fully loading all of its utility before showing the landing page. Therefore, you can simply apply a lazy load strategy to some of the code so that the main page appears earlier.
+
+Here are our recommendations on which files to apply this strategy:
+
+- Lanyard.jsx: This file is responsible for creating the 2 cards that you see on the Team page. As there is a lot of physics applied to these objects, quite the number of utilities were used to create the effects that this page has. Some of the dependencies include: ```@react-three/rapier, three, @react-three/fiber```. Thus, we would recommend starting with this file first.
+
+- InteractivePage.jsx: This page uses a huge amount of components from the model itself to the UI effects created by animejs. Therefore, this is also a potential file to apply lazy loading.
+
+### 2. **Split bundles using Vite’s ```manualChunks``` config**
+
+```bash
+ build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          three: ['three'],
+          r3f: ['@react-three/fiber', '@react-three/drei'],
+          rapier: ['@react-three/rapier'],
+        }
+      }
+    }
+}
+```
+
+Add this code to the vite.config.js file.
+
+This will create separate .js files (chunks) for:
+
+- three
+
+- @react-three/fiber and @react-three/drei
+
+- @react-three/rapier
+
+These chunks load only if the lazy-loaded component needs them.
