@@ -15,11 +15,13 @@
   width: 750px;
   height: 480px;
   transition: 200ms;
+  cursor: pointer;
 }
 
 .container:active {
   width: 700px;
   height: 437.5px;
+  cursor: grabbing; 
 }
 
 .card-image {
@@ -42,6 +44,7 @@
   align-items: center;
   border-radius: 20px;
   transition: 700ms;
+  cursor: pointer;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(20px);
@@ -56,6 +59,7 @@
   position: relative;
   width: 100%;
   height: 100%;
+  cursor: inherit;
 }
 
 .title1 {
@@ -243,7 +247,7 @@
 .canvas {
   perspective: 800px;
   inset: 0;
-  z-index: 200;
+  z-index: 10;
   position: absolute;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
@@ -661,6 +665,7 @@
     transform 0.3s ease-in-out,
     box-shadow 0.3s ease-in-out;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
 }
 
 .container2:hover {
@@ -937,6 +942,113 @@
   }
   50% {
     transform: translateY(-2px);
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .pricing-page {
+    flex-direction: column;
+    gap: 2rem;
+    height: auto;
+    padding: 2rem 0;
+    width: 100vw;
+    }
+
+    .container {
+    right: 0;
+    position: relative;
+    width: 80vw;
+    max-width: 310px;
+    height: 380px;
+    margin: 0 auto;
+    transform: scale(0.9);
+    cursor: pointer;
+    }
+
+    .container:active {
+    width: 120vw;
+    max-width: 350px;
+    height: 380px;
+    cursor: grabbing;
+  }
+
+  .title1 {
+    font-size: 24px;
+    padding-top: 15px;
+  }
+
+  .subtitle1 {
+    font-size: 60px;
+    bottom: 20px;
+  }
+
+  .card-image {
+    max-width: 70%;
+    max-height: 60%;
+  }
+
+  /* Adjust kickstarter card button */
+  .container2 {
+    margin: 0 auto;
+    transform: scale(0.8);
+  }
+
+  .container2:hover {
+    transform: scale(0.93);
+  }
+}
+
+/* Add some adjustments for medium screens */
+@media screen and (max-width: 968px) {
+  .pricing-page {
+    flex-direction: column;
+    gap: 2rem;
+    height: auto;
+    padding: 2rem 0;
+    width: 100vw;
+  }
+
+  .container {
+    right: 0;
+    position: relative;
+    width: 80vw;
+    max-width: 610px;
+    height: 380px;
+    margin: 0 auto;
+    transform: scale(0.9);
+    cursor: pointer;
+    }
+
+    .container:active {
+    width: 120vw;
+    max-width: 350px;
+    height: 380px;
+    cursor: grabbing;
+  }
+
+  .title1 {
+    font-size: 24px;
+    padding-top: 15px;
+  }
+
+  .subtitle1 {
+    font-size: 60px;
+    bottom: 20px;
+  }
+
+  .card-image {
+    max-width: 70%;
+    max-height: 60%;
+  }
+
+  /* Adjust kickstarter card button */
+  .container2 {
+    margin: 0 auto;
+    transform: scale(0.8);
+  }
+
+  .container2:hover {
+    transform: scale(0.93);
   }
 }
 
