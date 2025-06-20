@@ -96,7 +96,7 @@ const SMALL_SCREEN_ANIMATION_CONFIG = {
 };
 
 function ScrollAnimatedModel() {
-  const { scene } = useGLTF("/bitchboy3d(v10).glb");
+  const { scene } = useGLTF("/bitchboy3d(v11).glb");
   const meshRef = useRef();
   const groupRef = useRef();
   const [animationConfig, setAnimationConfig] = useState(ANIMATION_CONFIG);
