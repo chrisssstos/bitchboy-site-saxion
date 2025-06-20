@@ -19,6 +19,7 @@
     "firebase": "^11.9.1",
     "gsap": "^3.13.0",
     "meshline": "^3.3.1",
+    "ngrok": "^5.0.0-beta.2",
     "ogl": "^1.0.11",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
+    "@lhci/cli": "^0.15.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@types/react": "^19.1.2",

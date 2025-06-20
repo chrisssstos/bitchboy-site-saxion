@@ -4,7 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
 function BitchboyModel({ isInteracting, onReturningToPosition }) {
-  const { scene } = useGLTF("/bitchboy3d(v10).glb");
+  const { scene } = useGLTF("/bitchboy3d(v11).glb");
   const meshRef = useRef();
   const { camera } = useThree();
   const controlsRef = useRef();
