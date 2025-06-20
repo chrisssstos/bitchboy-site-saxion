@@ -48,14 +48,4 @@ build:
   needs:
     - install
 
-performance-testing:
-  stage: perf-test
-  script:
-    - echo "Performance testing"
-    - cd project-bitchboy
-    - npx lhci autorun
-  needs:
-    - install
-    - build
-
 
