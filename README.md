@@ -52,6 +52,21 @@ export { db };
 - You can add more collection depending on future's need. Or even using other storing services if you want to expand the database.
 - You can find all information from the [Firebase documentation](https://firebase.google.com/docs).
 
+## Add more posts into blog page
+
+Go to [BlogPage.jsx](/project-bitchboy/src/pages/BlogPage.jsx), inside `posts` array you can add more instagram posts URLs
+
+```
+const posts = [
+    "https://www.instagram.com/p/DI8TWFGsxXy/",
+    "https://www.instagram.com/p/DIGy8Ywt_YQ/",
+    "https://www.instagram.com/p/DJg4sUgIe3-/",
+    // Add more Instagram post URLs here
+  ];
+```
+
+
+
 # Credits
 
 Saxion students team who contributed to the project:
@@ -64,6 +79,6 @@ Saxion students team who contributed to the project:
 
 [Bao Anh Nguyen](https://www.linkedin.com/in/bao-anh-nguyen-2b931335a/)
 
-Amir Bayat
+[Amir Bayat](https://www.linkedin.com/in/amir-bayat-97775828b/?trk=contact-info)
 
 Mykyta Golubov

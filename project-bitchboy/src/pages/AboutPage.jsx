@@ -63,10 +63,10 @@ export default function AboutPage() {
           }}
         >
           <CardSwap
-            cardDistance={60}
-            verticalDistance={120}
-            delay={5000}
-            pauseOnHover={true}
+            cardDistance={65}
+            verticalDistance={150}
+            delay={4000}
+            pauseOnHover={false}
             easing="linear"
           >
             <Card>
