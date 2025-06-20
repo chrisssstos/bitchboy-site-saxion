@@ -85,9 +85,10 @@ function Model(props) {
 
   // Combined pointer handlers that delegate to appropriate handlers
   function handlePointerDown(e) {
-    console.log("Clicked:", e.object.name);
+    // Capture the pointer so that pointerUp always fires
+    e.target.setPointerCapture(e.pointerId);
 
-    // ✅ TRY SLIDER FIRST
+    // Try slider, knob, then button
     if (handleSliderPointerDown(e)) return;
     if (handleKnobPointerDown(e)) return;
     if (handleButtonPointerDown(e)) return;
@@ -101,6 +102,9 @@ function Model(props) {
 
   // ✅ SINGLE POINTER UP FUNCTION
   function handlePointerUp(e) {
+    // Always release pointer capture
+    e.target.releasePointerCapture(e.pointerId);
+
     if (handleSliderPointerUp(e)) return;
     if (handleKnobPointerUp(e)) return;
     if (handleButtonPointerUp(e)) return;
@@ -108,13 +112,11 @@ function Model(props) {
 
   // Add pointer capture for better drag handling
   function handlePointerMissed(e) {
-    // This fires when clicking on empty space
-    if (isDraggingKnob) {
-      handleKnobPointerUp(e);
-    }
-    if (isDraggingSlider) {
-      handleSliderPointerUp(e);
-    }
+    // If we missed the model entirely but something was pressed, release it
+    if (isDraggingKnob) handleKnobPointerUp(e);
+    if (isDraggingSlider) handleSliderPointerUp(e);
+    // Always call button up
+    handleButtonPointerUp(e);
   }
 
   // ✅ FIXED CLICK HANDLER
@@ -134,11 +136,11 @@ function Model(props) {
     <primitive
       object={scene}
       {...props}
-      onClick={handleClick} // ✅ RESTORED CLICK HANDLER
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerMissed={handlePointerMissed}
+      onClick={handleClick}
     />
   );
 }
