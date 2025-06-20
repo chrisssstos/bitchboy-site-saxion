@@ -1,0 +1,56 @@
+image: node:20.11.0
+
+stages:
+  - install
+  - test
+  - build
+
+install:
+  stage: install
+  script:
+    - echo "Installing dependencies"
+    - apt-get update && apt-get install -y npm
+    - cd project-bitchboy
+    - npm install
+
+pages-testing:
+  stage: test
+  script:
+    - echo "Running normal test"
+    - cd project-bitchboy
+    - npx vitest
+  needs:
+    - install
+
+build:
+  stage: build
+  script:
+    - echo "building the project"
+    - cd project-bitchboy
+    - npm run build
+  artifacts:
+    when: always
+    paths:
+      - project-bitchboy/dist
+    expire_in: 2 week
+  cache:
+    policy: pull
+    key:
+      files:
+        - project-bitchboy/package-lock.json
+    paths:
+      - project-bitchboy/node_modules
+  needs:
+    - install
+
+performance-testing:
+  stage: test
+  script:
+    - echo "Performance testing"
+    - cd project-bitchboy
+    - npx lhci autorun
+  needs:
+    - install
+    - build
+
+
