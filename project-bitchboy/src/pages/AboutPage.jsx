@@ -66,7 +66,7 @@ export default function AboutPage() {
             cardDistance={60}
             verticalDistance={120}
             delay={5000}
-            pauseOnHover={true}
+            pauseOnHover={false}
             easing="linear"
           >
             <Card>
