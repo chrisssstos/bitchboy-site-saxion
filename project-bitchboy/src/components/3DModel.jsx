@@ -1,4 +1,5 @@
 // Updated Model component
+// Any comment noted with BL refers to if you ever want the model to go back to its color in Blender
 import { Canvas } from "@react-three/fiber";
 import { useGLTF, Stage } from "@react-three/drei";
 import { useEffect, useRef } from "react";
@@ -10,7 +11,7 @@ import { useButtonInteraction } from "../components/userButtonInteraction";
 function Model(props) {
   // blender model
   const { scene } = useGLTF("/bitchboy3d(v11).glb");
-  const originalMaterials = useRef(new Map());
+  // BL: const originalMaterials = useRef(new Map());
 
   // ✅ ADD SLIDER HOOK BACK
   const {
@@ -31,12 +32,13 @@ function Model(props) {
   const {
     handleButtonPointerDown,
     handleButtonPointerUp
-  } = useButtonInteraction(scene, originalMaterials);
+    // BL: useButtonInteraction(scene, originalMaterials)
+  } = useButtonInteraction(scene);
 
   useEffect(() => {
     scene.traverse((child) => {
       if (child.isMesh) {
-        originalMaterials.current.set(child.uuid, child.material.clone());
+        // BL: originalMaterials.current.set(child.uuid, child.material.clone());
         child.userData.isToggled = false;
         child.userData.clickable = true;
 

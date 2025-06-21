@@ -1,7 +1,8 @@
 //userButtonInteraction.js
 import * as THREE from "three";
 
-export function useButtonInteraction(scene, originalMaterialsRef) {
+//BL: export function useButtonInteraction(scene, originalMaterialsRef)
+export function useButtonInteraction(scene) {
   const activeButtonInRow = new Map();
 
   // there has to be a better way of doing this
@@ -28,8 +29,9 @@ export function useButtonInteraction(scene, originalMaterialsRef) {
     const activeButtonName = activeButtonInRow.get(row);
     if (activeButtonName && activeButtonName !== obj.name) {
       const activeButton = scene.getObjectByName(activeButtonName);
-      if (activeButton && originalMaterialsRef.current.has(activeButton.uuid)) {
-        activeButton.material = originalMaterialsRef.current.get(activeButton.uuid).clone();
+      // BL: if (activeButton && originalMaterialsRef.current.has(activeButton.uuid))
+      if (activeButton) {
+        activeButton.material = new THREE.MeshStandardMaterial({ color: '#FFA500' })
       }
     }
 
@@ -72,9 +74,9 @@ export function useButtonInteraction(scene, originalMaterialsRef) {
 
         const row = getRowForButton(child.name);
         if (row && activeButtonInRow.get(row) !== child.name) {
-          if (originalMaterialsRef.current.has(child.uuid)) {
-            child.material = originalMaterialsRef.current.get(child.uuid).clone;
-          }
+          // BL: if (originalMaterialsRef.current.has(child.uuid)) {
+            // BL: child.material = originalMaterialsRef.current.get(child.uuid).clone();
+            child.material = new THREE.MeshStandardMaterial({ color: '#FFA500' })
         }
 
         // Connect to VJ system for button release
