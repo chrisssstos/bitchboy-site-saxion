@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Tutorial Music Debug Test</title>
+	<style>
+		body {
+			font-family: 'Courier New', monospace;
+			background: #000;
+			color: #00ff00;
+			padding: 20px;
+		}
+
+		.log {
+			margin: 10px 0;
+			padding: 5px;
+			border: 1px solid #333;
+			background: #111;
+		}
+
+		button {
+			background: #333;
+			color: #00ff00;
+			border: 1px solid #555;
+			padding: 10px 20px;
+			margin: 5px;
+			cursor: pointer;
+			font-family: 'Courier New', monospace;
+		}
+
+		button:hover {
+			background: #555;
+		}
+
+		#status {
+			font-weight: bold;
+			margin: 20px 0;
+		}
+	</style>
+</head>
+
+<body>
+	<h1>🎵 Tutorial Music Debug Test</h1>
+
+	<div id="status">Status: Not Started</div>
+
+	<button onclick="startTutorialMusic()">Start Tutorial Music</button>
+	<button onclick="stopTutorialMusic()">Stop Tutorial Music</button>
+	<button onclick="checkMusicStatus()">Check Status</button>
+	<button onclick="clearLogs()">Clear Logs</button>
+
+	<h2>Music Controls</h2>
+	<audio id="testAudio" controls style="display: block; margin: 10px 0;">
+		<source src="/music/bitchboys-song-3.wav" type="audio/wav">
+		Your browser does not support the audio element.
+	</audio>
+
+	<h2>Debug Logs</h2>
+	<div id="logs"></div>
+
+	<script>
+		let tutorialMusic = null;
+
+		function log(message) {
+			const logs = document.getElementById('logs');
+			const logDiv = document.createElement('div');
+			logDiv.className = 'log';
+			logDiv.innerHTML = `[${new Date().toLocaleTimeString()}] ${message}`;
+			logs.insertBefore(logDiv, logs.firstChild);
+			console.log(message);
+		}
+
+		function updateStatus(status) {
+			document.getElementById('status').textContent = `Status: ${status}`;
+		}
+
+		function startTutorialMusic() {
+			if (tutorialMusic) {
+				log('🎵 Tutorial music already exists, stopping first...');
+				tutorialMusic.pause();
+				tutorialMusic = null;
+			}
+
+			log('🎵 Creating tutorial music instance...');
+			updateStatus('Starting...');
+
+			// Create tutorial music instance
+			const audio = new Audio('/music/bitchboys-song-3.wav');
+			audio.loop = true;
+			audio.volume = 0.35;
+			audio.preload = 'auto';
+
+			// Add event listeners
+			audio.addEventListener('play', () => {
+				log('🎵 ✅ Tutorial music STARTED playing');
+				updateStatus('Playing');
+			});
+
+			audio.addEventListener('pause', () => {
+				log('⏸️ Tutorial music PAUSED');
+				updateStatus('Paused');
+			});
+
+			audio.addEventListener('ended', () => {
+				log('🔄 Tutorial music ENDED (should loop)');
+			});
+
+			audio.addEventListener('error', (e) => {
+				log(`❌ Tutorial music ERROR: ${e.message || 'Unknown error'}`);
+				updateStatus('Error');
+			});
+
+			audio.addEventListener('loadstart', () => {
+				log('📥 Started loading music file...');
+			});
+
+			audio.addEventListener('canplay', () => {
+				log('✅ Music file can play');
+			});
+
+			audio.addEventListener('canplaythrough', () => {
+				log('✅ Music file fully loaded');
+			});
+
+			tutorialMusic = audio;
+
+			// Try to play
+			log('🎵 Attempting to play tutorial music...');
+			audio.play().then(() => {
+				log('🎵 ✅ Play promise resolved successfully!');
+			}).catch(error => {
+				log(`❌ Play promise rejected: ${error.message}`);
+				log('🔇 This might be due to browser autoplay policy');
+				log('🔇 Try clicking the audio controls manually');
+				updateStatus('Failed (autoplay blocked)');
+			});
+		}
+
+		function stopTutorialMusic() {
+			if (tutorialMusic) {
+				log('🛑 Stopping tutorial music...');
+				tutorialMusic.pause();
+				tutorialMusic.currentTime = 0;
+				tutorialMusic = null;
+				updateStatus('Stopped');
+			} else {
+				log('⚠️ No tutorial music to stop');
+			}
+		}
+
+		function checkMusicStatus() {
+			if (tutorialMusic) {
+				log(`📊 Music Status:`);
+				log(`   - Paused: ${tutorialMusic.paused}`);
+				log(`   - Current Time: ${tutorialMusic.currentTime.toFixed(2)}s`);
+				log(`   - Duration: ${tutorialMusic.duration ? tutorialMusic.duration.toFixed(2) + 's' : 'Unknown'}`);
+				log(`   - Volume: ${tutorialMusic.volume}`);
+				log(`   - Ready State: ${tutorialMusic.readyState}`);
+				log(`   - Network State: ${tutorialMusic.networkState}`);
+
+				updateStatus(tutorialMusic.paused ? 'Paused' : 'Playing');
+			} else {
+				log('⚠️ No tutorial music instance exists');
+				updateStatus('No Music');
+			}
+		}
+
+		function clearLogs() {
+			document.getElementById('logs').innerHTML = '';
+		}
+
+		// Log initial state
+		log('🎮 Tutorial Music Debug Test loaded');
+		log('Click "Start Tutorial Music" to test functionality');
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Music Debug Test</title>
+</head>
+
+<body>
+	<h1>VJ Game Music Debug Test</h1>
+
+	<h2>Testing bitchboys-song-3.mp3</h2>
+	<audio id="testAudio" controls>
+		<source src="/music/bitchboys-song-3.mp3" type="audio/mpeg">
+		Your browser does not support the audio element.
+	</audio>
+
+	<br><br>
+
+	<button onclick="testLoad()">Test Load Music</button>
+	<button onclick="testPlay()">Test Play Music</button>
+	<button onclick="testStop()">Test Stop Music</button>
+
+	<div id="debug-output" style="margin-top: 20px; padding: 10px; background: #f0f0f0; font-family: monospace;"></div>
+
+	<script>
+		const audio = document.getElementById('testAudio');
+		const output = document.getElementById('debug-output');
+
+		function log(message) {
+			console.log(message);
+			output.innerHTML += message + '<br>';
+		}
+
+		function testLoad() {
+			output.innerHTML = '';
+			log('🔍 Testing music file load...');
+
+			const testAudio = new Audio('/music/bitchboys-song-3.mp3');
+
+			testAudio.addEventListener('canplaythrough', () => {
+				log('✅ Music file loaded successfully!');
+				log('Duration: ' + testAudio.duration + ' seconds');
+			});
+
+			testAudio.addEventListener('error', (e) => {
+				log('❌ Error loading music file: ' + e.message);
+				log('Error code: ' + testAudio.error?.code);
+				log('Error message: ' + testAudio.error?.message);
+			});
+
+			testAudio.load();
+		}
+
+		function testPlay() {
+			log('🎵 Attempting to play music...');
+
+			audio.play().then(() => {
+				log('✅ Music started playing!');
+			}).catch(error => {
+				log('❌ Play failed: ' + error.message);
+				log('This might be due to browser autoplay policy');
+				log('Try clicking on the audio player controls manually');
+			});
+		}
+
+		function testStop() {
+			audio.pause();
+			audio.currentTime = 0;
+			log('🛑 Music stopped');
+		}
+
+		// Auto-test on load
+		window.addEventListener('load', () => {
+			log('🚀 Page loaded, testing music file...');
+			testLoad();
+		});
+	</script>
+</body>
+
+</html>

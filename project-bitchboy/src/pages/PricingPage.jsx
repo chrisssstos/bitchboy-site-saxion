@@ -33,7 +33,7 @@ export default function PricingPage() {
               </div>
 
               <img
-                src="../../public/images/bitchboy_product.png"
+                src="https://i.postimg.cc/ZRN2pZNZ/bitchboy-product.png"
                 alt="Card Center"
                 className="card-image"
               />
@@ -61,10 +61,10 @@ export default function PricingPage() {
       </div>
 
       {/* Link to Kickstarter Card */}
-      <a href="https://blocksystem.org/#team" target="_blank" rel="noopener noreferrer">
+      <a href="https://www.kickstarter.com/" target="_blank" rel="noopener noreferrer">
       <div class="container2">
         <div class="left-side">
-          <div class="card">
+          <div class="card-swipe">
             <div class="card-line"></div>
             <div class="buttons"></div>
           </div>
