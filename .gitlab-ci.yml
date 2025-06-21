@@ -4,7 +4,6 @@ stages:
   - install
   - test
   - build
-  - perf-test
 
 install:
   stage: install
