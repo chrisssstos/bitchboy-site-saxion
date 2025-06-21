@@ -24,4 +24,4 @@ Saxion students team who contributed to the project:
 
 [Amir Bayat](https://www.linkedin.com/in/amir-bayat-97775828b/?trk=contact-info)
 
-Mykyta Golubov
+[Mykyta Golubov](https://www.linkedin.com/in/mykyta-golubov-466051331/)

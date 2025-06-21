@@ -91,7 +91,7 @@ function Footer() {
                 </a>
                 , and{" "}
                 <a
-                    href="https://www.linkedin.com/in/mykyta-golubov/"
+                    href="https://www.linkedin.com/in/mykyta-golubov-466051331/"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
