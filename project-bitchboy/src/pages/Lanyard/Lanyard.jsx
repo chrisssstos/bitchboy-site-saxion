@@ -32,9 +32,23 @@ export default function Lanyard({
   fov = 20,
   transparent = true,
 }) {
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth <= 500);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <Canvas
-      camera={{ position: position, fov: fov }}
+      camera={{
+        position: isSmallScreen ? [0, 0, 25] : position,
+        fov: isSmallScreen ? 25 : fov,
+      }}
       gl={{ alpha: transparent }}
       onCreated={({ gl }) =>
         gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 1)
@@ -43,8 +57,18 @@ export default function Lanyard({
       <ambientLight intensity={Math.PI} />
       <Physics gravity={gravity} timeStep={1 / 60}>
         <group position={[0, 0, 0]}>
-          <Band offset={-2} cardGLB={cardGLB} /> {/* Left */}
-          <Band offset={2} cardGLB={card2GLB} /> {/* Right */}
+          <Band
+            offset={isSmallScreen ? -1.5 : -2}
+            cardGLB={cardGLB}
+            scale={isSmallScreen ? 1.8 : 2.25}
+          />{" "}
+          {/* Left */}
+          <Band
+            offset={isSmallScreen ? 1.5 : 2}
+            cardGLB={card2GLB}
+            scale={isSmallScreen ? 1.8 : 2.25}
+          />{" "}
+          {/* Right */}
         </group>
       </Physics>
       <Environment blur={10}>
@@ -82,7 +106,8 @@ export default function Lanyard({
   );
 }
 
-function Band({ offset = 0, cardGLB, maxSpeed = 50, minSpeed = 0 }) {
+// Update Band component to accept scale prop
+function Band({ offset = 0, cardGLB, maxSpeed = 50, minSpeed = 0, scale = 2.25 }) {
   const band = useRef(),
     fixed = useRef(),
     j1 = useRef(),
@@ -118,12 +143,16 @@ function Band({ offset = 0, cardGLB, maxSpeed = 50, minSpeed = 0 }) {
     () => typeof window !== "undefined" && window.innerWidth < 1024
   );
 
+  // Get joint height based on screen size
+  const getJointHeight = () => isSmall ? 1 : 1.5;
+
+  // Add joints with dynamic height
   useRopeJoint(fixed, j1, [[0, 0, 0], [0, 0, 0], 1]);
   useRopeJoint(j1, j2, [[0, 0, 0], [0, 0, 0], 1]);
   useRopeJoint(j2, j3, [[0, 0, 0], [0, 0, 0], 1]);
   useSphericalJoint(j3, card, [
     [0, 0, 0],
-    [0, 1.5, 0],
+    [0, getJointHeight(), 0],
   ]);
 
   useEffect(() => {
@@ -135,7 +164,7 @@ function Band({ offset = 0, cardGLB, maxSpeed = 50, minSpeed = 0 }) {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsSmall(window.innerWidth < 1024);
+      setIsSmall(window.innerWidth < 500);
     };
 
     window.addEventListener("resize", handleResize);
@@ -217,11 +246,11 @@ function Band({ offset = 0, cardGLB, maxSpeed = 50, minSpeed = 0 }) {
           {...segmentProps}
           type="dynamic"
         >
-          <CuboidCollider args={[0.8, 1.125, 0.01]} />
+          <CuboidCollider args={[0.8 * (scale / 2.25), 1.125 * (scale / 2.25), 0.01]} />
 
           <group
             ref={cardGroup}
-            scale={2.25}
+            scale={scale}
             position={[0, -1.2, -0.05]}
             onPointerOver={() => hover(true)}
             onPointerOut={() => hover(false)}

@@ -71,7 +71,7 @@ function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    An Nguyen
+                    Andre Nguyen
                 </a>
                 ,{" "}
                 <a
