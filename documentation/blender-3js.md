@@ -62,12 +62,12 @@ Afterwards, export the Blender model as a gltF 2.0 (.glb/.gltf) and place it in 
 
 ## Relevant Functionality
 
-```
+```jsx
 const { scene } = useGLTF("/bitchboy3d(v11).glb");
 ```
 This is where the model is used and imported into the Three.js scene.
 
-```
+```jsx
 const match = child.name.match(/^Button_(\d+)$/);
         if (match) {
           const index = parseInt(match[1], 10);
@@ -92,7 +92,7 @@ This code snippet (found in [3DModel.jsx](../project-bitchboy/src/components/3DM
 
 The buttons to skip are determined by the index and can be changed at will.
 
-```
+```jsx
 if (window.vjController && window.vjController.handleButtonPress) {
       // Extract button index from name (assuming format like "Button_01", "Button_02", etc.)
       // skips middle and bottom (nested ifs = cringe i know)
