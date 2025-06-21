@@ -345,6 +345,18 @@
 	transform: scale(1.05);
 }
 
+/* Non-clickable level items (prevent level skipping) */
+.level-item.non-clickable {
+	cursor: default;
+	pointer-events: none;
+}
+
+.level-item.non-clickable:hover {
+	background: rgba(100, 100, 100, 0.3);
+	border-color: #666;
+	transform: none;
+}
+
 .level-item.completed {
 	background: linear-gradient(145deg, #00ff80, #00ccff);
 	color: #000;
@@ -356,6 +368,13 @@
 	color: #fff;
 	border-color: #ff0080;
 	animation: currentLevelPulse 2s ease-in-out infinite;
+}
+
+/* Make sure completed and current levels stay non-clickable */
+.level-item.completed.non-clickable,
+.level-item.current.non-clickable {
+	cursor: default;
+	pointer-events: none;
 }
 
 @keyframes currentLevelPulse {

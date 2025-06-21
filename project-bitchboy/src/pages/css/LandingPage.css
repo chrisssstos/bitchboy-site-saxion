@@ -322,7 +322,7 @@ body {
   width: 120vw;
   height: 40vh;
   background: var(--color-orange);
-  z-index: 10;
+  z-index: 0;
   pointer-events: none;
   transform: rotate(-2deg);
   margin-left: -10vw;
