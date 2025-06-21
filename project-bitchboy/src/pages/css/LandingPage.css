@@ -451,7 +451,7 @@ body {
 
 .bottom-logo {
   position: absolute;
-  bottom: 63vh;
+  bottom: 52vh;
   left: 5vw;
   width: 45vw;
   height: auto;
@@ -580,13 +580,12 @@ ScrollModelAnimation {
   .bottom-logo {
     width: 80vw;
     left: 10vw;
-    bottom: 70vh;
+    bottom: 75vh;
   }
 
   .demo-gif {
-    width: 80vw;
-    left: 10vw;
-    bottom: 45vh;
+    width: 70vw;
+    left: 15vw;
   }
 
   .demo-button {
@@ -602,6 +601,7 @@ ScrollModelAnimation {
   .scroll-text-section {
     width: 80vw;
     left: 50%;
+    backdrop-filter: blur(30px);
   }
 
   .scroll-text-title {
@@ -612,18 +612,13 @@ ScrollModelAnimation {
     font-size: 1rem;
   }
 
-  .line-text {
-    font-size: 1.2rem;
-    padding: 0.5em 0.6em;
-  }
-
   .orange-bg {
     height: 40vh;
     top: 30rem;
   }
 
   .orange-bg2 {
-    height: 30vh;
+    height: 50vh;
   }
 
   .cyber-button {
@@ -647,9 +642,9 @@ ScrollModelAnimation {
 
   div[style*="position: absolute"][style*="left: 1"] {
     left: -10% !important;
-    top: 10vh !important;
+    top: 25vh !important;
     width: 120vw !important;
-    height: 70vh !important;
+    height: 80vh !important;
     transform: scale(0.8);
 }
 
@@ -683,7 +678,7 @@ ScrollModelAnimation {
   .bottom-logo {
     width: 80vw;
     left: 10vw;
-    bottom: 70vh;
+    bottom: 80vh;
   }
 
   .demo-gif {
@@ -705,6 +700,7 @@ ScrollModelAnimation {
   .scroll-text-section {
     width: 80vw;
     left: 50%;
+    backdrop-filter: blur(30px);
   }
 
   .scroll-text-title {
@@ -726,7 +722,7 @@ ScrollModelAnimation {
   }
 
   .orange-bg2 {
-    height: 30vh;
+    height: 50vh;
   }
 
   .cyber-button {
@@ -773,8 +769,9 @@ ScrollModelAnimation {
   /* Add ModelSpin mobile styles */
   div[style*="position: absolute"][style*="left: 125"] {
     left: -35% !important;
+    top: 10vh !important;
     width: 160vw !important;
-    height: 50vh !important;
+    height: 90vh !important;
     transform: scale(0.6);
   }
 

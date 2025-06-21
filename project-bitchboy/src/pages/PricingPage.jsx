@@ -33,7 +33,7 @@ export default function PricingPage() {
               </div>
 
               <img
-                src="../../public/images/bitchboy_product.png"
+                src="https://i.postimg.cc/ZRN2pZNZ/bitchboy-product.png"
                 alt="Card Center"
                 className="card-image"
               />
