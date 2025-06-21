@@ -11,12 +11,20 @@ class MusicManager {
 		this.beatInterval = null;
 		this.musicFiles = {};
 		this.failSound = null;
+		this.initialized = false;
 
-		// Initialize audio context
-		this.initAudioContext();
+		// DON'T auto-initialize - wait for first use
+		// this.initAudioContext();
+		// this.loadMusicFiles();
+	}
 
-		// Preload music files
-		this.loadMusicFiles();
+	async ensureInitialized() {
+		if (this.initialized) return;
+
+		console.log('🎵 Initializing Music Manager...');
+		await this.initAudioContext();
+		await this.loadMusicFiles();
+		this.initialized = true;
 	}
 
 	async initAudioContext() {
@@ -28,21 +36,16 @@ class MusicManager {
 	}
 
 	async loadMusicFiles() {
-		const musicFiles = [
-			'bitchboys-song-1',
-			'bitchboys-song-2',
-			'bitchboys-song-3',
-			'bitchboys-song-4',
-			'bitchboys-song-5',
-			'bitchboys-song-6',
-			'bitchboys-song-7'
+		// Only load the files we know exist to avoid 20+ failed HTTP requests
+		const knownMusicFiles = [
+			'bitchboys-song-3' // Only load what we know exists
 		];
 
-		const extensions = ['mp3', 'wav', 'ogg']; // Try mp3 first since that's what we have
+		const extensions = ['wav', 'mp3', 'ogg']; // Try wav first since that's what we have
 
-		console.log('🎵 Starting to load music files...');
+		console.log('🎵 Loading known music files...');
 
-		for (const file of musicFiles) {
+		for (const file of knownMusicFiles) {
 			let fileFound = false;
 			for (const ext of extensions) {
 				try {
@@ -90,7 +93,7 @@ class MusicManager {
 			}
 		}
 
-		// Load fail sound
+		// Load fail sound (optional)
 		for (const ext of extensions) {
 			try {
 				const audio = new Audio(`/music/fail.${ext}`);
@@ -113,7 +116,10 @@ class MusicManager {
 		console.log('🎵 Music Manager initialized. Available files:', Object.keys(this.musicFiles));
 	}
 
-	playLevel(level, beatCallback = null) {
+	async playLevel(level, beatCallback = null) {
+		// Initialize on first use
+		await this.ensureInitialized();
+
 		console.log(`🎵 🔥 playLevel called for level ${level} 🔥`);
 		console.log(`🎵 Stop any current music first...`);
 		this.stop(); // Stop any current music
@@ -261,7 +267,10 @@ class MusicManager {
 		console.log('🛑 Music stopped');
 	}
 
-	playFailSound() {
+	async playFailSound() {
+		// Initialize on first use
+		await this.ensureInitialized();
+
 		if (this.failSound) {
 			this.failSound.currentTime = 0;
 			this.failSound.play().catch(error => {
@@ -279,7 +288,10 @@ class MusicManager {
 		return;
 	}
 
-	setVolume(level, volume) {
+	async setVolume(level, volume) {
+		// Initialize on first use
+		await this.ensureInitialized();
+
 		const musicKey = `bitchboys-song-${level}`;
 		const audio = this.musicFiles[musicKey];
 		if (audio) {
@@ -287,13 +299,19 @@ class MusicManager {
 		}
 	}
 
-	hasMusicFile(level) {
+	async hasMusicFile(level) {
+		// Initialize on first use
+		await this.ensureInitialized();
+
 		const musicKey = `bitchboys-song-${level}`;
 		return !!this.musicFiles[musicKey];
 	}
 
 	// Get list of available music files
-	getAvailableMusic() {
+	async getAvailableMusic() {
+		// Initialize on first use
+		await this.ensureInitialized();
+
 		return Object.keys(this.musicFiles);
 	}
 }

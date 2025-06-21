@@ -55,11 +55,11 @@ const GAME_LEVELS = {
 const VJGame = () => {
 	const { state, actions } = useVJ();
 	const { gameMode } = state;
-	const [timeRemaining, setTimeRemaining] = useState(0);
-	const [gameTimer, setGameTimer] = useState(null);
 	const [beatTimer, setBeatTimer] = useState(null);
 	const [audioContext, setAudioContext] = useState(null);
 	const [musicInitialized, setMusicInitialized] = useState(false);
+	const [tutorialMusic, setTutorialMusic] = useState(null); // Track tutorial music instance
+	const [levelStarted, setLevelStarted] = useState(false); // Prevent infinite start loops
 
 	// Current level data
 	const currentLevelData = GAME_LEVELS[gameMode.currentLevel];
@@ -90,11 +90,95 @@ const VJGame = () => {
 		}
 	}, [gameMode.isActive, audioContext, musicInitialized]);
 
-	// Start level timer
+	// Start tutorial music when game mode becomes active
+	useEffect(() => {
+		if (gameMode.isActive && musicInitialized && !tutorialMusic) {
+			console.log('🎵 Starting tutorial music...');
+
+			// Stop any existing music from musicManager first (no await needed for stop)
+			musicManager.stop();
+
+			// Create tutorial music instance
+			const audio = new Audio('/music/bitchboys-song-3.wav');
+			audio.loop = true;
+			audio.volume = 0.35; // Consistent volume for all levels (50% of original)
+			audio.preload = 'auto';
+
+			// Add event listeners to track audio state
+			const handlePlay = () => {
+				console.log('🎵 ✅ Tutorial music is playing');
+			};
+
+			const handlePause = () => {
+				console.log('⏸️ Tutorial music paused');
+			};
+
+			const handleEnded = () => {
+				console.log('🔄 Tutorial music ended (should loop)');
+			};
+
+			const handleError = (e) => {
+				console.error('❌ Tutorial music error:', e);
+			};
+
+			audio.addEventListener('play', handlePlay);
+			audio.addEventListener('pause', handlePause);
+			audio.addEventListener('ended', handleEnded);
+			audio.addEventListener('error', handleError);
+
+			// Set the audio instance immediately to prevent race conditions
+			setTutorialMusic(audio);
+
+			// Try to play the music with better error handling
+			const attemptPlay = async () => {
+				try {
+					await audio.play();
+					console.log('🎵 ✅ Tutorial music started successfully!');
+				} catch (error) {
+					console.error('❌ Tutorial music failed to start:', error);
+					// Try again after a short delay (user interaction might be needed)
+					setTimeout(async () => {
+						try {
+							await audio.play();
+							console.log('🎵 ✅ Tutorial music started on retry!');
+						} catch (retryError) {
+							console.log('🔇 Tutorial music requires user interaction, will start on first click');
+							// Set up a one-time click listener to start music
+							const startOnClick = async () => {
+								try {
+									await audio.play();
+									console.log('🎵 ✅ Tutorial music started after user interaction!');
+									document.removeEventListener('click', startOnClick);
+								} catch (clickError) {
+									console.error('❌ Tutorial music still failed after click:', clickError);
+								}
+							};
+							document.addEventListener('click', startOnClick, { once: true });
+						}
+					}, 500);
+				}
+			};
+
+			attemptPlay();
+		}
+
+		// Stop tutorial music when game mode is deactivated
+		if (!gameMode.isActive && tutorialMusic) {
+			console.log('🛑 Stopping tutorial music...');
+			tutorialMusic.pause();
+			tutorialMusic.currentTime = 0;
+			setTutorialMusic(null);
+		}
+	}, [gameMode.isActive, musicInitialized, tutorialMusic]);
+
+	// Start level 
 	const startLevel = useCallback(() => {
-		if (!currentLevelData) {
+		if (!currentLevelData || levelStarted) {
 			return;
 		}
+
+		console.log(`🎮 Starting Level ${gameMode.currentLevel}`);
+		setLevelStarted(true);
 
 		// DON'T RESET VISUALS FOR LEVEL 3 - KEEP MUSIC PLAYING
 		if (gameMode.currentLevel !== 3) {
@@ -105,57 +189,63 @@ const VJGame = () => {
 		const challenge = currentLevelData.challenge;
 		actions.setGameChallenge(challenge);
 
-		// Clear any existing timer BEFORE setting new time
-		if (gameTimer) {
-			clearInterval(gameTimer);
-			setGameTimer(null);
-		}
-
-		// Set the initial time remaining
-		setTimeRemaining(challenge.timeLimit);
-
-		// Create a new timer that properly decrements
-		let currentTime = challenge.timeLimit;
-
-		const timer = setInterval(() => {
-			currentTime -= 1000;
-
-			if (currentTime <= 0) {
-				// Time's up!
-				clearInterval(timer);
-				setGameTimer(null);
-				setTimeRemaining(0);
-				handleLevelFail();
-			} else {
-				setTimeRemaining(currentTime);
-			}
-		}, 1000);
-
-		setGameTimer(timer);
-
 		// Start music and beat detection for the level
 		const level = gameMode.currentLevel;
 		const needsBeatDetection = challenge.type === 'beat' || challenge.type === 'beat_extended' || challenge.type === 'freestyle';
 
-		// SIMPLE MUSIC FOR LEVEL 3 ONLY!
+		// Handle Level 3 - use existing tutorial music (same volume as other levels)
 		if (level === 3) {
-			// Create fresh audio element every time to avoid conflicts
-			const audio = new Audio('/music/bitchboys-song-3.wav');
-			audio.loop = true;
-			audio.volume = 0.7;
+			if (tutorialMusic && !tutorialMusic.paused) {
+				console.log('🎵 Level 3: Using existing tutorial music (consistent volume)');
+				tutorialMusic.volume = 0.35; // Same volume as all other levels
 
-			audio.play().then(() => {
-				// Start beat detection SYNCHRONIZED with music start
+				// Make sure it's still playing
+				if (tutorialMusic.paused) {
+					console.log('🎵 Level 3: Tutorial music was paused, restarting...');
+					tutorialMusic.play().catch(error => {
+						console.error('❌ Failed to restart tutorial music for Level 3:', error);
+					});
+				}
+
+				// Start beat detection synchronized with existing music
 				if (needsBeatDetection) {
 					setTimeout(() => startBeatDetection(), 100);
 				}
-			}).catch(() => {
-				// Start beat detection anyway for fallback
-				if (needsBeatDetection) {
-					setTimeout(() => startBeatDetection(), 200);
-				}
-			});
+			} else {
+				console.log('🎵 Level 3: No active tutorial music found, creating new music instance');
+				// Fallback: create fresh audio element
+				const audio = new Audio('/music/bitchboys-song-3.wav');
+				audio.loop = true;
+				audio.volume = 0.35;
+
+				audio.play().then(() => {
+					setTutorialMusic(audio); // Update the tutorial music reference
+					if (needsBeatDetection) {
+						setTimeout(() => startBeatDetection(), 100);
+					}
+				}).catch(error => {
+					console.error('❌ Level 3 fallback music failed:', error);
+					// Start beat detection anyway for fallback
+					if (needsBeatDetection) {
+						setTimeout(() => startBeatDetection(), 200);
+					}
+				});
+			}
 		} else {
+			// For other levels, maintain the same consistent volume
+			if (tutorialMusic && !tutorialMusic.paused) {
+				console.log(`🎵 Level ${level}: Using consistent tutorial music volume`);
+				tutorialMusic.volume = 0.35; // Same volume as all other levels
+
+				// Make sure it's still playing
+				if (tutorialMusic.paused) {
+					console.log(`🎵 Level ${level}: Tutorial music was paused, restarting...`);
+					tutorialMusic.play().catch(error => {
+						console.error('❌ Failed to restart tutorial music for background:', error);
+					});
+				}
+			}
+
 			// Start beat detection if needed (for other levels)
 			if (needsBeatDetection) {
 				setTimeout(() => startBeatDetection(), 200);
@@ -164,7 +254,7 @@ const VJGame = () => {
 
 		actions.setGameFeedback("LEVEL STARTED!");
 		setTimeout(() => actions.setGameFeedback(null), 2000);
-	}, [currentLevelData, actions, gameMode.currentLevel, musicInitialized]);
+	}, [currentLevelData, actions, gameMode.currentLevel, tutorialMusic, levelStarted]);
 
 	// Beat detection simulation - lightweight and optimized
 	const startBeatDetection = useCallback(() => {
@@ -234,27 +324,21 @@ const VJGame = () => {
 
 	// Handle level completion
 	const handleLevelComplete = useCallback(() => {
-		if (gameTimer) {
-			clearInterval(gameTimer);
-			setGameTimer(null);
-		}
 		if (beatTimer) {
 			clearInterval(beatTimer);
 			setBeatTimer(null);
 		}
 
-		// Stop the timer display
-		setTimeRemaining(0);
-
-		// Stop current music (unless Level 3)
-		if (gameMode.currentLevel !== 3) {
-			musicManager.stop();
+		// Keep tutorial music playing between levels - don't stop it!
+		// Volume stays consistent across all levels now
+		if (tutorialMusic) {
+			console.log('🎵 Level complete: Maintaining consistent music volume');
+			tutorialMusic.volume = 0.35; // Consistent volume for all levels
 		}
 
 		// Award completion bonus
-		const timeBonus = Math.round(timeRemaining / 1000);
 		const levelBonus = currentLevelData.points;
-		actions.updateGameScore(timeBonus + levelBonus);
+		actions.updateGameScore(levelBonus);
 		actions.completeLevel(gameMode.currentLevel);
 
 		actions.setGameFeedback("LEVEL COMPLETE!");
@@ -265,12 +349,18 @@ const VJGame = () => {
 				actions.setGameLevel(gameMode.currentLevel + 1);
 				actions.setGameFeedback(null);
 			} else {
-				// Game complete!
-				musicManager.stop(); // Make sure music stops at end
+				// Game complete! Stop tutorial music at the very end
+				if (tutorialMusic) {
+					console.log('🛑 Game complete: Stopping tutorial music');
+					tutorialMusic.pause();
+					tutorialMusic.currentTime = 0;
+					setTutorialMusic(null);
+				}
+				musicManager.stop(); // Clean up any other music (no await needed for stop)
 				actions.setGameFeedback("YOU ARE A TRUE VJ!");
 			}
 		}, 3000);
-	}, [gameTimer, beatTimer, timeRemaining, currentLevelData, actions, gameMode.currentLevel]);
+	}, [beatTimer, currentLevelData, actions, gameMode.currentLevel, tutorialMusic]);
 
 	// Handle different types of game actions
 	const handleGameAction = useCallback((actionType, actionData = {}) => {
@@ -354,44 +444,7 @@ const VJGame = () => {
 		}
 	}, [gameMode, currentLevelData, actions, calculatePoints, checkBeatTiming, handleLevelComplete]);
 
-	// Handle level failure
-	const handleLevelFail = useCallback(() => {
-		if (gameTimer) {
-			clearInterval(gameTimer);
-			setGameTimer(null);
-		}
-		if (beatTimer) {
-			clearInterval(beatTimer);
-			setBeatTimer(null);
-		}
-
-		// Stop the timer display
-		setTimeRemaining(0);
-
-		// Stop music and play fail sound (unless Level 3)
-		if (gameMode.currentLevel !== 3) {
-			musicManager.stop();
-		}
-		musicManager.playFailSound();
-
-		// Reset visuals on failure too (with safeguard)
-		try {
-			actions.resetEffects();
-			[1, 2, 3, 4].forEach(layer => {
-				actions.stopLayer(layer);
-			});
-		} catch (error) {
-			// Silent fail
-		}
-
-		actions.setGameFeedback("TIME'S UP! TRY AGAIN");
-
-		// Restart level after 2 seconds
-		setTimeout(() => {
-			actions.setGameFeedback(null);
-			startLevel();
-		}, 2000);
-	}, [gameTimer, beatTimer, actions, gameMode.currentLevel, startLevel]);
+	// Note: No level failure functionality since there's no timer
 
 	// Listen for VJ actions and convert them to game actions
 	useEffect(() => {
@@ -407,45 +460,35 @@ const VJGame = () => {
 		};
 	}, [handleGameAction]);
 
-	// Cleanup timers and music on unmount or game deactivation
+	// Cleanup music on unmount or game deactivation
 	useEffect(() => {
 		return () => {
-			if (gameTimer) clearInterval(gameTimer);
 			if (beatTimer) clearInterval(beatTimer);
+			// Note: Don't stop tutorialMusic here - it's managed in its own useEffect
+			// Only stop the old musicManager system (no await needed for stop)
 			musicManager.stop();
 		};
-	}, []);
+	}, [beatTimer]);
 
-	// Stop music when game is deactivated (but not when switching levels)
+	// Additional cleanup for tutorial music is now handled in the tutorial music useEffect above
+
+	// Clear beat timer when level changes and reset level started flag
 	useEffect(() => {
-		if (!gameMode.isActive) {
-			musicManager.stop();
-		}
-	}, [gameMode.isActive]);
-
-	// Reset timer when level changes
-	useEffect(() => {
-		setTimeRemaining(0); // Reset timer to 0 when switching levels
-
-		// Clear any existing timer
-		if (gameTimer) {
-			clearInterval(gameTimer);
-			setGameTimer(null);
-		}
-
-		// Clear beat timer too
+		// Clear beat timer when switching levels
 		if (beatTimer) {
 			clearInterval(beatTimer);
 			setBeatTimer(null);
 		}
+		// Reset level started flag when level changes
+		setLevelStarted(false);
 	}, [gameMode.currentLevel]);
 
 	// Auto-start all levels
 	useEffect(() => {
-		if (gameMode.isActive && timeRemaining === 0 && musicInitialized) {
+		if (gameMode.isActive && musicInitialized && !levelStarted) {
 			setTimeout(() => startLevel(), 500);
 		}
-	}, [gameMode.isActive, gameMode.currentLevel, musicInitialized]);
+	}, [gameMode.isActive, gameMode.currentLevel, musicInitialized, levelStarted]);
 
 	if (!gameMode.isActive) {
 		return null;
@@ -471,11 +514,8 @@ const VJGame = () => {
 			{/* Game Status */}
 			<div className="game-status">
 				<div className="status-row">
-					<div className="time-remaining">
-						TIME: {Math.ceil(timeRemaining / 1000)}s
-					</div>
 					<div className="actions-remaining">
-						{(gameMode.challenge?.completedActions?.length || 0)} / {(gameMode.challenge?.requiredActions?.length || 0)}
+						PROGRESS: {(gameMode.challenge?.completedActions?.length || 0)} / {(gameMode.challenge?.requiredActions?.length || 0)}
 					</div>
 				</div>
 				<div className="progress-bar">
@@ -491,21 +531,6 @@ const VJGame = () => {
 
 			{/* BEAT INDICATOR REMOVED - IT WAS CAUSING PROBLEMS! */}
 
-			{/* Level Controls */}
-			<div className="level-controls">
-				<button
-					className="skip-button"
-					onClick={() => {
-						if (gameMode.currentLevel < 4) {
-							actions.setGameLevel(gameMode.currentLevel + 1);
-						}
-					}}
-					disabled={gameMode.currentLevel >= 4}
-				>
-					SKIP LEVEL
-				</button>
-			</div>
-
 			{/* Progress Overview */}
 			<div className="progress-overview">
 				<h3>PROGRESS</h3>
@@ -518,8 +543,7 @@ const VJGame = () => {
 						return (
 							<div
 								key={level}
-								className={`level-item ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current' : ''}`}
-								onClick={() => actions.setGameLevel(levelNum)}
+								className={`level-item ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current' : ''} non-clickable`}
 							>
 								{level}
 							</div>
@@ -536,7 +560,7 @@ const VJGame = () => {
 			)}
 
 			{/* Current Action Hint */}
-			{timeRemaining > 0 && currentLevelData && (
+			{currentLevelData && (
 				<div className="current-action-hint">
 					{getActionHint()}
 				</div>
