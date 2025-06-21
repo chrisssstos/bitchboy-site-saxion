@@ -95,7 +95,7 @@ const VJGame = () => {
 		if (gameMode.isActive && musicInitialized && !tutorialMusic) {
 			console.log('🎵 Starting tutorial music...');
 
-			// Stop any existing music from musicManager first
+			// Stop any existing music from musicManager first (no await needed for stop)
 			musicManager.stop();
 
 			// Create tutorial music instance
@@ -356,7 +356,7 @@ const VJGame = () => {
 					tutorialMusic.currentTime = 0;
 					setTutorialMusic(null);
 				}
-				musicManager.stop(); // Clean up any other music
+				musicManager.stop(); // Clean up any other music (no await needed for stop)
 				actions.setGameFeedback("YOU ARE A TRUE VJ!");
 			}
 		}, 3000);
@@ -465,7 +465,7 @@ const VJGame = () => {
 		return () => {
 			if (beatTimer) clearInterval(beatTimer);
 			// Note: Don't stop tutorialMusic here - it's managed in its own useEffect
-			// Only stop the old musicManager system
+			// Only stop the old musicManager system (no await needed for stop)
 			musicManager.stop();
 		};
 	}, [beatTimer]);
@@ -543,8 +543,7 @@ const VJGame = () => {
 						return (
 							<div
 								key={level}
-								className={`level-item ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current' : ''}`}
-								onClick={() => actions.setGameLevel(levelNum)}
+								className={`level-item ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current' : ''} non-clickable`}
 							>
 								{level}
 							</div>
