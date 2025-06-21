@@ -12,11 +12,9 @@ describe('BlogPage', () => {
   });
 
   test('renders the Instagram blockquote', () => {
-    render(<BlogPage />);
-    const blockquote = screen.getByRole('link', {
-      name: /view this post on instagram/i,
-    }).closest('blockquote');
-    expect(blockquote).toBeInTheDocument();
+    const { container } = render(<BlogPage />);
+    const blockquotes = container.querySelectorAll('blockquote.instagram-media');
+    expect(blockquotes.length).toBeGreaterThan(0);
   });
 
   test('loads the Instagram embed script if not already present', () => {
