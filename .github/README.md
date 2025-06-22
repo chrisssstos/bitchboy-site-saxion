@@ -15,3 +15,5 @@ There are 3 stages to the workflow:
 **Note**:
 
 CD (Continuous Deployment) is not implemented as the client will be deploying the website on Netlify on their own. Netlify provides a lot of support when it comes to CD. Thus, this workflow is only for CI.
+
+In the case that the Client wants to implement CD, consult [continuous-deployment.md](../documentation/continuous-deployment.md).
