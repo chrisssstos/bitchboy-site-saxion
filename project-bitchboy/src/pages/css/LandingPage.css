@@ -123,7 +123,7 @@ body {
 
 
 
-/* subscribe button */
+/* subscribe button - Windows 95 Style */
 
 .cyber-button {
   position: absolute;
@@ -132,19 +132,28 @@ body {
   z-index: 2;
   transform: translateX(-100%);
   opacity: 0;
-  background: var(--color-black);
-  border: none;
-  border-radius: 0px;
+  
+  /* Windows 95 Style */
+  background-color: #c0c0c0;
+  border: 2px solid;
+  border-color: #ffffff #808080 #808080 #ffffff;
+  border-radius: 0;
+  padding: 0.6em 1.2em;
+  min-width: 200px;
+  
   cursor: pointer;
-  overflow: hidden;
-  font-family: "Arial", sans-serif;
+  font-family: "MS Sans Serif", "Segoe UI", Tahoma, sans-serif;
   font-size: 1.5rem;
-  font-weight: bold;
-  letter-spacing: 4px;
-  color: var(--color-orange);
+  font-weight: normal;
+  letter-spacing: 2px;
+  color: #000000;
   text-transform: uppercase;
-  box-shadow:    0 0 15px var(--color-orange),    inset 0 0 15px var(--color-orange);
-  text-shadow: 0 0 5px var(--color-orange);
+  text-shadow: none;
+  
+  box-shadow: 
+    inset -1px -1px 0 #000000,
+    inset 1px 1px 0 #dfdfdf;
+    
   animation: slide-in 1.5s ease-out forwards;
   -webkit-transform: translateX(-100%);
   -moz-transform: translateX(-100%);
@@ -154,146 +163,42 @@ body {
 
 @keyframes slide-in {
   0% {
-    transform: translateX(-100%); /* Start off-screen */
-    opacity: 0; /* Fully transparent */
+    transform: translateX(-100%);
+    opacity: 0;
   }
   100% {
-    transform: translateX(0); /* Slide into position */
-    opacity: 1; /* Fully visible */
+    transform: translateX(0);
+    opacity: 1;
   }
 }
 
 .cyber-button:hover {
-  transform: translateX(0) scale(1.2);
-  box-shadow:
-    0 0 25px var(--color-orange),
-    inset 0 0 25px var(--color-orange);
+  transform: translateX(0) scale(1.05);
+  background-color: #c0c0c0;
+  box-shadow: 
+    inset -1px -1px 0 #000000,
+    inset 1px 1px 0 #dfdfdf;
 }
 
 .cyber-button:active {
-  transform: translateX(0) scale(0.95);
+  transform: translateX(0) scale(0.98);
+  border-color: #808080 #ffffff #ffffff #808080;
+  box-shadow: 
+    inset -1px -1px 0 #dfdfdf,
+    inset 1px 1px 0 #000000;
 }
 
+/* Hide all the old glitch effects */
 .glitch {
   position: relative;
 }
 
 .glitch::before,
-.glitch::after {
-  content: attr(data-text);
-  position: absolute;
-  top: 1;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.8;
-}
-
-.glitch::before {
-  animation: glitch-effect 3s infinite;
-  color: rgb(177, 143, 105);
-  left: 2px;
-}
-
-.glitch::after {
-  animation: glitch-effect 2s infinite;
-  color: var(--color-gray);
-  left: -2px;
-}
-
-@keyframes glitch-effect {
-  0% {
-    transform: none;
-    opacity: 0.8;
-  }
-  7% {
-    transform: translate(-1px, -2px);
-    opacity: 0.6;
-  }
-  10% {
-    transform: translate(1px, 2px);
-    opacity: 0.8;
-  }
-  20% {
-    transform: none;
-    opacity: 0.8;
-  }
-  27% {
-    transform: translate(1px, 2px);
-    opacity: 0.6;
-  }
-  30% {
-    transform: translate(-1px, -2px);
-    opacity: 0.8;
-  }
-  35% {
-    transform: none;
-    opacity: 0.8;
-  }
-  100% {
-    transform: none;
-    opacity: 0.8;
-  }
-}
-
-.cyberpunk-border {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border: 2px solid var(--color-orange);
-  clip-path: polygon(0 0, 100% 0, 100% 70%, 85% 100%, 0 100%);
-}
-
-.gradient-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 10px,
-    rgba(128, 128, 128, 0.1) 10px,
-    rgba(128, 128, 128, 0.1) 20px
-  );
-}
-
+.glitch::after,
+.cyberpunk-border,
+.gradient-overlay,
 .scanline {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    to bottom,
-    transparent 50%,
-    rgba(128, 128, 128, 0.2) 50%
-  );
-  background-size: 100% 4px;
-  animation: scan 0.5s linear infinite;
-}
-
-@keyframes scan {
-  0% {
-    background-position: 0 -1000px;
-  }
-  100% {
-    background-position: 0 1000px;
-  }
-}
-
-.cyber-button:hover {
-    transform: translateX(-50%) scale(1.2);
-    box-shadow:
-        0 0 25px var(--color-orange),
-        inset 0 0 25px var(--color-orange);
-}
-
-.cyber-button:active {
-  transform: translateX(-50%) scale(0.95);
+  display: none;
 }
 
 
@@ -524,26 +429,46 @@ body {
 .demo-button {
   position: relative;
   font-size: 1.5rem;
-  background: rgba(255, 255, 255, 0.7);
-  border: 2px solid black;
-  border-radius: 2rem;
-  color: black;
+  
+  /* Windows 95 Style */
+  background-color: #c0c0c0;
+  border: 2px solid;
+  border-color: #ffffff #808080 #808080 #ffffff;
+  border-radius: 0;
+  color: #000000;
   padding: 2em 2em;
   cursor: pointer;
   transform: translateX(0);
   opacity: 1;
   z-index: 10;
   pointer-events: auto;
-  transition: 
-    transform 0.2s cubic-bezier(0.77,0,0.175,1),
-    background 0.2s cubic-bezier(0.77,0,0.175,1),
-    border-color 0.2s cubic-bezier(0.77,0,0.175,1);
-  box-shadow: 0 16px 32px 0 rgba(0,0,0,0.28), 0 4px 12px 0 rgba(0,0,0,0.18);
+  
+  font-family: "MS Sans Serif", "Segoe UI", Tahoma, sans-serif;
+  font-weight: normal;
+  text-transform: uppercase;
+  text-shadow: none;
+  
+  box-shadow: 
+    inset -1px -1px 0 #000000,
+    inset 1px 1px 0 #dfdfdf;
+    
+  transition: transform 0.2s cubic-bezier(0.77,0,0.175,1);
 }
 
 .demo-button:hover {
-  border-color: var(--color-orange);
-  transform: scale(1.07);
+  transform: scale(1.05);
+  background-color: #c0c0c0;
+  box-shadow: 
+    inset -1px -1px 0 #000000,
+    inset 1px 1px 0 #dfdfdf;
+}
+
+.demo-button:active {
+  transform: scale(0.98);
+  border-color: #808080 #ffffff #ffffff #808080;
+  box-shadow: 
+    inset -1px -1px 0 #dfdfdf,
+    inset 1px 1px 0 #000000;
 }
 
 ScrollModelAnimation {
@@ -630,14 +555,11 @@ ScrollModelAnimation {
   }
 
   .cyber-button:hover {
-    transform: translateX(-50%) scale(0.9);
-    box-shadow:
-        0 0 25px var(--color-orange),
-        inset 0 0 25px var(--color-orange);
+    transform: translateX(-50%) scale(0.85);
   }
 
   .cyber-button:active {
-    transform: translateX(-50%) scale(0.95);
+    transform: translateX(-50%) scale(0.78);
   }
 
   div[style*="position: absolute"][style*="left: 1"] {
@@ -736,29 +658,22 @@ ScrollModelAnimation {
     -moz-transform: translateX(-50%) scale(0.8);
     -ms-transform: translateX(-50%) scale(0.8);
     -o-transform: translateX(-50%) scale(0.8);
-      box-shadow:
-    0 0 15px var(--color-orange),
-    inset 0 0 15px var(--color-orange);
-    text-shadow: 0 0 5px var(--color-orange);
-    animation: slide-in 1.5s ease-out forwards; /* Trigger animation */
+    animation: slide-in 1.5s ease-out forwards;
   }
 
   @keyframes slide-in {
     0% {
-      transform: translateX(-100%); /* Start off-screen */
-      opacity: 0; /* Fully transparent */
+      transform: translateX(-100%);
+      opacity: 0;
     }
     100% {
-      transform: translateX(0); /* Slide into position */
-      opacity: 1; /* Fully visible */
+      transform: translateX(0);
+      opacity: 1;
     }
   }
 
   .cyber-button:hover {
-    transform: translateX(0) scale(1.2);
-    box-shadow:
-      0 0 25px var(--color-orange),
-      inset 0 0 25px var(--color-orange);
+    transform: translateX(0) scale(1.05);
   }
 
   .cyber-button:active {

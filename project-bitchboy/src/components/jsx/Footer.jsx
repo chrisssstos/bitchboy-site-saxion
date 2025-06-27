@@ -4,7 +4,7 @@ function Footer() {
     return (
         <footer className="footer">
             <p className="footer-text">
-                BLOCK SYSTEM © 2023
+                BLOCK SYSTEM © 2025
             </p>
             <div className="footer-icons">
                 <a
