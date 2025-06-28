@@ -46,12 +46,12 @@ function LandingPage() {
           />
         </div>
       </div>
-      <img
+      {/* <img
         src="/images/background/arrow.png"
         alt="arrow"
         className="arrow-img"
-      />
-      <div className="arrow-text">Try it out here!</div>
+      /> */}
+      {/* <div className="arrow-text">Try it out here!</div> */}
 
 
       <img

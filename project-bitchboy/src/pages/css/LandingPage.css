@@ -283,8 +283,8 @@ body {
 
 .model-line {
   position: absolute;
-  height: 3px;
-  background: #000;
+  height: 0px;
+  background: #6f00ff;
 }
 
 .model-line::after {
@@ -294,26 +294,78 @@ body {
   top: 50%;
   width: 12px;
   height: 12px;
-  background: #000;
+  background: #00000000;
   border-radius: 50%;
   transform: translate(50%, -50%);
 }
 
 .line-text {
   position: absolute;
-  font-size: 1.8rem;
-  color: #000;
+  font-size: 1.2rem;
+  color: #000000;
   transition: opacity 0.2s ease;
   pointer-events: none;
-  white-space: normal; 
+  white-space: normal;
   line-height: 1.2;
   display: block;
-  background-color: rgba(215, 215, 215, 0.85);
-  border-radius: 1em;
-  padding: 0.7em 0.8em;
-  box-shadow: 0 4px 24px 0 rgba(0,0,0,0.18), 0 1.5px 6px 0 rgba(0,0,0,0.10);
-  text-shadow: 0 2px 8px rgba(255,255,255,0.25), 0 1px 2px rgba(0,0,0,0.18);
+  
+  /* Windows 95 dialog box styling */
+  background-color: #c0c0c0;
+  border: 2px solid;
+  border-color: #ffffff #808080 #808080 #ffffff;
+  border-radius: 0;
+  padding: 0;
+  
+  box-shadow: 
+    inset -1px -1px 0 #000000,
+    inset 1px 1px 0 #dfdfdf,
+    2px 2px 4px rgba(0,0,0,0.3);
+    
+  font-family: "MS Sans Serif", "Segoe UI", Tahoma, sans-serif;
+  font-weight: normal;
+  min-width: 200px;
 }
+
+/* Windows 95 title bar */
+.line-text::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 18px;
+  background: linear-gradient(90deg, #000080 0%, #0000ff 100%);
+  border-bottom: 1px solid #000000;
+  z-index: 1;
+}
+
+/* Window control buttons (minimize, maximize, close) */
+.line-text::after {
+  content: '✕';
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 14px;
+  height: 14px;
+  background-color: #c0c0c0;
+  border: 1px solid;
+  border-color: #ffffff #808080 #808080 #ffffff;
+  font-size: 8px;
+  line-height: 12px;
+  text-align: center;
+  color: #000000;
+  z-index: 2;
+  font-family: "MS Sans Serif", sans-serif;
+}
+
+/* Content area with proper spacing for title bar */
+.line-text {
+  padding-top: 24px;
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-bottom: 8px;
+}
+
 
 .scroll-text-section {
   position: fixed;
@@ -482,7 +534,25 @@ ScrollModelAnimation {
 
 /* Mobile Responsive 968px */
 @media screen and (max-width: 968px) {
-
+  .line-text {
+    font-size: 1rem;
+    min-width: 160px;
+    padding-top: 20px;
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-bottom: 6px;
+  }
+  
+  .line-text::before {
+    height: 16px;
+  }
+  
+  .line-text::after {
+    width: 12px;
+    height: 12px;
+    font-size: 7px;
+    line-height: 10px;
+  }
   .centered-logo-container {
     top: calc(-18rem + 9rem);
     padding: 20px;
@@ -633,9 +703,24 @@ ScrollModelAnimation {
     font-size: 1rem;
   }
 
-  .line-text {
-    font-size: 1.2rem;
-    padding: 0.5em 0.6em;
+.line-text {
+    font-size: 0.9rem;
+    min-width: 140px;
+    padding-top: 18px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+  }
+  
+  .line-text::before {
+    height: 14px;
+  }
+  
+  .line-text::after {
+    width: 10px;
+    height: 10px;
+    font-size: 6px;
+    line-height: 8px;
   }
 
   .orange-bg {

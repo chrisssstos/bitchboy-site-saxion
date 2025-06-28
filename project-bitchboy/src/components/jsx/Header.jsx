@@ -49,7 +49,7 @@ function Header() {
         <div className={`header-pages ${isMenuOpen ? "open" : ""}`}>
           {isInteractiveVisible && (
             <a href="/interactive-demo" className="page">
-              Interactive
+              Try It Out
             </a>
           )}
           <a href="/pricing" className="page">
