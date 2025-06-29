@@ -633,9 +633,9 @@ ScrollModelAnimation {
   }
 
   div[style*="position: absolute"][style*="left: 1"] {
-    left: -10% !important;
+    left: -30% !important;
     top: 25vh !important;
-    width: 120vw !important;
+    width: 160vw !important;
     height: 80vh !important;
     transform: scale(0.8);
 }
@@ -768,11 +768,12 @@ ScrollModelAnimation {
 
   /* Add ModelSpin mobile styles */
   div[style*="position: absolute"][style*="left: 125"] {
-    left: -35% !important;
-    top: 10vh !important;
-    width: 160vw !important;
-    height: 90vh !important;
-    transform: scale(0.6);
+    position: absolute !important;
+    left: 50% !important;
+    width: 200% !important;
+    top: 15vh !important;
+    transform: translateX(-50%) scale(0.6) !important;
+    transform-origin: center center !important;
   }
 
   canvas {
