@@ -44,7 +44,7 @@ function ModelLines() {
     line1_1: {
       transform: 'rotate(5deg)',
       top: '30%',
-      left: '35%',
+      left: '45%',
       width: '350px',
       text: {
         right: '400px',
@@ -56,7 +56,7 @@ function ModelLines() {
     line1_2: {
       transform: 'rotate(-10deg)',
       top: '55%',
-      left: '30%',
+      left: '40%',
       width: '250px',
       text: {
         right: '300px',
@@ -68,7 +68,7 @@ function ModelLines() {
     line2_1: {
       transform: 'rotate(150deg)',
       top: '40%',
-      left: '5%',
+      left: '-30%',
       width: '400px',
       text: {
         left: '-580px',
@@ -79,8 +79,8 @@ function ModelLines() {
     },
     line2_2: {
       transform: 'rotate(180deg)',
-      top: '45%',
-      left: '15%',
+      top: '35%',
+      left: '7%',
       width: '380px',
       text: {
         left: '-420px',
@@ -92,7 +92,7 @@ function ModelLines() {
     line2_3: {
       transform: 'rotate(200deg)',
       top: '70%',
-      left: '12%',
+      left: '5%',
       width: '320px',
       text: {
         left: '-450px',
@@ -154,8 +154,8 @@ function ModelLines() {
     },
     line2_3: {
       transform: 'rotate(250deg)',
-      top: '72%',
-      left: '45%',
+      top: '70%',
+      left: '55%',
       width: '50px',
       text: {
         left: '-200px',

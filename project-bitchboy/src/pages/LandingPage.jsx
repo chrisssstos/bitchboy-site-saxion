@@ -26,7 +26,7 @@ function LandingPage() {
       style={{
         minHeight: "1200vh",
         minWidth: "100vw",
-        background: "#ffffff",
+        background: "#f1f1f1",
         position: "relative",
       }}
     >
@@ -81,7 +81,7 @@ function LandingPage() {
         <span data-text="SIGN UP NOW" class="glitch">
           SIGN UP NOW
         </span>
-        <span class="cyberpunk-border"></span>
+        {/* <span class="cyberpunk-border"></span> */}
         <span class="gradient-overlay"></span>
         <span class="scanline"></span>
       </button>

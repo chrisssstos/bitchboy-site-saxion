@@ -25,7 +25,7 @@ export default function PricingPage() {
                 <span></span>
                 <span></span>
               </div>
-              <div className="title1">BITCHBOY ORIGINAL MODEL</div>
+              <div className="title1">BITCHBOY</div>
               <div className="glowing-elements">
                 <div className="glow-1"></div>
                 <div className="glow-2"></div>
