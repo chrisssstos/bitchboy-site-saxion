@@ -208,7 +208,7 @@ function ModelLines() {
             ...styles.line2_1.text,
             textAlign: 'center'
           }}>
-            Quickly adjust hue, zoom, and blur without diving into software menus. Subtle or wild, your visuals, your vibe.
+            Quickly adjust effects like hue, zoom, and blur without diving into software menus. Subtle or wild, your visuals, your vibe.
           </span>
         </div>
 
@@ -221,7 +221,7 @@ function ModelLines() {
             ...styles.line2_2.text,
             textAlign: 'center'
           }}>
-            Total control over 3D movement. Rotate, spin, shift position, and change FOV! All in real time.
+            Total control with 8 knobs Rotate, spin, shift position, and change FOV! All in real time.
           </span>
         </div>
 
