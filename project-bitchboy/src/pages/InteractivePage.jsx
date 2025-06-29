@@ -94,7 +94,7 @@ function InteractivePage() {
         </div>
 
         {/* Game Mode Toggle Button */}
-        <GameModeToggle />
+        {/* <GameModeToggle /> */}
 
         {/* Keyboard Controls Toggle Button */}
         <button 

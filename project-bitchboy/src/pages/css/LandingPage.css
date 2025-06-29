@@ -771,7 +771,7 @@ ScrollModelAnimation {
     position: absolute !important;
     left: 50% !important;
     width: 200% !important;
-    top: 15vh !important;
+    top: 10vh !important;
     transform: translateX(-50%) scale(0.6) !important;
     transform-origin: center center !important;
   }
