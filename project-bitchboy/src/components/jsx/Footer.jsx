@@ -89,13 +89,21 @@ function Footer() {
                 >
                     Emhyr Bayat
                 </a>
-                , and{" "}
+                , {" "}
                 <a
                     href="https://www.linkedin.com/in/mykyta-golubov-466051331/"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
                     Mykyta Golubov
+                </a>
+                , and{" "}
+                <a
+                    href="https://www.christos.tech/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Christos Constantinou
                 </a>
                 .
             </div>
