@@ -67,8 +67,8 @@ function ModelLines() {
     },
     line2_1: {
       transform: 'rotate(150deg)',
-      top: '40%',
-      left: '-30%',
+      top: '37%',
+      left: '-20%',
       width: '400px',
       text: {
         left: '-580px',
@@ -80,7 +80,7 @@ function ModelLines() {
     line2_2: {
       transform: 'rotate(180deg)',
       top: '35%',
-      left: '7%',
+      left: '11%',
       width: '380px',
       text: {
         left: '-420px',
@@ -91,8 +91,8 @@ function ModelLines() {
     },
     line2_3: {
       transform: 'rotate(200deg)',
-      top: '70%',
-      left: '5%',
+      top: '73%',
+      left: '8%',
       width: '320px',
       text: {
         left: '-450px',

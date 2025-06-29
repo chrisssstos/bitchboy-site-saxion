@@ -18,7 +18,7 @@ function Footer() {
                     />
                 </a>
                 <a
-                    href="https://www.youtube.com/"
+                    href="https://www.youtube.com/@block_sys"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
@@ -28,7 +28,7 @@ function Footer() {
                     />
                 </a>
                 <a
-                    href="https://discord.com/"
+                    href="https://discord.com/invite/rxnegStzAG"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
@@ -38,7 +38,7 @@ function Footer() {
                     />
                 </a>
                 <a
-                    href="https://www.facebook.com/"
+                    href="https://marquetteeducator.wordpress.com/wp-content/uploads/2014/02/no_facebook.png"
                     target="_blank"
                     rel="noopener noreferrer"
                 >

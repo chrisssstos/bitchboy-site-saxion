@@ -142,7 +142,7 @@ body {
   min-width: 200px;
   
   cursor: pointer;
-  font-family: "MS Sans Serif", "Segoe UI", Tahoma, sans-serif;
+  font-family: "W95FA", "Segoe UI", Tahoma, sans-serif;
   font-size: 1.5rem;
   font-weight: normal;
   letter-spacing: 2px;
@@ -323,6 +323,7 @@ body {
     
   font-family: "MS Sans Serif", "Segoe UI", Tahoma, sans-serif;
   font-weight: normal;
+  -webkit-font-smoothing: none;
   min-width: 200px;
 }
 
@@ -495,7 +496,7 @@ body {
   z-index: 10;
   pointer-events: auto;
   
-  font-family: "MS Sans Serif", "Segoe UI", Tahoma, sans-serif;
+  font-family: "W95FA", "Segoe UI", Tahoma, sans-serif;
   font-weight: normal;
   text-transform: uppercase;
   text-shadow: none;
@@ -586,6 +587,7 @@ ScrollModelAnimation {
   .demo-button {
     font-size: 1.2rem;
     padding: 1.5em 1.5em;
+    right: 500%;
   }
 
   .bottom-section {
@@ -682,6 +684,7 @@ ScrollModelAnimation {
   .demo-button {
     font-size: 1.2rem;
     padding: 1.5em 1.5em;
+    right: 500%;
   }
 
   .bottom-section {

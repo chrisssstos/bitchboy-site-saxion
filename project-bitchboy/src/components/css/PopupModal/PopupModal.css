@@ -1,102 +1,115 @@
-/* Outer Button Container */
+/* Cyberpunk button with Windows 95-inspired active state */
+
+/* Base button styles */
 .outer-btn {
   position: relative;
+  background-color: #000;
+  border: 2px solid #00ff00;
+  padding: 0;
   cursor: pointer;
-  width: 240px;
-  height: 80px;
-  background-size: 240px 80px;
-  background-position: 0px 0px;
-  background: linear-gradient(
-    to bottom,
-    darkgray,
-    lightgray,
-    lightgray,
-    rgb(238, 238, 238)
-  ); /* Linear gradient */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  overflow: hidden;
+  transition: all 0.1s ease;
+  
+  /* Windows 95 inspired raised effect */
+  box-shadow: 
+    inset -2px -2px 0 #003300,
+    inset 2px 2px 0 #00ff00,
+    0 0 10px rgba(0, 255, 0, 0.3);
 }
 
-.outer-btn::after {
-  content: "";
+.shadow-down {
   position: absolute;
-  top: 65%;
-  left: 100%;
-  width: 10px;
-  height: 50px;
-  background-color: #fefcfc;
-  filter: blur(3px);
-  transform: rotateZ(-45deg) translateX(-50%) translateY(-50%);
-  z-index: 1;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 40%, rgba(0, 255, 0, 0.1) 100%);
+  pointer-events: none;
 }
 
-.outer-btn::before {
-  content: "";
-  position: absolute;
-  top: 65%;
-  left: 0%;
-  width: 10px;
-  height: 50px;
-  background-color: #fefcfc;
-  filter: blur(3px);
-  transform: rotateZ(45deg) translateX(-50%) translateY(-50%);
-  z-index: 1;
-}
-
-/* Hover Effect for Outer Button */
-.outer-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 4px 4px 4px rgb(74, 222, 128);
-}
-
-/* Inner Button */
 .inner-btn {
-  width: 220px;
-  height: 60px;
-  background: linear-gradient(
-    to bottom,
-    white 0%,
-    lightgray 10%,
-    lightgray 85%,
-    darkgray 100%
-  ); /* Linear gradient */
-  border-radius: 8px;
-  border: 2px solid white;
-  margin-top: -10px;
   display: flex;
-  justify-content: center;
   align-items: center;
-  box-shadow:
-    inset 0px 0px 2px rgba(255, 255, 255, 0),
-    inset -1px -1px 2px rgba(0, 0, 0, 0);
-  transition: box-shadow 0.1s ease;
-  z-index: 9;
-}
-
-/* Hover Effect for Inner Button */
-.outer-btn:hover .inner-btn {
-  box-shadow:
-    inset 2px 2px 4px rgba(255, 255, 255, 0.8),
-    inset -2px -2px 4px rgba(0, 0, 0, 0.3);
-}
-
-/* Button Text */
-.btn-text {
-  font-size: 20px;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #000;
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
   font-weight: bold;
-  color: #333;
-  margin-right: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
-/* Button Icon */
+.btn-text {
+  font-size: 1rem;
+}
+
 .btn-icon {
-  font-size: 24px;
-  color: #333;
+  font-size: 1.2rem;
+  opacity: 0.8;
+}
+
+/* Hover state */
+.outer-btn:hover {
+  background-color: #001100;
+  box-shadow: 
+    inset -2px -2px 0 #003300,
+    inset 2px 2px 0 #00ff00,
+    0 0 20px rgba(0, 255, 0, 0.5);
+}
+
+.outer-btn:hover .inner-btn {
+  background-color: #001100;
+}
+
+.outer-btn:hover .btn-icon {
+  opacity: 1;
+  animation: pulse 1s infinite;
+}
+
+/* Windows 95 style active/pressed state */
+.outer-btn:active {
+  /* Inverted border effect for pressed look */
+  box-shadow: 
+    inset 2px 2px 0 #003300,
+    inset -2px -2px 0 #00ff00,
+    inset 3px 3px 3px rgba(0, 0, 0, 0.5);
+  
+  /* Slightly darker background */
+  background-color: #000500;
+}
+
+.outer-btn:active .shadow-down {
+  opacity: 0.5;
 }
 
 .outer-btn:active .inner-btn {
-  margin-top: 0px;
+  /* Text shifts for pressed effect */
+  transform: translate(1px, 1px);
+  background-color: #000500;
+  color: #00cc00; /* Slightly dimmer green */
+}
+
+/* Pulse animation for hover */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Mobile responsive adjustments */
+@media screen and (max-width: 768px) {
+  .inner-btn {
+    padding: 0.6rem 1.2rem;
+  }
+  
+  .btn-text {
+    font-size: 0.9rem;
+  }
+  
+  .btn-icon {
+    font-size: 1.1rem;
+  }
 }

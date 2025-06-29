@@ -39,7 +39,7 @@ export default function PricingPage() {
               />
 
               <div className="subtitle1">
-                <span className="highlight">500€</span>
+                <span className="highlight">???€</span>
               </div>
               <div className="card-particles">
                 <span></span>
@@ -78,7 +78,7 @@ export default function PricingPage() {
           </div>
         </div>
         <div class="right-side">
-          <div class="new">GRAB IT NOW</div>
+          <div class="new">KICKSTARTER</div>
           <svg
             class="arrow"
             viewBox="0 0 451.846 451.847"

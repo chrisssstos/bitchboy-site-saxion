@@ -72,7 +72,7 @@ function LandingPage() {
           className="demo-button"
           onClick={handleDemoClick}
         >
-          Try the online demo here!
+          Try the demo!
         </button>
       </div>
 

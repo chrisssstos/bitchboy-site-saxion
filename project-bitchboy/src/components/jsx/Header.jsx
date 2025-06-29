@@ -32,8 +32,8 @@ function Header() {
     <header className="header">
       <nav className="header-nav">
         <a href="/">
-          <div className="title">BLOCKSYSTEM</div>
-          <div className="subtitle">STUDIO</div>
+          <div className="title">BLOCK SYSTEM</div>
+          <div className="subtitle">STUDIOS</div>
         </a>
 
         <a href="/" className="header-logo">
@@ -47,20 +47,25 @@ function Header() {
         </button>
 
         <div className={`header-pages ${isMenuOpen ? "open" : ""}`}>
+          
+          <a href="https://www.instagram.com/bitchboy.vj/" target="_blank" className="page">
+            Check It 👀
+          </a>
           {isInteractiveVisible && (
             <a href="/interactive-demo" className="page">
-              Try It Out
+              Try It 🎮
             </a>
           )}
           <a href="/pricing" className="page">
-            Pricing
+            Buy It 💰
           </a>
           <a href="/about" className="page">
-            Team
+            Team 🫂
           </a>
           <a href="/blog" className="page">
-            Blog
+            Blog 📝
           </a>
+          
         </div>
       </nav>
     </header>

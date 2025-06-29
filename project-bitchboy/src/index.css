@@ -1,3 +1,11 @@
+@font-face {
+    font-family: 'W95FA';
+    src: url('../src/W95FA.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    -webkit-font-smoothing: none;
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
