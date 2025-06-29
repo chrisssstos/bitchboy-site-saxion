@@ -651,7 +651,7 @@ ScrollModelAnimation {
 /* Mobile Responsive 500px */
 @media screen and (max-width: 500px) {
   .centered-logo-container {
-    left: calc(50% - 13rem);
+    left: calc(50% - 12rem);
     top: calc(-15rem + 9rem);
     margin-top: -30px;
   }
@@ -695,8 +695,9 @@ ScrollModelAnimation {
   .scroll-text-section {
     width: 80vw;
     left: 50%;
+    background-color: #ff6b00;
     backdrop-filter: blur(30px);
-  }
+      }
 
   .scroll-text-title {
     font-size: 2rem;
@@ -737,7 +738,7 @@ ScrollModelAnimation {
 
   .cyber-button {
     top: calc(0.5rem + 9rem);
-    left: calc(50% - 9rem);
+    left: calc(50% - 7.6rem);
     width: 16rem;
     height: 3.5rem;
     font-size: 1.1rem;
